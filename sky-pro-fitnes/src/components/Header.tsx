@@ -3,7 +3,7 @@ import headerLogo from '/logo.png'
 function Header() {
   
     return (
-      <header className="flex justify-between m-[50px]">
+      <header className="flex justify-between mt-[50px]">
         <div className='flex flex-col gap-[15px]'>
             <img src={headerLogo} className="w-[220px] h-[35px]" alt="logo" />
             <p className="font-roboto text-[18px] font-normal leading-[19.8px] text-left text-gray">
