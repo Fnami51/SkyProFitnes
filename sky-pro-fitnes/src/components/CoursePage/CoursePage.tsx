@@ -4,7 +4,7 @@ const CoursePage: React.FC = () => {
 	return (
 		<div className='relative'>
 			<div className='mb-[60px] w-full h-[310px] rounded-[30px] bg-[#FFC700] relative overflow-hidden mobile:h-[557px] mobile:mb-[30px]'>
-				<h2 className='pt-[40px] ml-[40px] text-[60px] text-white w-[300px] h-[66px] flex items-center text-center relative z-10 mobile:hidden'>
+				<h2 className='pt-[40px] ml-[40px] leading-[66px] text-[60px] font-medium text-white flex items-center text-center relative z-10 mobile:hidden'>
 					Йога
 				</h2>
 				<img
@@ -23,7 +23,7 @@ const CoursePage: React.FC = () => {
 					<h3 className='text-[40px] font-semibold leading-[44px] text-left mb-[40px] mobile:text-[24px] mobile:mb-[24px]'>
 						Подойдет для вас, если:
 					</h3>
-                    <div className="flex justify-between gap-[17px] tablet:flex-wrap tablet:gap-[12px] mobile:flex-col mobile:gap-[10px]">
+					<div className='flex justify-between gap-[17px] tablet:flex-wrap tablet:gap-[12px] mobile:flex-col mobile:gap-[10px]'>
 						<div className='flex-grow-[1.2] flex-basis-0 flex items-center p-[20px] text-white rounded-[28px] text-center gap-[25px] bg-gradient-to-r from-[#151720] to-[#1E212E] relative overflow-hidden flex-shrink-0'>
 							<span className='w-[43px] h-[101px] font-roboto text-[75px] font-medium leading-[101.25px] text-left text-[#BCEC30]'>
 								1
@@ -67,7 +67,7 @@ const CoursePage: React.FC = () => {
 					Направления
 				</h3>
 				<ul className='bg-[#BCEC30] grid grid-cols-3 rounded-[28px] h-[146px] p-[30px] gap-x-[85px] gap-y-[30px] mobile:grid-cols-1 mobile:h-auto mobile:gap-y-[20px]'>
-					<li className='flex items-center gap-[3.25px]'>
+					<li className='flex items-center gap-[8px]'>
 						<img
 							src='/images/sparcle.png'
 							alt='Icon'
@@ -77,7 +77,7 @@ const CoursePage: React.FC = () => {
 							Йога для новичков
 						</p>
 					</li>
-					<li className='flex items-center gap-[3.25px]'>
+					<li className='flex items-center gap-[8px]'>
 						<img
 							src='/images/sparcle.png'
 							alt='Icon'
@@ -87,7 +87,7 @@ const CoursePage: React.FC = () => {
 							Классическая йога
 						</p>
 					</li>
-					<li className='flex items-center gap-[3.25px]'>
+					<li className='flex items-center gap-[8px]'>
 						<img
 							src='/images/sparcle.png'
 							alt='Icon'
@@ -97,7 +97,7 @@ const CoursePage: React.FC = () => {
 							Кундалини-йога
 						</p>
 					</li>
-					<li className='flex items-center gap-[3.25px]'>
+					<li className='flex items-center gap-[8px]'>
 						<img
 							src='/images/sparcle.png'
 							alt='Icon'
@@ -107,7 +107,7 @@ const CoursePage: React.FC = () => {
 							Йогатерапия
 						</p>
 					</li>
-					<li className='flex items-center gap-[3.25px]'>
+					<li className='flex items-center gap-[8px]'>
 						<img
 							src='/images/sparcle.png'
 							alt='Icon'
@@ -117,7 +117,7 @@ const CoursePage: React.FC = () => {
 							Хатха-йога
 						</p>
 					</li>
-					<li className='flex items-center gap-[3.25px]'>
+					<li className='flex items-center gap-[8px]'>
 						<img
 							src='/images/sparcle.png'
 							alt='Icon'
@@ -137,22 +137,22 @@ const CoursePage: React.FC = () => {
 					</h3>
 					<ul className='list-disc flex flex-col gap-[10px] pl-[20px]'>
 						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px]'>
-							Проработка всех групп мышц
+							проработка всех групп мышц
 						</li>
 						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px]'>
-							Тренировка суставов
+							тренировка суставов
 						</li>
 						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px]'>
-							Улучшение циркуляции крови
+							улучшение циркуляции крови
 						</li>
 						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px]'>
-							Упражнения заряжают бодростью
+							упражнения заряжают бодростью
 						</li>
 						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px]'>
-							Помогают противостоять стрессам
+							помогают противостоять стрессам
 						</li>
 					</ul>
-					<button className='bg-[#BCEC30] text-black font-roboto text-[16px] font-normal leading-[17.6px] text-center w-[437px] h-[52px] rounded-[46px] px-[26px] py-[16px] transition-all duration-300 ease-in-out mobile:w-[283px] mobile:h-[50px]'>
+					<button className='bg-[#BCEC30] text-black font-roboto text-[18px] font-normal leading-[17.6px] text-center w-[437px] h-[52px] rounded-[46px] px-[26px] py-[16px] transition-all duration-300 ease-in-out mobile:w-[283px] mobile:h-[50px] mobile:text-[16px]'>
 						Войдите, чтобы добавить курс
 					</button>
 				</div>
