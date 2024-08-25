@@ -135,7 +135,7 @@ const CoursePage: React.FC = () => {
 						Начните путь
 						<br />к новому телу
 					</h3>
-					<ul className='list-disc flex flex-col gap-[10px] pl-[35px] marker:text-[16px]'>
+					<ul className='list-disc flex flex-col gap-[10px] pl-[33px] marker:text-[16px]'>
 						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px]'>
 							проработка всех групп мышц
 						</li>
@@ -152,7 +152,7 @@ const CoursePage: React.FC = () => {
 							помогают противостоять стрессам
 						</li>
 					</ul>
-					<button className='bg-[#BCEC30] text-black font-roboto text-[18px] font-normal leading-[17.6px] text-center w-[437px] h-[52px] rounded-[46px] px-[26px] py-[16px] transition-all duration-300 ease-in-out mobile:w-[290px] mobile:h-[50px] mobile:text-[16px]'>
+					<button className='bg-[#BCEC30] text-black font-roboto text-[18px] font-normal leading-[17.6px] text-center w-[437px] h-[52px] rounded-[46px] px-[26px] py-[16px] transition-all duration-300 ease-in-out mobile:w-[283px] mobile:h-[50px] mobile:text-[16px]'>
 						Войдите, чтобы добавить курс
 					</button>
 				</div>
