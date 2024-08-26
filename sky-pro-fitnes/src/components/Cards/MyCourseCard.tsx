@@ -1,3 +1,5 @@
+import Level from "./Level";
+
 interface MyCourseCardProps {
     name: string;
     day: number;
@@ -8,7 +10,7 @@ interface MyCourseCardProps {
 
 function MyCourseCard({name, day, time, url_img, progress}: MyCourseCardProps) {
     return (
-        <section className="w-[360px] h-[649px] pb-4 rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+        <section className="w-[360px] pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
             <button 
                 className="absolute ml-[308px] mt-[20px] w-[32px] h-[32px]"
                 onClick={() => {}}
@@ -16,12 +18,11 @@ function MyCourseCard({name, day, time, url_img, progress}: MyCourseCardProps) {
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M15.9998 29.3333C23.3636 29.3333 29.3332 23.3638 29.3332 16C29.3332 8.63616 23.3636 2.66663 15.9998 2.66663C8.63604 2.66663 2.6665 8.63616 2.6665 16C2.6665 23.3638 8.63604 29.3333 15.9998 29.3333ZM9.33317 14.6666V17.3333H22.6665V14.6666H9.33317Z" fill="white"/>
                 </svg>
-
             </button>
             <img src={url_img} className="w-[360px] h-[325px] rounded-[30px] object-cover"/>
             <div className="mt-[24px] ml-[30px] mr-[30px]">
                 <h2 className="text-[32px] font-medium leading-[35.2px] text-left font-roboto">{name}</h2>
-                <div className="flex flex-wrap gap-[6px]">
+                <div className="flex flex-wrap gap-[6px] mt-[20px]">
                     <div className="flex rounded-[30px] bg-gray-super-light items-center p-[10px] gap-[6px]">
                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M7.5 2.625C7.5 1.79657 6.82843 1.125 6 1.125C5.17157 1.125 4.5 1.79657 4.5 2.625C2.84315 2.625 1.5 3.96815 1.5 5.625H16.5C16.5 3.96815 15.1569 2.625 13.5 2.625C13.5 1.79657 12.8284 1.125 12 1.125C11.1716 1.125 10.5 1.79657 10.5 2.625H7.5Z" fill="#202020"/>
@@ -36,9 +37,7 @@ function MyCourseCard({name, day, time, url_img, progress}: MyCourseCardProps) {
                         <p>{time} мин/день</p>
                     </div>
                     <div className="flex rounded-[30px] bg-gray-super-light items-center p-[10px] gap-[6px]">
-                        <div>
-
-                        </div>
+                        <Level value={3}/>
                         <p>Сложность</p>
                     </div>
                 </div>
@@ -51,7 +50,7 @@ function MyCourseCard({name, day, time, url_img, progress}: MyCourseCardProps) {
                         ></div>
                     </div>
                 </div>
-                <button className='absolute w-[300px] h-[52px] rounded-btnRad bg-green'>
+                <button className='w-[300px] h-[52px] rounded-btnRad bg-green'>
                     <p className='text-black font-roboto text-[18px] font-normal leading-[19.8px]'>Продолжить</p>
                 </button>
             </div>
