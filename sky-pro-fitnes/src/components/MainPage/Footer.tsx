@@ -8,7 +8,7 @@ function Footer() {
       };
   
     return (
-    <footer className="flex justify-center items-center mb-[30px]">
+    <footer className="flex justify-center items-center mt-[34px] mb-[30px]">
         <button
           className='w-[127px] h-[52px] rounded-btnRad bg-green'
           onClick={scrollToTop}

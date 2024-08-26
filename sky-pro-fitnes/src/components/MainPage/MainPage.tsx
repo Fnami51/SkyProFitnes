@@ -1,4 +1,4 @@
-import CourseCard from "./CourseCard"
+import CourseCard from "../Cards/CourseCard"
 import Footer from "./Footer"
 
 function MainPage() {
@@ -19,7 +19,7 @@ function MainPage() {
                 </div>
             </article>
             <article className='flex flex-wrap gap-[40px] mt-[50px]'>
-                <CourseCard name="Йога" day={25} time="25-30" url_img="" />
+                <CourseCard name="Йога" day={25} time="25-30" url_img="/images/yoga_small.png" />
             </article>
         </main>
         <Footer />

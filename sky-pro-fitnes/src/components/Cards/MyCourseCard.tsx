@@ -1,22 +1,24 @@
-interface CourseCardProps {
+interface MyCourseCardProps {
     name: string;
     day: number;
     time: string;
     url_img: string
+    progress: number;
   }
 
-function CourseCard({name, day, time, url_img}: CourseCardProps) {
+function MyCourseCard({name, day, time, url_img, progress}: MyCourseCardProps) {
     return (
-        <section className="w-[360px] h-[501px] pb-4 rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+        <section className="w-[360px] h-[649px] pb-4 rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
             <button 
                 className="absolute ml-[308px] mt-[20px] w-[32px] h-[32px]"
                 onClick={() => {}}
             >
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 29.3333C23.3638 29.3333 29.3333 23.3638 29.3333 16C29.3333 8.63616 23.3638 2.66663 16 2.66663C8.63619 2.66663 2.66666 8.63616 2.66666 16C2.66666 23.3638 8.63619 29.3333 16 29.3333ZM14.6667 14.6666V9.33329H17.3333V14.6666H22.6667V17.3333H17.3333V22.6666H14.6667V17.3333H9.33332V14.6666H14.6667Z" fill="white"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.9998 29.3333C23.3636 29.3333 29.3332 23.3638 29.3332 16C29.3332 8.63616 23.3636 2.66663 15.9998 2.66663C8.63604 2.66663 2.6665 8.63616 2.6665 16C2.6665 23.3638 8.63604 29.3333 15.9998 29.3333ZM9.33317 14.6666V17.3333H22.6665V14.6666H9.33317Z" fill="white"/>
                 </svg>
+
             </button>
-            <img src={url_img} className="w-[360px] h-[325px] rounded-[30px]"/>
+            <img src={url_img} className="w-[360px] h-[325px] rounded-[30px] object-cover"/>
             <div className="mt-[24px] ml-[30px] mr-[30px]">
                 <h2 className="text-[32px] font-medium leading-[35.2px] text-left font-roboto">{name}</h2>
                 <div className="flex flex-wrap gap-[6px]">
@@ -40,9 +42,21 @@ function CourseCard({name, day, time, url_img}: CourseCardProps) {
                         <p>Сложность</p>
                     </div>
                 </div>
+                <div className="mt-[20px] mb-[40px]">
+                    <p className="text-left font-roboto text-[18px] font-normal leading-[19.8px] pb-[10px]">Прогресс {progress}%</p>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                        <div
+                        className="bg-[#00C1FF] h-2.5 rounded-full"
+                        style={{ width: `${progress}%` }}
+                        ></div>
+                    </div>
+                </div>
+                <button className='absolute w-[300px] h-[52px] rounded-btnRad bg-green'>
+                    <p className='text-black font-roboto text-[18px] font-normal leading-[19.8px]'>Продолжить</p>
+                </button>
             </div>
         </section>
     )
 }
 
-export default CourseCard
+export default MyCourseCard

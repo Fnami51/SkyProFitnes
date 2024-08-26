@@ -16,7 +16,7 @@ function CourseCard({name, day, time, url_img}: CourseCardProps) {
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M16 29.3333C23.3638 29.3333 29.3333 23.3638 29.3333 16C29.3333 8.63616 23.3638 2.66663 16 2.66663C8.63619 2.66663 2.66666 8.63616 2.66666 16C2.66666 23.3638 8.63619 29.3333 16 29.3333ZM14.6667 14.6666V9.33329H17.3333V14.6666H22.6667V17.3333H17.3333V22.6666H14.6667V17.3333H9.33332V14.6666H14.6667Z" fill="white"/>
                 </svg>
             </button>
-            <img src={url_img} className="w-[360px] h-[325px] rounded-[30px]"/>
+            <img src={url_img} className="w-[360px] h-[325px] rounded-[30px] object-cover"/>
             <div className="mt-[24px] ml-[30px] mr-[30px]">
                 <h2 className="text-[32px] font-medium leading-[35.2px] text-left font-roboto">{name}</h2>
                 <div className="flex flex-wrap gap-[6px]">
@@ -39,9 +39,6 @@ function CourseCard({name, day, time, url_img}: CourseCardProps) {
                         </div>
                         <p>Сложность</p>
                     </div>
-                </div>
-                <div>
-                    
                 </div>
             </div>
         </section>
