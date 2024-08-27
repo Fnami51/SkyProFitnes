@@ -1,6 +1,11 @@
-import headerLogo from '/logo.png'
+// import React from 'react';
+import Button from './Button'; // Импортируем наш компонент Button
+import headerLogo from '/logo.png';
 
-function Header() {
+interface HeaderProps {
+  onLoginClick: () => void; // Добавляем проп для обработки клика по кнопке входа
+}
+function Header({ onLoginClick }: HeaderProps) {
   
     return (
       <header className="flex justify-between m-[50px]">
@@ -11,9 +16,9 @@ function Header() {
             </p>
         </div>
         <div className='flex justify-end items-center w-[200px]'>
-            <button className='absolute w-[103px] h-[52px] rounded-btnRad bg-green'>
-                <p className='text-black font-roboto text-[18px] font-normal leading-[19.8px]'>Войти</p>
-            </button>
+        <Button onClick={onLoginClick} variant="primary" className="w-[103px] h-[52px]">
+          Войти
+        </Button>
         </div>  
       </header>
     )
