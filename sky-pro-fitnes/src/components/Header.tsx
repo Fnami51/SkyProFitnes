@@ -1,9 +1,8 @@
-// import React from 'react';
-import Button from './Button'; // Импортируем наш компонент Button
+import Button from './Button'; 
 import headerLogo from '/logo.png';
 
 interface HeaderProps {
-  onLoginClick: () => void; // Добавляем проп для обработки клика по кнопке входа
+  onLoginClick: () => void;
 }
 function Header({ onLoginClick }: HeaderProps) {
   
