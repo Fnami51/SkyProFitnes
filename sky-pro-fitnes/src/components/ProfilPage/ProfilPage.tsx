@@ -6,11 +6,11 @@ function ProfilPage() {
     return (
     <>
         <main className="mt-[60px]">
-            <h1 className="text-[60px] font-medium leading-[60px] text-left font-roboto mobile:text-[40px] mobile:leading-[44px]">
+            <h1 className="text-[40px] font-medium leading-[44px] text-left font-roboto mobile:text-[24px] mobile:leading-[26.4px]">
                 Профиль
             </h1>
             <Profil name="Sergei" login="serg228" password="qwertyu" url_img=""/>
-            <h1 className="text-[60px] font-medium leading-[60px] text-left font-roboto mobile:text-[40px] mobile:leading-[44px]">
+            <h1 className="text-[40px] font-medium leading-[44px] text-left font-roboto mobile:text-[24px] mobile:leading-[26.4px]">
                 Мои курсы
             </h1>
             <article className='flex flex-wrap gap-[40px] mt-[50px]'>
