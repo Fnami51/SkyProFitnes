@@ -23,9 +23,9 @@ function Header({ onLoginClick }: HeaderProps) {
       </div>
       <div className='flex justify-end items-center w-[200px]'>
         {forTest ? (
-          <button className='w-[103px] h-[52px] rounded-btnRad bg-green mobile:h-[36px]'>
-            <p className='text-black font-roboto text-[18px] font-normal leading-[19.8px]'>Войти</p>
-          </button>
+          <Button onClick={onLoginClick} variant="primary" className="w-[103px] h-[52px]">
+            Войти
+          </Button>
         ) : (
           <div className='flex items-center h-[50px] gap-[14px]'>
             <img src={url_img !== "" ? url_img : '/images/profil_no-img.png'} className="w-[46px] h-[46px] rounded-[50px] p-[4px]" />
@@ -37,9 +37,7 @@ function Header({ onLoginClick }: HeaderProps) {
             </button>
           </div>
         )}
-        <Button onClick={onLoginClick} variant="primary" className="w-[103px] h-[52px]">
-          Войти
-        </Button>
+
       </div>
 
     </header>
