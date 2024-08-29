@@ -2,6 +2,8 @@ import { useState } from 'react';
 import Header from './components/Header';
 import Modal from './components/Modal';
 import Button from './components/Button';
+import CoursePage from './components/CoursePage/CoursePage'
+
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,8 +28,9 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className='bg-background min-h-screen flex flex-col px-[16px] mobil:px-[16px] desktop:px-[70px] mediumDesktop:px-[140px] pb-page-padding overflow-x-hidden'>
       <Header onLoginClick={handleLoginClick} />
+      <CoursePage />
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Примеры модальных окон</h1>
         <div className="flex flex-col items-center mt-8 gap-4">
