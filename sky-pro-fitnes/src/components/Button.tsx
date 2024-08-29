@@ -18,7 +18,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
 }) => {
   const baseStyles = "font-roboto font-normal text-lg leading-[110%] text-center rounded-[46px] px-[26px] py-4 transition-all duration-300 ease-in-out cursor-pointer";
-
+  
   const variantStyles = {
     primary: "bg-primary text-black hover:bg-primary-hover active:bg-black active:text-white",
     secondary: "bg-white text-black border border-black hover:bg-secondary active:bg-secondary-active",
