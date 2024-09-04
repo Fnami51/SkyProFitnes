@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import Header from './components/Header';
 import Modal from './components/Modal';
-import CoursePage from './components/CoursePage/CoursePage'
-import ExampleModal from './components/Example/ExampleModal';
-import MainPage from './components/MainPage/MainPage'
-import ProfilPage from './components/ProfilPage/ProfilPage'
+import CoursePage from './pages/CoursePage/CoursePage'
+import ExampleModal from './components/Example/ExampleModal'; // Временный файл
+import MainPage from './pages/MainPage/MainPage'
+import ProfilPage from './pages/ProfilePage/ProfilePage'
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);

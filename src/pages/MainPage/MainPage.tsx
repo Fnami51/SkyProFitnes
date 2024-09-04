@@ -1,4 +1,4 @@
-import CourseCard from "../Cards/CourseCard"
+import CourseCard from "../../components/Cards/CourseCard"
 import Footer from "./Footer"
 
 function MainPage() {

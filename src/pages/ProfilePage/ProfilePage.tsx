@@ -1,5 +1,5 @@
-import MyCourseCard from "../Cards/MyCourseCard"
-import Profil from "./Profil"
+import MyCourseCard from "../../components/Cards/MyCourseCard"
+import Profil from "./Profile"
 
 function ProfilPage() {
     
