@@ -5,7 +5,7 @@ function ProfilPage() {
     
     return (
     <>
-        <main className="mt-[60px]">
+        <main className="mt-[60px] mb-[60px]">
             <h1 className="text-[40px] font-medium leading-[44px] text-left font-roboto mobile:text-[24px] mobile:leading-[26.4px]">
                 Профиль
             </h1>

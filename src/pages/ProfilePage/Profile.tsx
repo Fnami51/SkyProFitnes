@@ -1,3 +1,5 @@
+import Button from "../../components/Button";
+
 interface ProfilProps {
     name: string;
     login: string;
@@ -16,12 +18,12 @@ function Profil({name, login, password, url_img}: ProfilProps) {
                     <p>Пароль: {password}</p>
                 </div>
                 <div className="flex gap-[10px] mobile:flex-col">
-                    <button className='w-[192px] mobile:w-full h-[52px] rounded-btnRad bg-green'>
-                        <p className='text-black font-roboto text-[18px] font-normal leading-[19.8px]'>Изменить пароль</p>
-                    </button>
-                    <button className='w-[192px] mobile:w-full h-[52px] rounded-btnRad bg-white border border-black'>
-                        <p className='text-black font-roboto text-[18px] font-normal leading-[19.8px]'>Выйти</p>
-                    </button>
+                    <Button variant="primary" className='w-[192px] mobile:w-full h-[52px]'>
+                        Изменить пароль
+                    </Button>
+                    <Button variant="secondary" className='w-[192px] mobile:w-full h-[52px]'>
+                        Выйти
+                    </Button>
                 </div>
             </div>
         </section>

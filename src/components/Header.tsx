@@ -5,13 +5,10 @@ interface HeaderProps {
   onLoginClick: () => void;
 }
 
-
-
-
 function Header({ onLoginClick }: HeaderProps) {
   const name: string = 'Sergei' // Для примера, потом брать из контекста
-  const url_img: string = ''
-  const forTest = true
+  const url_img: string = '' // Для примера, потом брать из контекста
+  const forTest = true // Для примера, потом брать из контекста
 
   return (
     <header className="flex justify-between mt-[50px]">

@@ -1,8 +1,9 @@
 import React from 'react';
+import Button from '../../components/Button';
 
 const CoursePage: React.FC = () => {
 	return (
-		<div className='relative'>
+		<main className='relative mt-[60px]'>
 			<div className='mb-[60px] w-full h-[310px] rounded-[30px] bg-[#FFC700] relative overflow-hidden mobile:h-[557px] mobile:mb-[30px]'>
 				<h2 className='pt-[40px] ml-[40px] leading-[66px] text-[60px] font-medium text-white flex items-center text-center relative z-10 mobile:hidden'>
 					Йога
@@ -152,9 +153,9 @@ const CoursePage: React.FC = () => {
 							помогают противостоять стрессам
 						</li>
 					</ul>
-					<button className='bg-[#BCEC30] text-black font-roboto text-[18px] font-normal leading-[17.6px] text-center w-[437px] h-[52px] rounded-[46px] px-[26px] py-[16px] transition-all duration-300 ease-in-out mobile:w-[283px] mobile:h-[50px] mobile:text-[16px]'>
+					<Button variant='primary' className='w-[437px] h-[52px] mobile:w-[283px] mobile:h-[50px]'>
 						Войдите, чтобы добавить курс
-					</button>
+					</Button>
 				</div>
 				<img
 					src='/images/6094.png'
@@ -177,7 +178,7 @@ const CoursePage: React.FC = () => {
 				alt='Салатовый_2'
 				className='hidden mobile:block absolute mobile:w-[750.93px] mobile:h-[300px] mobile:top-[1530px] mobile:right-[27px]'
 			/>
-		</div>
+		</main>
 	)
 }
 
