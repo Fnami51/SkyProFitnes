@@ -1,7 +1,7 @@
 import MyCourseCard from "../Cards/MyCourseCard"
-import Profil from "./Profil"
+import Profil from "./Profile"
 
-function ProfilPage() {
+function ProfilePage() {
     
     return (
     <>
@@ -21,4 +21,4 @@ function ProfilPage() {
     )
   }
   
-  export default ProfilPage
+  export default ProfilePage

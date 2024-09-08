@@ -4,7 +4,7 @@ interface ProfilProps {
     password: string;
     url_img: string
   }
-// Подумать как лучше брать здесь из контекста или в ProfilPage
+// Подумать как лучше брать здесь из контекста или в ProfilePage
 function Profil({name, login, password, url_img}: ProfilProps) {
     return (
         <section className="flex mobile:flex-col mobile:items-center gap-[33px] w-[100%] p-[30px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">

@@ -1,0 +1,217 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import Button from './Button';
+import { useAuth } from '../../hooks/useAuth';
+
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  type: 'login' | 'register' | 'resetPassword' | 'newPassword';
+  onSwitchType: (newType: 'login' | 'register' | 'resetPassword') => void;
+}
+
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { register, login, resetUserPassword, changeUserPassword } = useAuth();
+
+  const resetForm = useCallback(() => {
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setError('');
+    setSuccess('');
+    setIsLoading(false);
+  }, []);
+
+  const handleClose = useCallback((e?: React.MouseEvent<HTMLDivElement>) => {
+    if (e && e.target !== e.currentTarget) return;
+    resetForm();
+    onClose();
+  }, [onClose, resetForm]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      resetForm();
+    }
+  }, [isOpen, resetForm]);
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.(ru|com)$/i;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password: string): boolean => {
+    return password.length >= 5 && /\d/.test(password);
+  };
+
+  const validateForm = () => {
+    if (!email) {
+      setError('Пожалуйста, введите логин');
+      return false;
+    }
+    if (!validateEmail(email)) {
+      setError('Пожалуйста, введите корректный email с доменом .ru или .com');
+      return false;
+    }
+    if (type !== 'resetPassword') {
+      if (!password) {
+        setError('Пожалуйста, введите пароль');
+        return false;
+      }
+      if (!validatePassword(password)) {
+        setError('Пароль должен содержать не менее 5 символов, хотя бы одну цифру');
+        return false;
+      }
+    }
+    if (type === 'register' && password !== confirmPassword) {
+      setError('Пароли не совпадают');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    if (validateForm()) {
+      setIsLoading(true);
+      try {
+        switch (type) {
+          case 'login':
+            await login(email, password);
+            setSuccess('Вход выполнен успешно');
+            break;
+          case 'register':
+            await register(email, password);
+            setSuccess('Регистрация прошла успешно');
+            break;
+          case 'resetPassword':
+            await resetUserPassword(email);
+            setSuccess('Инструкции по сбросу пароля отправлены на ваш email');
+            break;
+          case 'newPassword':
+            await changeUserPassword(password);
+            setSuccess('Пароль успешно изменен');
+            break;
+        }
+        setTimeout(() => {
+          handleClose();
+        }, 2000);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError('Пароль введён неверно, попробуйте ещё раз.');
+        } else {
+          setError('Произошла ошибка. Попробуйте позже.');
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const handleSwitchType = (newType: 'login' | 'register' | 'resetPassword') => {
+    onSwitchType(newType);
+    resetForm();
+  };
+
+  const renderErrorMessage = () => {
+    if (error) {
+      return (
+        <p className="w-[280px] font-roboto text-[14px] leading-[110%] text-center text-[#DB0030] flex-none order-2 flex-grow-0">
+          {error} {' '}
+          {type === 'login' && (
+            <span
+              className="text-blue-500 cursor-pointer hover:underline"
+              onClick={() => handleSwitchType('resetPassword')}
+            >
+              Восстановить пароль?
+            </span>
+          )}
+        </p>
+      );
+    }
+    return null;
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleClose}>
+      <div className="bg-white shadow-lg rounded-[30px] p-10 w-full max-w-[360px]" onClick={e => e.stopPropagation()}>
+        <div className="flex justify-center mb-12">
+          <img src="/logo.png" alt="SkyFitnessPro" className="w-[220px] h-[35px]" />
+        </div>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-[34px]">
+          <div className="flex flex-col gap-2.5">
+            {type !== 'newPassword' && (
+              <input
+                type="email"
+                placeholder="Логин"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full h-[52px] pt-4 pr-[18px] pb-4 pl-[18px] border border-[#D0CECE] rounded-lg text-[18px] leading-[19.8px] text-black placeholder-[#D0CECE]"
+                required
+              />
+            )}
+            {type !== 'resetPassword' && (
+              <input
+                type="password"
+                placeholder={type === 'newPassword' ? "Новый пароль" : "Пароль"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full h-[52px] pt-4 pr-[18px] pb-4 pl-[18px] border border-[#D0CECE] rounded-lg text-[18px] leading-[19.8px] text-black placeholder-[#D0CECE]"
+                required
+              />
+            )}
+            {(type === 'register' || type === 'newPassword') && (
+              <input
+                type="password"
+                placeholder="Повторите пароль"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full h-[52px] pt-4 pr-[18px] pb-4 pl-[18px] border border-[#D0CECE] rounded-lg text-[18px] leading-[19.8px] text-black placeholder-[#D0CECE]"
+                required
+              />
+            )}
+            {renderErrorMessage()}
+            {success && (
+              <p className="w-[280px] h-[30px] font-roboto text-[14px] leading-[110%] text-center text-green-500 flex-none order-2 flex-grow-0">
+                {success}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col gap-2.5">
+            <Button type="submit" variant="primary" className="w-full h-[52px]" disabled={isLoading}>
+              {isLoading ? 'Загрузка...' : type === 'login' ? 'Войти' : type === 'register' ? 'Зарегистрироваться' : type === 'resetPassword' ? 'Сбросить пароль' : 'Подтвердить'}
+            </Button>
+            {type === 'login' && (
+              <Button variant="secondary" className="w-full h-[52px]" onClick={() => handleSwitchType('register')} disabled={isLoading}>
+                Зарегистрироваться
+              </Button>
+            )}
+            {type === 'register' && (
+              <Button variant="secondary" className="w-full h-[52px]" onClick={() => handleSwitchType('login')} disabled={isLoading}>
+                Войти
+              </Button>
+            )}
+            {type === 'resetPassword' && (
+              <Button variant="secondary" className="w-full h-[52px]" onClick={() => handleSwitchType('login')} disabled={isLoading}>
+                Вернуться к входу
+              </Button>
+            )}
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+
+
+export default Modal;
