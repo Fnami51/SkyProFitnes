@@ -51,6 +51,7 @@ export const logoutUser = async (): Promise<void> => {
 export const resetPassword = async (email: string): Promise<void> => {
   try {
     await sendPasswordResetEmail(auth, email);
+    console.log('Password reset email sent to:', email);
   } catch (error) {
     console.error('Error resetting password:', error);
     throw error;
