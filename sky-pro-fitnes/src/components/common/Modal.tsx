@@ -29,9 +29,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
   }, []);
 
   const handleClose = useCallback((e?: React.MouseEvent<HTMLDivElement>) => {
-    if (e && e.target !== e.currentTarget) return;
-    resetForm();
-    onClose();
+    if (e && e.target === e.currentTarget) {
+      resetForm();
+      onClose();
+    }
   }, [onClose, resetForm]);
 
   useEffect(() => {
@@ -88,8 +89,20 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
             setSuccess('Вход выполнен успешно');
             break;
           case 'register':
-            await register(email, password);
-            setSuccess('Регистрация прошла успешно');
+            try {
+              await register(email, password);
+              setSuccess('Регистрация прошла успешно');
+            } catch (err) {
+              if (err instanceof Error) {
+                if (err.message.includes('email-already-in-use')) {
+                  setError('Данная почта уже используется. Попробуйте войти.');
+                } else {
+                  setError(err.message);
+                }
+              } else {
+                setError('Произошла ошибка при регистрации.');
+              }
+            }
             break;
           case 'resetPassword':
             await resetUserPassword(email);
@@ -103,7 +116,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
         }
         setTimeout(() => {
           handleClose();
-        }, 2000);
+        }, 3000);
       } catch (err) {
         if (err instanceof Error) {
           setError('Пароль введён неверно, попробуйте ещё раз.');
@@ -117,8 +130,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
   };
 
   const handleSwitchType = (newType: 'login' | 'register' | 'resetPassword') => {
-    onSwitchType(newType);
     resetForm();
+    onSwitchType(newType);
   };
 
   const renderErrorMessage = () => {
