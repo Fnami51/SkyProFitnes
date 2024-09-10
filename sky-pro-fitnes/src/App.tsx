@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
 import Header from './components/common/Header';
 import Modal from './components/common/Modal';
-import CoursePage from './components/CoursePage/CoursePage'
-import MainPage from './components/MainPage/MainPage'
-import ProfilePage from './components/ProfilePage/ProfilePage'
+import CoursePage from './components/pages/CoursePage/CoursePage'
+import MainPage from './components/pages/MainPage/MainPage'
+import ProfilePage from './components/pages/ProfilePage/ProfilePage'
 import { useAuth } from './hooks/useAuth';
 
 function App() {
