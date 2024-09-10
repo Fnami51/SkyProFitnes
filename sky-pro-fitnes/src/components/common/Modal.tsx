@@ -28,13 +28,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
     setIsLoading(false);
   }, []);
 
-  const handleClose = useCallback((e?: React.MouseEvent<HTMLDivElement>) => {
-    if (e && e.target === e.currentTarget) {
-      resetForm();
-      onClose();
-    }
+  // const handleClose = useCallback((e?: React.MouseEvent<HTMLDivElement>) => {
+  //   if (e && e.target === e.currentTarget) {
+  //     resetForm();
+  //     onClose();
+  //   }
+  // }, [onClose, resetForm]);
+  const handleClose = useCallback(() => {
+    resetForm();
+    onClose();
   }, [onClose, resetForm]);
-
   useEffect(() => {
     if (!isOpen) {
       resetForm();
@@ -51,27 +54,42 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
   };
 
   const validateForm = () => {
-    if (!email) {
-      setError('Пожалуйста, введите логин');
-      return false;
-    }
-    if (!validateEmail(email)) {
-      setError('Пожалуйста, введите корректный email с доменом .ru или .com');
-      return false;
-    }
-    if (type !== 'resetPassword') {
+    if (type === 'newPassword') {
       if (!password) {
-        setError('Пожалуйста, введите пароль');
+        setError('Пожалуйста, введите новый пароль');
         return false;
       }
       if (!validatePassword(password)) {
         setError('Пароль должен содержать не менее 5 символов, хотя бы одну цифру');
         return false;
       }
-    }
-    if (type === 'register' && password !== confirmPassword) {
-      setError('Пароли не совпадают');
-      return false;
+      if (password !== confirmPassword) {
+        setError('Пароли не совпадают');
+        return false;
+      }
+    } else {
+      if (!email) {
+        setError('Пожалуйста, введите логин');
+        return false;
+      }
+      if (!validateEmail(email)) {
+        setError('Пожалуйста, введите корректный email с доменом .ru или .com');
+        return false;
+      }
+      if (type !== 'resetPassword') {
+        if (!password) {
+          setError('Пожалуйста, введите пароль');
+          return false;
+        }
+        if (!validatePassword(password)) {
+          setError('Пароль должен содержать не менее 5 символов, хотя бы одну цифру');
+          return false;
+        }
+      }
+      if (type === 'register' && password !== confirmPassword) {
+        setError('Пароли не совпадают');
+        return false;
+      }
     }
     return true;
   };
@@ -102,6 +120,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
               } else {
                 setError('Произошла ошибка при регистрации.');
               }
+              setIsLoading(false);
+              return; // Прерываем выполнение функции в случае ошибки
             }
             break;
           case 'resetPassword':
@@ -114,9 +134,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
             setSuccess('Пароль успешно изменен');
             break;
         }
+        // Устанавливаем таймер только при успешном выполнении операции
         setTimeout(() => {
           handleClose();
-        }, 3000);
+        }, 1000);
       } catch (err) {
         if (err instanceof Error) {
           setError('Пароль введён неверно, попробуйте ещё раз.');
