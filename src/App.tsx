@@ -6,6 +6,7 @@ import ExampleModal from './components/Example/ExampleModal'; // Временн�
 import MainPage from './pages/MainPage/MainPage'
 import ProfilPage from './pages/ProfilePage/ProfilePage'
 import { Route, Routes } from 'react-router-dom';
+import TraningPage from './pages/TraningPage/TraningPage';
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,7 +32,8 @@ function App() {
       <Routes>
         <Route path='/' element={<MainPage />}/>
         <Route path='/user' element={<ProfilPage />}/>
-        <Route path='/course' element={<CoursePage />}/>
+        <Route path='/course/:id' element={<CoursePage />}/>
+        <Route path='/traning/:id' element={<TraningPage  />}/>
 
         <Route path='/example_modal' element={<ExampleModal />}/> {/* Это временное решение для просмотра примера. Эту строчку, а также модуль Example, потом можно будет удалить (или не удалять, в проекте он мешать не будет)  */}
       </Routes>
