@@ -1,12 +1,9 @@
-import Button from '../common/Button';
+import Button from '../components/Button';
 import headerLogo from '/logo.png';
 
 interface HeaderProps {
   onLoginClick: () => void;
 }
-
-
-
 
 function Header({ onLoginClick }: HeaderProps) {
   const name: string = 'Sergei' // Для примера, потом брать из контекста
