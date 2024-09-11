@@ -1,3 +1,4 @@
+import Button from "../Button";
 import Level from "./Level";
 
 interface MyCourseCardProps {
@@ -50,9 +51,9 @@ function MyCourseCard({name, day, time, url_img, progress}: MyCourseCardProps) {
                         ></div>
                     </div>
                 </div>
-                <button className='w-[300px] h-[52px] rounded-btnRad bg-green'>
-                    <p className='text-black font-roboto text-[18px] font-normal leading-[19.8px]'>Продолжить</p>
-                </button>
+                <Button variant='primary' className='w-[300px] h-[52px]'>
+                    Продолжить
+                </Button>
             </div>
         </section>
     )
