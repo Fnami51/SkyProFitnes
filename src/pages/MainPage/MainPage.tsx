@@ -1,5 +1,5 @@
 import CourseCard from "../../components/Cards/CourseCard"
-import Footer from "./Footer"
+import Footer from "../../components/Footer"
 
 function MainPage() {
 

@@ -1,57 +1,28 @@
-import { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import Modal from '../../components/Modal';
 
-function Profile() {
-  const { user, logout } = useAuth();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<'newPassword'>('newPassword');
+import MyCourseCard from '../../components/Cards/MyCourseCard';
+import Profile from './Profile';
 
-  const handleChangePassword = () => {
-    setModalType('newPassword');
-    setIsModalOpen(true);
-  };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      // Редирект на главную страницу
-      window.location.href = '/';
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+function ProfilPage() {
+    
+    return (
+    <>
+        <main className="mt-[60px] mb-[60px]">
+            <h1 className="text-[40px] font-medium leading-[44px] text-left font-roboto mobile:text-[24px] mobile:leading-[26.4px]">
+                Профиль
+            </h1>
+            <Profile />
+            <h1 className="text-[40px] font-medium leading-[44px] text-left font-roboto mobile:text-[24px] mobile:leading-[26.4px]">
+                Мои курсы
+            </h1>
+            <article className='flex flex-wrap gap-[40px] mt-[50px]'>
+                <MyCourseCard name="Йога" day={25} time="25-30" url_img="/images/yoga_small.png" progress={40} />
+            </article>
+        </main>
+    </>
+    )
+  }
+  
+  export default ProfilPage
 
-  return (
-    <section className="flex mobile:flex-col mobile:items-center gap-[33px] w-[100%] p-[30px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
-      <img src={user?.photoURL || '/images/profile_no-img.png'} className="w-[197px] h-[197px] rounded-[30px] mobile:w-[141px] mobile:h-[141px]" />
-      <div className="flex flex-col gap-[30px] mobile:w-full">
-        <h2 className="text-left font-roboto text-[32px] font-medium leading-[35.2px]">{user?.displayName || user?.email?.split('@')[0]}</h2>
-        <div className="flex flex-col gap-[10px] text-left font-roboto text-[18px] font-normal leading-[19.8px]">
-          <p>Логин: {user?.email}</p>
-          <p>Пароль: ********</p>
-        </div>
-        <div className="flex gap-[10px] mobile:flex-col">
-          <button onClick={handleChangePassword} className='w-[192px] mobile:w-full h-[52px] rounded-btnRad bg-green'>
-            <p className='text-black font-roboto text-[18px] font-normal leading-[19.8px]'>Изменить пароль</p>
-          </button>
-          <button onClick={handleLogout} className='w-[192px] mobile:w-full h-[52px] rounded-btnRad bg-white border border-black'>
-            <p className='text-black font-roboto text-[18px] font-normal leading-[19.8px]'>Выйти</p>
-          </button>
-        </div>
-      </div>
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        type={modalType}
-        onSwitchType={() => { }} // Этот пропс не используется для смены пароля, но требуется компонентом
-      />
-    </section>
-  );
-}
-
-export default Profile;

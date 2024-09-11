@@ -4,7 +4,9 @@ import Modal from './components/Modal';
 import CoursePage from './pages/CoursePage/CoursePage'
 import MainPage from './pages/MainPage/MainPage'
 import ProfilePage from './pages/ProfilePage/ProfilePage'
-import { useAuth } from './hooks/useAuth';
+import { Route, Routes } from 'react-router-dom';
+import ExampleModal from './components/Example/ExampleModal';
+
 
 function App() {
 
@@ -24,15 +26,23 @@ function App() {
     setIsModalOpen(false);
   }, []);
 
-  const { user } = useAuth();
-
-
   return (
     <div className='bg-background min-h-screen flex flex-col px-[16px] mobil:px-[16px] desktop:px-[70px] mediumDesktop:px-[140px] pb-page-padding overflow-x-hidden'>
       <Header onLoginClick={handleLoginClick} />
-      {user ? <ProfilePage /> : <MainPage />}
-      <CoursePage />
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal} type={modalType} onSwitchType={handleSwitchModalType} />
+      <Routes>
+        <Route path='/' element={<MainPage />}/>
+        <Route path='/user' element={<ProfilePage />}/>
+        <Route path='/course' element={<CoursePage />}/>
+
+        <Route path='/example_modal' element={<ExampleModal />}/> {/* Это временное решение для просмотра примера. Эту строчку, а также модуль Example, потом можно будет удалить (или не удалять, в проекте он мешать не будет)  */}
+      </Routes>
+      
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        type={modalType}
+        onSwitchType={handleSwitchModalType}
+      />
     </div>
   );
 }
