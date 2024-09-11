@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Button from './Button';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth';
 
 interface ModalProps {
   isOpen: boolean;
@@ -28,12 +28,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
     setIsLoading(false);
   }, []);
 
-  // const handleClose = useCallback((e?: React.MouseEvent<HTMLDivElement>) => {
-  //   if (e && e.target === e.currentTarget) {
-  //     resetForm();
-  //     onClose();
-  //   }
-  // }, [onClose, resetForm]);
   const handleClose = useCallback(() => {
     resetForm();
     onClose();
@@ -246,7 +240,5 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
     </div>
   );
 };
-
-
 
 export default Modal;

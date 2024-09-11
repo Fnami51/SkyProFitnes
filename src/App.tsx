@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
-import Header from './components/common/Header';
-import Modal from './components/common/Modal';
-import CoursePage from './components/pages/CoursePage/CoursePage'
-import MainPage from './components/pages/MainPage/MainPage'
-import ProfilePage from './components/pages/ProfilePage/ProfilePage'
+import Header from './components/Header';
+import Modal from './components/Modal';
+import CoursePage from './pages/CoursePage/CoursePage'
+import MainPage from './pages/MainPage/MainPage'
+import ProfilePage from './pages/ProfilePage/ProfilePage'
 import { useAuth } from './hooks/useAuth';
 
 function App() {
@@ -25,6 +25,7 @@ function App() {
   }, []);
 
   const { user } = useAuth();
+
 
   return (
     <div className='bg-background min-h-screen flex flex-col px-[16px] mobil:px-[16px] desktop:px-[70px] mediumDesktop:px-[140px] pb-page-padding overflow-x-hidden'>
