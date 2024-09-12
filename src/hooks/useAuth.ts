@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User } from '../types';
+import { User } from '../types/interfaces';
 import { auth } from '../config/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { registerUser, loginUser, logoutUser, resetPassword, changePassword } from '../api/auth';
@@ -27,7 +27,7 @@ export const useAuth = () => {
         setLoading(false);
       }
     });
-  
+
     return () => unsubscribe();
   }, []);
 

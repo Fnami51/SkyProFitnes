@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Course } from '../types';
+import { Course } from '../types/interfaces';
 import { getAllCourses, addCourseToUser, getUserCourses } from '../api/courses';
 
 export const useCourses = (userId: string | null) => {

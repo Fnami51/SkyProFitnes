@@ -1,7 +1,7 @@
 import { firestore, auth } from '../config/firebase';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { updateProfile } from 'firebase/auth';
-import { User } from '../types';
+import { User } from '../types/interfaces';
 
 export const createUserProfile = async (user: User): Promise<void> => {
      try {
