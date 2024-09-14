@@ -16,7 +16,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, userRef }) => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        modalRef.current && 
+        modalRef.current &&
         !modalRef.current.contains(event.target as Node) &&
         userRef.current &&
         !userRef.current.contains(event.target as Node)
@@ -52,7 +52,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, userRef }) => {
 
   return (
     <div ref={modalRef}
-      className="absolute right-0 top-full mt-[50px] w-[266px] h-[266px] bg-white shadow-modal rounded-[30px] flex flex-col items-center p-[30px] gap-[34px]
+      className="absolute z-10 right-0 top-full mt-[50px] w-[266px] h-[266px] bg-white shadow-modal rounded-[30px] flex flex-col items-center p-[30px] gap-[34px]
                     sm:right-0 md:right-0 lg:right-0
                     sm:w-[260px] md:w-[260px] lg:w-[266px]">
       <div className="flex flex-col items-center gap-2 w-full">
