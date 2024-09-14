@@ -1,7 +1,6 @@
-import React from 'react';
 import Button from '../../components/Button';
 
-const CoursePage: React.FC = () => {
+function CoursePage () {
 	return (
 		<main className='relative mt-[60px]'>
 			<div className='mb-[60px] w-full h-[310px] rounded-[30px] bg-[#FFC700] relative overflow-hidden mobile:h-[557px] mobile:mb-[30px]'>
