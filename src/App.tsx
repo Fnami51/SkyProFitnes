@@ -7,6 +7,7 @@ import ProfilePage from './pages/ProfilePage/ProfilePage'
 import { Route, Routes } from 'react-router-dom';
 import TrainingPage from './pages/TrainingPage/TrainingPage';
 
+
 function App() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,6 +45,7 @@ function App() {
         type={modalType}
         onSwitchType={handleSwitchModalType}
       />
+
     </div>
   );
 }

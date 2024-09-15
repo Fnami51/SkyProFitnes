@@ -1,6 +1,7 @@
+
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import TrainingProgress from './TrainingProgress';
+import  TrainingProgress  from './TrainingProgress';
 import { useCourses } from '../../hooks/useCourses';
 import { useAuth } from '../../hooks/useAuth';
 import { Workout } from '../../types/interfaces';
