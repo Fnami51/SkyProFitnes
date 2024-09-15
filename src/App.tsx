@@ -6,6 +6,7 @@ import MainPage from './pages/MainPage/MainPage'
 import ProfilePage from './pages/ProfilePage/ProfilePage'
 import { Route, Routes } from 'react-router-dom';
 import ExampleModal from './components/Example/ExampleModal';
+import TrainingPage from './pages/TrainingPage/TrainingPage';
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <Route path='/' element={<MainPage />}/>
         <Route path='/user' element={<ProfilePage />}/>
         <Route path='/course' element={<CoursePage />}/>
+        <Route path='/traning/:id' element={<TrainingPage id={1} />}/>
 
         <Route path='/example_modal' element={<ExampleModal />}/> {/* Это временное решение для просмотра примера. Эту строчку, а также модуль Example, потом можно будет удалить (или не удалять, в проекте он мешать не будет)  */}
       </Routes>
