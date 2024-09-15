@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Button from '../../components/Button';
-import { useCourses } from '../../hooks/useCourses';
+import { useCoursesContext } from '../../context/CoursesContext';
 import { useAuth } from '../../hooks/useAuth';
 import { Course } from '../../types/interfaces';
 
 function CoursePage() {
 	const { id } = useParams<{ id: string }>();
 	const { user } = useAuth();
-	const { getCourse, addCourse } = useCourses(user?.uid || null);
+	const { getCourse, addCourse } = useCoursesContext(user?.uid || null);
 	const [course, setCourse] = useState<Course | null>(null);
 	const [loading, setLoading] = useState(true);
 
