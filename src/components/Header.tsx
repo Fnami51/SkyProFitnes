@@ -1,4 +1,4 @@
-import Button from './Button';
+import Button from '../components/Button';
 import headerLogo from '/logo.png';
 
 interface HeaderProps {
@@ -25,7 +25,7 @@ function Header({ onLoginClick }: HeaderProps) {
           </Button>
         ) : (
           <div className='flex items-center h-[50px] gap-[14px]'>
-            <img src={url_img !== "" ? url_img : '/images/profil_no-img.png'} className="w-[46px] h-[46px] rounded-[50px] p-[4px]" />
+            <img src={url_img !== "" ? url_img : '/images/profile_no-img.png'} className="w-[46px] h-[46px] rounded-[50px] p-[4px]" />
             <p className="text-[24px] font-regular leading-[26.4px] text-right font-roboto">{name}</p>
             <button>
               <svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">

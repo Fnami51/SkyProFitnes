@@ -1,5 +1,8 @@
-import MyCourseCard from "../../components/Cards/MyCourseCard"
-import Profil from "./Profile"
+
+import MyCourseCard from '../../components/Cards/MyCourseCard';
+import Profile from './Profile';
+
+
 
 function ProfilPage() {
     
@@ -9,7 +12,7 @@ function ProfilPage() {
             <h1 className="text-[40px] font-medium leading-[44px] text-left font-roboto mobile:text-[24px] mobile:leading-[26.4px]">
                 Профиль
             </h1>
-            <Profil name="Sergei" login="serg228" password="qwertyu" url_img=""/>
+            <Profile />
             <h1 className="text-[40px] font-medium leading-[44px] text-left font-roboto mobile:text-[24px] mobile:leading-[26.4px]">
                 Мои курсы
             </h1>
@@ -22,3 +25,4 @@ function ProfilPage() {
   }
   
   export default ProfilPage
+
