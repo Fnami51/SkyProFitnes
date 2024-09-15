@@ -5,12 +5,12 @@ interface Tasks {
     progress: number;
 }
 
-interface TraningProgressProps {
+interface TrainingProgressProps {
     title: string;
     tasks: Tasks[]
   }
 // Подумать как лучше брать здесь из контекста или в ProfilPage
-function TraningProgress({title, tasks}: TraningProgressProps) {
+function TrainingProgress({title, tasks}: TrainingProgressProps) {
     return (
         <section className="flex flex-col mobile:items-center w-[100%] p-[40px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
             <h2 className="text-[32px] font-normal leading-[35.2px] text-left">{title}</h2>
@@ -36,4 +36,4 @@ function TraningProgress({title, tasks}: TraningProgressProps) {
     )
 }
 
-export default TraningProgress
+export default TrainingProgress
