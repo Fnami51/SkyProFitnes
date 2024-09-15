@@ -2,12 +2,12 @@ import Button from "../Button";
 import Level from "./Level";
 
 interface MyCourseCardProps {
-    name: string;
-    day: number;
-    time: string;
-    url_img: string
-    progress: number;
-  }
+  name: string;
+  day: number;
+  time: string;
+  url_img: string
+  progress: number;
+}
 
 function MyCourseCard({name, day, time, url_img, progress}: MyCourseCardProps) {
     return (
