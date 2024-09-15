@@ -38,7 +38,7 @@ function App() {
 
         <Route path='/example_modal' element={<ExampleModal />}/> {/* Это временное решение для просмотра примера. Эту строчку, а также модуль Example, потом можно будет удалить (или не удалять, в проекте он мешать не будет)  */}
       </Routes>
-      
+
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
