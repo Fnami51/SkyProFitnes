@@ -3,23 +3,27 @@ export interface User {
      email: string;
      displayName?: string;
      photoURL?: string;
-}
-
-export interface Course {
-     id: string;
-     name: string;
+   }
+   
+   export interface Course {
+     _id: string;
+     nameEN: string;
+     nameRU: string;
      description: string;
-     progress?: number;
-}
-
-export interface Workout {
-     id: string;
+     directions: string[];
+     fitting: string[];
+     order: number;
+     workouts: string[];
+   }
+   
+   export interface Workout {
+     _id: string;
      name: string;
-     exercises: Exercise[];
      video: string;
-}
-
-export interface Exercise {
+     exercises?: Exercise[];
+   }
+   
+   export interface Exercise {
      name: string;
      quantity: number;
-}
+   }

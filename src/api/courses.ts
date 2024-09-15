@@ -1,34 +1,41 @@
-import { firestore } from '../config/firebase';
-import { collection, getDocs, doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
-import { Course } from '../types/interfaces';
+import { database } from '../config/firebase';
+import { ref, get, set } from "firebase/database";
+import { Course, Workout } from '../types/interfaces';
 
+// Получение всех курсов
 export const getAllCourses = async (): Promise<Course[]> => {
   try {
-    const coursesCollection = collection(firestore, 'courses');
-    const coursesSnapshot = await getDocs(coursesCollection);
-    return coursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course));
+    const coursesRef = ref(database, 'courses');
+    const snapshot = await get(coursesRef);
+    if (snapshot.exists()) {
+      const coursesData = snapshot.val();
+      return Object.entries(coursesData).map(([id, data]) => ({
+        id,
+        ...(data as Course)
+      }));
+    } else {
+      console.log("No courses available");
+      return [];
+    }
   } catch (error) {
     console.error('Error fetching courses:', error);
     throw error;
   }
 };
 
+// Добавление курса пользователю
 export const addCourseToUser = async (userId: string, courseId: string): Promise<void> => {
+  if (!userId) throw new Error("User ID must be provided");
   try {
-    const userDocRef = doc(firestore, 'users', userId);
-    const userDoc = await getDoc(userDocRef);
-
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      const userCourses = userData.courses || [];
-
-      if (!userCourses.includes(courseId)) {
-        await updateDoc(userDocRef, {
-          courses: [...userCourses, courseId]
-        });
+    const userCoursesRef = ref(database, `userCourses/${userId}`);
+    const snapshot = await get(userCoursesRef);
+    if (snapshot.exists()) {
+      const courses = snapshot.val();
+      if (!courses.includes(courseId)) {
+        await set(userCoursesRef, [...courses, courseId]);
       }
     } else {
-      await setDoc(userDocRef, { courses: [courseId] });
+      await set(userCoursesRef, [courseId]);
     }
   } catch (error) {
     console.error('Error adding course to user:', error);
@@ -36,27 +43,54 @@ export const addCourseToUser = async (userId: string, courseId: string): Promise
   }
 };
 
+// Получение курсов пользователя
 export const getUserCourses = async (userId: string): Promise<Course[]> => {
+  if (!userId) throw new Error("User ID must be provided");
   try {
-    const userDocRef = doc(firestore, 'users', userId);
-    const userDoc = await getDoc(userDocRef);
-
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      const userCourses = userData.courses || [];
-
-      const coursesPromises = userCourses.map(async (courseId: string) => {
-        const courseDocRef = doc(firestore, 'courses', courseId);
-        const courseDoc = await getDoc(courseDocRef);
-        return { id: courseDoc.id, ...courseDoc.data() } as Course;
-      });
-
-      return Promise.all(coursesPromises);
+    const userCoursesRef = ref(database, `userCourses/${userId}`);
+    const snapshot = await get(userCoursesRef);
+    if (snapshot.exists()) {
+      const courseIds = snapshot.val();
+      const coursesPromises = courseIds.map((id: string) => getCourseById(id));
+      const courses = await Promise.all(coursesPromises);
+      return courses.filter((course): course is Course => course !== null);
     }
-
     return [];
   } catch (error) {
     console.error('Error fetching user courses:', error);
+    throw error;
+  }
+};
+
+// Получение конкретного курса по ID
+export const getCourseById = async (courseId: string): Promise<Course | null> => {
+  try {
+    const courseRef = ref(database, `courses/courses/${courseId}`);
+    const snapshot = await get(courseRef);
+    if (snapshot.exists()) {
+      return { id: courseId, ...snapshot.val() } as Course;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching course:', error);
+    throw error;
+  }
+};
+
+// Получение конкретной тренировки по ID
+export const getWorkoutById = async (workoutId: string): Promise<Workout | null> => {
+  try {
+    const workoutRef = ref(database, `courses/workouts/${workoutId}`);
+    const snapshot = await get(workoutRef);
+
+    if (snapshot.exists()) {
+      const workoutData = snapshot.val();
+
+      return { id: workoutId, ...workoutData } as Workout;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching workout:', error);
     throw error;
   }
 };
