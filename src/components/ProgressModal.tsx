@@ -13,11 +13,10 @@ const ProgressModal: React.FC<ProgressModalProps> = ({ isOpen, onClose, exercise
 
   if (!isOpen) return null;
 
-  const handleInputChange = (exerciseName: string, value: string) => {
-    setProgress(prev => ({
-      ...prev,
-      [exerciseName]: parseInt(value) || 0
-    }));
+  const handleInputChange = (exerciseName: string, value: string, maxQuantity: number) => {
+    const numValue = parseInt(value) || 0;
+    const limitedValue = Math.min(numValue, maxQuantity);
+    setProgress(prev => ({ ...prev, [exerciseName]: limitedValue }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -33,12 +32,15 @@ const ProgressModal: React.FC<ProgressModalProps> = ({ isOpen, onClose, exercise
         <form onSubmit={handleSubmit} className="flex flex-col gap-[20px]">
           {exercises.map((exercise) => (
             <div key={exercise.name} className="flex flex-col gap-[10px]">
-              <label className="text-[18px]">{`Сколько раз вы сделали ${exercise.name.toLowerCase()}?`}</label>
+              <label className="text-[18px]">{`Сколько раз вы сделали ${exercise.name.toLowerCase()} (${exercise.quantity} повторений)?`}</label>
               <input
                 type="number"
                 className="border border-[#D0CECE] rounded-[8px] p-[16px]"
                 placeholder="0"
-                onChange={(e) => handleInputChange(exercise.name, e.target.value)}
+                min="0"
+                max={exercise.quantity}
+                value={progress[exercise.name] || ''}
+                onChange={(e) => handleInputChange(exercise.name, e.target.value, exercise.quantity)}
               />
             </div>
           ))}
