@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getDatabase } from "firebase/database";
+import { getDatabase, Database} from "firebase/database";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -31,7 +31,7 @@ if (missingEnvVars.length > 0) {
   throw new Error('Не удалось инициализировать Firebase из-за отсутствующих переменных окружения');
 }
 
-let app, auth, firestore, database;
+let app, auth, firestore, database: Database;
 
 try {
   app = initializeApp(firebaseConfig);

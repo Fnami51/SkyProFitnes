@@ -4,7 +4,7 @@ import { useCourses } from '../../hooks/useCourses';
 import { useAuth } from '../../hooks/useAuth';
 import { Workout } from '../../types/interfaces';
 import ProgressModal from '../../components/ProgressModal';
-import { database } from '../../config/firebase';
+import { database  } from '../../config/firebase';
 import { ref, set, get } from "firebase/database";
 
 function TrainingPage() {
@@ -27,7 +27,6 @@ function TrainingPage() {
       if (id) {
         const workoutData = await getWorkout(id);
         setWorkout(workoutData);
-        // Fetch existing progress
         const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
         const snapshot = await get(progressRef);
         if (snapshot.exists()) {
@@ -51,16 +50,15 @@ function TrainingPage() {
     if (!user || !id) return;
 
     try {
-      // Save progress to Firebase
+      // Сохраняем прогресс в Firebase
       const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
       await set(progressRef, newProgress);
 
-      // Update local state
+      // обновляем локальное состояние
       setProgress(newProgress);
       console.log('Progress saved:', newProgress);
     } catch (error) {
       console.error('Error saving progress:', error);
-      // Handle error (e.g., show error message to user)
     }
   };
 
