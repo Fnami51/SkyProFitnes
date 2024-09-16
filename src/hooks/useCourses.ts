@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Course, Workout, User } from '../types/interfaces';
 import { getAllCourses, addCourseToUser, getUserCourses, getCourseById, getWorkoutById } from '../api/courses';
-import { getUserProfile, updateUserProfile } from '../api/user';
+import { getUserProfile as getUserProfileFromAPI, updateUserProfile } from '../api/user';
 import { useAuth } from './useAuth';
 
 export const useCourses = () => {
@@ -67,7 +67,7 @@ export const useCourses = () => {
   const getUserProfile = async (): Promise<User | null> => {
     if (!authUser) return null;
     try {
-      return await getUserProfile();
+      return await getUserProfileFromAPI(authUser.uid);
     } catch (error) {
       console.error('Error fetching user profile:', error);
       return null;

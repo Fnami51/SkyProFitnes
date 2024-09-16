@@ -8,7 +8,7 @@ import { Course } from '../../types/interfaces';
 function CoursePage() {
 	const { id } = useParams<{ id: string }>();
 	const { user } = useAuth();
-	const { getCourse, addCourse } = useCoursesContext(user?.uid || null);
+	const { getCourse, addCourse } = useCoursesContext();
 	const [course, setCourse] = useState<Course | null>(null);
 	const [loading, setLoading] = useState(true);
 
@@ -28,7 +28,7 @@ function CoursePage() {
 	}
 
 	if (!course) {
-		return <div>Course not found</div>;
+		return <div>Авторизуйтесь для просмотра курса</div>;
 	}
 
 	const handleAddCourse = async () => {

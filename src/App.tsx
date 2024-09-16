@@ -30,11 +30,12 @@ function App() {
       <div className='bg-background min-h-screen flex flex-col px-[16px] mobil:px-[16px] desktop:px-[70px] mediumDesktop:px-[140px] pb-page-padding overflow-x-hidden'>
         <Header onLoginClick={handleLoginClick} />
         <Routes>
-          <Route path='/' element={<MainPage />}/>
-          <Route path='/user' element={<ProfilePage />}/>
-          <Route path='/course/:id' element={<CoursePage />}/>
-          <Route path='/course' element={<MainPage />}/>
-          <Route path='/training/:id' element={<TrainingPage />}/>
+          <Route path='/' element={<MainPage />} />
+          <Route path='/user' element={<ProfilePage />} />
+          <Route path='/course/:id' element={<CoursePage />} />
+          <Route path='/course' element={<MainPage />} />
+          <Route path='/training/' element={<ProfilePage />} />
+          <Route path='/training/:id' element={<TrainingPage />} />
         </Routes>
         <Modal
           isOpen={isModalOpen}
