@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Workout } from '../types/interfaces';
 import Button from './Button';
 

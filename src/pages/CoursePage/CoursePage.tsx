@@ -15,17 +15,17 @@ function CoursePage() {
 	useEffect(() => {
 		const fetchCourse = async () => {
 			if (id) {
-			  setLoading(true);
-			  try {
-			    const courseData = await getCourse(id);
-			    setCourse(courseData);
-			  } catch (error) {
-			    console.error('Error fetching course:', error);
-			  } finally {
-			    setLoading(false);
-			  }
+				setLoading(true);
+				try {
+					const courseData = await getCourse(id);
+					setCourse(courseData);
+				} catch (error) {
+					console.error('Error fetching course:', error);
+				} finally {
+					setLoading(false);
+				}
 			}
-		   };
+		};
 		fetchCourse();
 	}, [id, getCourse]);
 
@@ -57,10 +57,17 @@ function CoursePage() {
 				<h2 className='pt-[40px] ml-[40px] leading-[66px] text-[60px] font-medium text-white flex items-center text-center relative z-10 mobile:hidden'>
 					{course.nameRU}
 				</h2>
-				<img src='/images/yoga.jpg' alt='Йога' className='absolute right-[-250px] bottom-[-140px] h-[220%] object-cover z-0 rounded-[30px] mobile:hidden' />
-				<img src='/images/yoga_small.png' alt='Йога_мобил' className='hidden mobile:block absolute z-20 w-full h-auto' />
-			</div>
+				<img
+					src={`/images/${course.nameEN}.png`}
+					alt={course.nameRU}
+					className='absolute right-0 top-0 w-full h-full object-cover z-0'
+				/>
+				<img src={`/images/${course.nameEN}.png`}
+					alt={course.nameRU}
+					className='hidden mobile:block absolute z-20 w-full h-auto'
+				/>
 
+			</div>
 			<section>
 				<div className='text-left mb-[60px] mobile:mb-[30px]'>
 					<h3 className='text-[40px] font-semibold leading-[44px] text-left mb-[40px] mobile:text-[24px] mobile:mb-[24px]'>

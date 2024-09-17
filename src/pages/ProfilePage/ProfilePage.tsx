@@ -20,7 +20,7 @@ function ProfilePage() {
 						name='Йога'
 						day={25}
 						time='25-30'
-						url_img='/images/yoga_small.png'
+						url_img='/images/Yoga_small.png'
 						progress={40}
 					/>
 				</article>

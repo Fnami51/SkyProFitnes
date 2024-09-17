@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Exercise } from '../types/interfaces';
 
 interface ProgressModalProps {
