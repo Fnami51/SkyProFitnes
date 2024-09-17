@@ -25,9 +25,13 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
 
   useEffect(() => {
     const fetchWorkouts = async () => {
-      const workoutPromises = workoutIds.map(id => getWorkout(id));
-      const fetchedWorkouts = await Promise.all(workoutPromises);
-      setWorkouts(fetchedWorkouts.filter((w): w is Workout => w !== null));
+      if (workoutIds && workoutIds.length > 0) {
+        const workoutPromises = workoutIds.map(id => getWorkout(id));
+        const fetchedWorkouts = await Promise.all(workoutPromises);
+        setWorkouts(fetchedWorkouts.filter((w): w is Workout => w !== null));
+      } else {
+        setWorkouts([]);
+      }
     };
 
     if (isOpen) {
@@ -76,36 +80,40 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
           ref={listRef}
           className={`flex-grow overflow-y-auto pr-4 ${showScroll ? 'scrollbar' : ''}`}
         >
-          <div className="flex flex-col gap-[34px]">
-            {workouts.map((workout, index) => (
-              <div key={workout._id} className="flex flex-col">
-                <label className="flex items-center cursor-pointer mb-2.5 group">
-                  <input
-                    type="radio"
-                    name="workout"
-                    value={workout._id}
-                    checked={selectedWorkout === workout._id}
-                    onChange={() => setSelectedWorkout(workout._id)}
-                    className="sr-only"
-                  />
-                  <span className="w-6 h-6 border-2 border-black rounded-full mr-2.5 flex items-center justify-center group-hover:border-[#BCEC30] transition-colors">
-                    <span className={`w-4 h-4 rounded-full ${selectedWorkout === workout._id ? 'bg-[#BCEC30]' : ''} transition-colors`}>
-                      {selectedWorkout === workout._id && (
-                        <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                      )}
+          {workouts.length > 0 ? (
+            <div className="flex flex-col gap-[34px]">
+              {workouts.map((workout, index) => (
+                <div key={workout._id} className="flex flex-col">
+                  <label className="flex items-center cursor-pointer mb-2.5 group">
+                    <input
+                      type="radio"
+                      name="workout"
+                      value={workout._id}
+                      checked={selectedWorkout === workout._id}
+                      onChange={() => setSelectedWorkout(workout._id)}
+                      className="sr-only"
+                    />
+                    <span className="w-6 h-6 border-2 border-black rounded-full mr-2.5 flex items-center justify-center group-hover:border-[#BCEC30] transition-colors">
+                      <span className={`w-4 h-4 rounded-full ${selectedWorkout === workout._id ? 'bg-[#BCEC30]' : ''} transition-colors`}>
+                        {selectedWorkout === workout._id && (
+                          <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        )}
+                      </span>
                     </span>
-                  </span>
-                  <div>
-                    <p className="text-[24px] font-normal font-roboto leading-[110%]">{workout.name}</p>
-                    <p className="text-[16px] text-black font-roboto leading-[110%]">Тренировка {index + 1}</p>
-                  </div>
-                </label>
-                {index < workouts.length - 1 && <hr className="border-[#C4C4C4] w-full mt-4" />}
-              </div>
-            ))}
-          </div>
+                    <div>
+                      <p className="text-[24px] font-normal font-roboto leading-[110%]">{workout.name}</p>
+                      <p className="text-[16px] text-black font-roboto leading-[110%]">Тренировка {index + 1}</p>
+                    </div>
+                  </label>
+                  {index < workouts.length - 1 && <hr className="border-[#C4C4C4] w-full mt-4" />}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center">Нет доступных тренировок</p>
+          )}
         </div>
         <Button
           variant="primary"

@@ -10,10 +10,8 @@ export const getAllCourses = async (): Promise<Course[]> => {
     if (snapshot.exists()) {
       const coursesData = snapshot.val();
       console.log('Raw courses data:', coursesData);
-      const formattedCourses = Object.entries(coursesData).map(([id, data]) => ({
-        _id: id,
-        ...(data as Omit<Course, '_id'>)
-      }));
+      const formattedCourses = Object.entries(coursesData)
+        .map(([id, data]) => ({ _id: id, ...(data as Omit<Course, '_id'>) }));
       console.log('Formatted courses:', formattedCourses);
       return formattedCourses;
     } else {

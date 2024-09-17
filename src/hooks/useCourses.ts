@@ -10,26 +10,33 @@ export const useCourses = () => {
   const [loading, setLoading] = useState(true);
   const { user: authUser } = useAuth();
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      setLoading(true);
-      try {
-        const allCourses = await getAllCourses();
-        console.log('Fetched courses:', allCourses);
-        setCourses(allCourses);
-        if (authUser) {
-          const userCoursesData = await getUserCoursesAPI(authUser.uid);
-          console.log('Fetched user courses:', userCoursesData);
-          setUserCourses(userCoursesData);
-        }
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      } finally {
-        setLoading(false);
+  const fetchCourses = useCallback(async () => {
+    setLoading(true);
+    try {
+      // Загружаем все курсы независимо от авторизации
+      const allCourses = await getAllCourses();
+      console.log('Fetched courses:', allCourses);
+      setCourses(allCourses);
+      
+      if (authUser) {
+        // Если пользователь авторизован, загружаем его курсы
+        const userCoursesData = await getUserCoursesAPI(authUser.uid);
+        console.log('Fetched user courses:', userCoursesData);
+        setUserCourses(userCoursesData);
+      } else {
+        // Если пользователь не авторизован, очищаем пользовательские курсы
+        setUserCourses([]);
       }
-    };
-    fetchCourses();
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    } finally {
+      setLoading(false);
+    }
   }, [authUser]);
+
+  useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
 
   const addCourse = async (courseId: string) => {
     if (!authUser) return;

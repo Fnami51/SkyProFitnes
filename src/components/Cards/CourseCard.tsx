@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useCourses } from '../../hooks/useCourses';
 import Level from "./Level";
 import Modal from '../Modal';
-import WorkoutListModal from '../WorkoutListModal';
-import { Course, Workout } from '../../types/interfaces';
+import InfoModal from '../infoMoodal';
+import { Course } from '../../types/interfaces';
 
 interface CourseCardProps {
   course: Course;
@@ -12,14 +13,24 @@ interface CourseCardProps {
 
 function CourseCard({ course }: CourseCardProps) {
   const { user } = useAuth();
+  const { addCourse } = useCourses();
   const navigate = useNavigate();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isWorkoutListModalOpen, setIsWorkoutListModalOpen] = useState(false);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const [infoMessage, setInfoMessage] = useState('');
 
-  const handleAddCourse = (e: React.MouseEvent) => {
+  const handleAddCourse = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (user) {
-      setIsWorkoutListModalOpen(true);
+      try {
+        await addCourse(course._id);
+        setInfoMessage('Курс успешно добавлен!');
+        setIsInfoModalOpen(true);
+      } catch (error) {
+        console.error('Error adding course:', error);
+        setInfoMessage('Ошибка при добавлении курса. Попробуйте еще раз.');
+        setIsInfoModalOpen(true);
+      }
     } else {
       setIsLoginModalOpen(true);
     }
@@ -48,20 +59,10 @@ function CourseCard({ course }: CourseCardProps) {
 
   return (
     <>
-      <section
-        className="w-[360px] pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] cursor-pointer overflow-hidden"
-        onClick={handleCardClick}
-      >
+      <section className="w-[360px] pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] cursor-pointer overflow-hidden" onClick={handleCardClick}>
         <div className="relative">
-          <img
-            src={getCourseImage(course.nameEN)}
-            alt={course.nameRU}
-            className="w-full h-[325px] object-cover"
-          />
-          <button
-            className="absolute top-5 right-5 w-[32px] h-[32px]"
-            onClick={handleAddCourse}
-          >
+          <img src={getCourseImage(course.nameEN)} alt={course.nameRU} className="w-full h-[325px] object-cover" />
+          <button className="absolute top-5 right-5 w-[32px] h-[32px]" onClick={handleAddCourse}>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fillRule="evenodd" clipRule="evenodd" d="M16 29.3333C23.3638 29.3333 29.3333 23.3638 29.3333 16C29.3333 8.63616 23.3638 2.66663 16 2.66663C8.63619 2.66663 2.66666 8.63616 2.66666 16C2.66666 23.3638 8.63619 29.3333 16 29.3333ZM14.6667 14.6666V9.33329H17.3333V14.6666H22.6667V17.3333H17.3333V22.6666H14.6667V17.3333H9.33332V14.6666H14.6667Z" fill="white" />
             </svg>
@@ -90,18 +91,13 @@ function CourseCard({ course }: CourseCardProps) {
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
         type="login"
-        onSwitchType={() => { }}
+        onSwitchType={() => {}}
       />
-      {user && course.workouts && (
-        <WorkoutListModal
-          isOpen={isWorkoutListModalOpen}
-          onClose={() => setIsWorkoutListModalOpen(false)}
-          workouts={course.workouts.map(id => ({ _id: id } as Workout))}
-          onSelectWorkout={(workoutId) => {
-            navigate(`/training/${workoutId}`);
-          }}
-        />
-      )}
+      <InfoModal
+        isOpen={isInfoModalOpen}
+        onClose={() => setIsInfoModalOpen(false)}
+        message={infoMessage}
+      />
     </>
   );
 }
