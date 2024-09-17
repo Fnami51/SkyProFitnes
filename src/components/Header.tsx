@@ -3,7 +3,7 @@ import Button from '../components/Button';
 import headerLogo from '/logo.png';
 import { useAuth } from '../hooks/useAuth';
 import UserModal from './UserModal';
-
+import { Link } from 'react-router-dom';
 interface HeaderProps {
   onLoginClick: () => void;
 }
@@ -18,19 +18,14 @@ function Header({ onLoginClick }: HeaderProps) {
     setUserModalOpen(!isUserModalOpen); // Переключаем состояние
   };
 
-  // function Header({ onLoginClick }: HeaderProps) {
-  //   const name: string = 'Sergei' // Для примера, потом брать из контекста
-  //   const url_img: string = '' // Для примера, потом брать из контекста
-  //   const forTest = true // Для примера, потом брать из контекста
-
   return (
     <header className="flex justify-between mt-[50px] items-center">
-      <div className='flex flex-col gap-[15px]'>
+      <Link to="/" className='flex flex-col gap-[15px]'>
         <img src={headerLogo} className="w-[220px] h-[35px]" alt="logo" />
         <p className="font-roboto text-[18px] font-normal leading-[19.8px] text-left text-gray mobile:hidden">
           Онлайн-тренировки для занятий дома
         </p>
-      </div>
+      </Link>
       <div className='relative'>
         {user ? (
           <div

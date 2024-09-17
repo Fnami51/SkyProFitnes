@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Course, Workout, User } from '../types/interfaces';
-import { getAllCourses, addCourseToUser, getUserCourses, getCourseById, getWorkoutById } from '../api/courses';
+import { getAllCourses, addCourseToUser, getUserCourses as getUserCoursesAPI, getCourseById, getWorkoutById } from '../api/courses';
 import { getUserProfile as getUserProfileFromAPI, updateUserProfile } from '../api/user';
 import { useAuth } from './useAuth';
 
@@ -17,9 +17,8 @@ export const useCourses = () => {
         const allCourses = await getAllCourses();
         console.log('Fetched courses:', allCourses);
         setCourses(allCourses);
-        
         if (authUser) {
-          const userCoursesData = await getUserCourses(authUser.uid);
+          const userCoursesData = await getUserCoursesAPI(authUser.uid);
           console.log('Fetched user courses:', userCoursesData);
           setUserCourses(userCoursesData);
         }
@@ -29,7 +28,6 @@ export const useCourses = () => {
         setLoading(false);
       }
     };
-
     fetchCourses();
   }, [authUser]);
 
@@ -37,7 +35,7 @@ export const useCourses = () => {
     if (!authUser) return;
     try {
       await addCourseToUser(authUser.uid, courseId);
-      const updatedUserCourses = await getUserCourses(authUser.uid);
+      const updatedUserCourses = await getUserCoursesAPI(authUser.uid);
       setUserCourses(updatedUserCourses);
     } catch (error) {
       console.error('Error adding course:', error);
@@ -83,6 +81,15 @@ export const useCourses = () => {
     }
   };
 
+  const getUserCourses = useCallback(async (userId: string): Promise<Course[]> => {
+    try {
+      return await getUserCoursesAPI(userId);
+    } catch (error) {
+      console.error('Error fetching user courses:', error);
+      return [];
+    }
+  }, []);
+
   return {
     courses,
     userCourses,
@@ -92,5 +99,6 @@ export const useCourses = () => {
     getWorkout,
     getUserProfile,
     updateProfile,
+    getUserCourses,
   };
 };

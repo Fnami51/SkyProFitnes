@@ -4,6 +4,7 @@ import Button from '../../components/Button';
 import { useCoursesContext } from '../../context/CoursesContext';
 import { useAuth } from '../../hooks/useAuth';
 import { Course } from '../../types/interfaces';
+import InfoModal from '../../components/infoMoodal';
 
 function CoursePage() {
 	const { id } = useParams<{ id: string }>();
@@ -11,6 +12,8 @@ function CoursePage() {
 	const { getCourse, addCourse } = useCoursesContext();
 	const [course, setCourse] = useState<Course | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [modalMessage, setModalMessage] = useState('');
 
 	useEffect(() => {
 		const fetchCourse = async () => {
@@ -39,17 +42,20 @@ function CoursePage() {
 
 	const handleAddCourse = async () => {
 		if (user && id) {
-			try {
-				await addCourse(id);
-				alert('Курс успешно добавлен!'); 
-			} catch (error) {
-				console.error('Error adding course:', error);
-				alert('Неуспешное добавление курса. Попробуйте еще раз.');
-			}
+		  try {
+		    await addCourse(id);
+		    setModalMessage('Курс успешно добавлен!');
+		    setIsModalOpen(true);
+		  } catch (error) {
+		    console.error('Error adding course:', error);
+		    setModalMessage('Не удалось добавить курс. Попробуйте еще раз.');
+		    setIsModalOpen(true);
+		  }
 		} else {
-			alert('Пожалуйста, авторизуйтесь для добавления курса');
+		  setModalMessage('Пожалуйста, авторизуйтесь для добавления курса');
+		  setIsModalOpen(true);
 		}
-	};
+	   };
 
 	return (
 		<main className='relative mt-[60px]'>
@@ -140,6 +146,11 @@ function CoursePage() {
 
 			<img src='/images/runner.png' alt='Бегун' className='absolute top-[900px] right-[40px] z-[3] mobile:w-[313.22px] mobile:h-[348.91px] mobile:top-[1410px] mobile:right-[-69px] mobile:z-[1]' />
 			<img src='/images/6084.png' alt='Салатовый_2' className='hidden mobile:block absolute mobile:w-[750.93px] mobile:h-[300px] mobile:top-[1530px] mobile:right-[27px]' />
+			<InfoModal
+				isOpen={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+				message={modalMessage}
+      		/>
 		</main>
 	);
 }

@@ -47,6 +47,7 @@ module.exports = {
 				screen: '100vh',
 			},
     },
+    
   },
   plugins: [],
 }
