@@ -18,6 +18,8 @@ export interface Course {
   fitting: string[];
   order: number;
   workouts: string[];
+  imageUrl?: string; 
+  difficulty?: number;
 }
 
 export interface Workout {

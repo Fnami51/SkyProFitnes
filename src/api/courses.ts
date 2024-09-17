@@ -5,14 +5,17 @@ import { Course, Workout } from '../types/interfaces';
 // Получение всех курсов
 export const getAllCourses = async (): Promise<Course[]> => {
   try {
-    const coursesRef = ref(database, 'courses');
+    const coursesRef = ref(database, 'courses/courses');
     const snapshot = await get(coursesRef);
     if (snapshot.exists()) {
       const coursesData = snapshot.val();
-      return Object.entries(coursesData).map(([id, data]) => ({
-        id,
-        ...(data as Course)
+      console.log('Raw courses data:', coursesData);
+      const formattedCourses = Object.entries(coursesData).map(([id, data]) => ({
+        _id: id,
+        ...(data as Omit<Course, '_id'>)
       }));
+      console.log('Formatted courses:', formattedCourses);
+      return formattedCourses;
     } else {
       console.log("No courses available");
       return [];

@@ -1,5 +1,5 @@
 import MyCourseCard from "../../components/Cards/MyCourseCard"
-import { useAuth } from "../../context/useAuth"
+import { useAuth } from '../../hooks/useAuth'
 import Profile from "./Profile"
 
 function ProfilePage() {

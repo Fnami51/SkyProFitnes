@@ -15,16 +15,22 @@ function CoursePage() {
 	useEffect(() => {
 		const fetchCourse = async () => {
 			if (id) {
-				const courseData = await getCourse(id);
-				setCourse(courseData);
-				setLoading(false);
+			  setLoading(true);
+			  try {
+			    const courseData = await getCourse(id);
+			    setCourse(courseData);
+			  } catch (error) {
+			    console.error('Error fetching course:', error);
+			  } finally {
+			    setLoading(false);
+			  }
 			}
-		};
+		   };
 		fetchCourse();
 	}, [id, getCourse]);
 
 	if (loading) {
-		return <div>Loading...</div>;
+		return <div>Загрузка..</div>;
 	}
 
 	if (!course) {
@@ -35,13 +41,13 @@ function CoursePage() {
 		if (user && id) {
 			try {
 				await addCourse(id);
-				alert('Course added successfully!');
+				alert('Курс успешно добавлен!');
 			} catch (error) {
 				console.error('Error adding course:', error);
-				alert('Failed to add course. Please try again.');
+				alert('Неуспешное добавление курса. Попробуйте еще раз.');
 			}
 		} else {
-			alert('Please log in to add this course.');
+			alert('Пожалуйста, авторизуйтесь для добавления курса');
 		}
 	};
 
@@ -127,24 +133,6 @@ function CoursePage() {
 
 			<img src='/images/runner.png' alt='Бегун' className='absolute top-[900px] right-[40px] z-[3] mobile:w-[313.22px] mobile:h-[348.91px] mobile:top-[1410px] mobile:right-[-69px] mobile:z-[1]' />
 			<img src='/images/6084.png' alt='Салатовый_2' className='hidden mobile:block absolute mobile:w-[750.93px] mobile:h-[300px] mobile:top-[1530px] mobile:right-[27px]' />
-
-			{/* {course.workouts && course.workouts.length > 0 && (
-				<section className="mt-[60px]">
-					<h3 className='text-[40px] font-semibold leading-[44px] mb-[40px]'>Тренировки</h3>
-					<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-						{course.workouts.map((workoutId) => (
-							<li key={workoutId} className="bg-white rounded-lg shadow-md p-4">
-								<Link
-									to={`/training/${workoutId}`}
-									className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
-								>
-									Тренировка {workoutId}
-								</Link>
-							</li>
-						))}
-					</ul>
-				</section>
-			)} */}
 		</main>
 	);
 }

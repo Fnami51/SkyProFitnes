@@ -12,25 +12,24 @@ export const useCourses = () => {
 
   useEffect(() => {
     const fetchCourses = async () => {
-      if (!authUser) {
-        setCourses([]);
-        setUserCourses([]);
-        setLoading(false);
-        return;
-      }
+      setLoading(true);
       try {
-        const [allCourses, userCoursesData] = await Promise.all([
-          getAllCourses(),
-          getUserCourses(authUser.uid)
-        ]);
+        const allCourses = await getAllCourses();
+        console.log('Fetched courses:', allCourses);
         setCourses(allCourses);
-        setUserCourses(userCoursesData);
+        
+        if (authUser) {
+          const userCoursesData = await getUserCourses(authUser.uid);
+          console.log('Fetched user courses:', userCoursesData);
+          setUserCourses(userCoursesData);
+        }
       } catch (error) {
         console.error('Error fetching courses:', error);
       } finally {
         setLoading(false);
       }
     };
+
     fetchCourses();
   }, [authUser]);
 
@@ -92,6 +91,6 @@ export const useCourses = () => {
     getCourse,
     getWorkout,
     getUserProfile,
-    updateProfile
+    updateProfile,
   };
 };
