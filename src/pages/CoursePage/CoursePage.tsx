@@ -41,7 +41,7 @@ function CoursePage() {
 		if (user && id) {
 			try {
 				await addCourse(id);
-				alert('Курс успешно добавлен!');
+				alert('Курс успешно добавлен!'); 
 			} catch (error) {
 				console.error('Error adding course:', error);
 				alert('Неуспешное добавление курса. Попробуйте еще раз.');

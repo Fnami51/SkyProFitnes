@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Modal from '../../components/Modal'
-import { useAuth } from '../../hooks/useAuth'  // Измените путь импорта
+import { useAuth } from '../../hooks/useAuth'
 import { User } from '../../types/interfaces'
 
 function Profile() {
@@ -30,7 +30,7 @@ function Profile() {
 	return (
 		<section className='flex mobile:flex-col mobile:items-center gap-[33px] w-[100%] p-[30px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]'>
 			<img
-				src={user?.photoURL ||  user?.url_img ||'/images/profile_no-img.png'}
+				src={user?.photoURL || user?.url_img || '/images/profile_no-img.png'}
 				className='w-[197px] h-[197px] rounded-[30px] mobile:w-[141px] mobile:h-[141px]'
 			/>
 			<div className='flex flex-col gap-[30px] mobile:w-full'>
@@ -64,7 +64,7 @@ function Profile() {
 				isOpen={isModalOpen}
 				onClose={handleCloseModal}
 				type={modalType}
-				onSwitchType={() => {}} // Этот пропс не используется для смены пароля, но требуется компонентом
+				onSwitchType={() => { }} // Этот пропс не используется для смены пароля, но требуется компонентом
 			/>
 		</section>
 	)
