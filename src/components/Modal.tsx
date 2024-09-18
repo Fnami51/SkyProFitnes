@@ -16,7 +16,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
   const { register, login, resetUserPassword, changeUserPassword } = useAuth();
 
   const resetForm = useCallback(() => {
@@ -32,6 +31,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
     resetForm();
     onClose();
   }, [onClose, resetForm]);
+
   useEffect(() => {
     if (!isOpen) {
       resetForm();
@@ -99,11 +99,17 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
           case 'login':
             await login(email, password);
             setSuccess('Вход выполнен успешно');
+            setTimeout(() => {
+              handleClose();
+            }, 1000);
             break;
           case 'register':
             try {
               await register(email, password);
               setSuccess('Регистрация прошла успешно');
+              setTimeout(() => {
+                handleClose();
+              }, 1000);
             } catch (err) {
               if (err instanceof Error) {
                 if (err.message.includes('email-already-in-use')) {
@@ -114,24 +120,24 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
               } else {
                 setError('Произошла ошибка при регистрации.');
               }
-              setIsLoading(false);
-              return; // Прерываем выполнение функции в случае ошибки
             }
             break;
           case 'resetPassword':
             await resetUserPassword(email);
             console.log('Reset password requested for:', email);
             setSuccess('Инструкции по сбросу пароля отправлены на ваш email');
+            setTimeout(() => {
+              handleClose();
+            }, 1000);
             break;
           case 'newPassword':
             await changeUserPassword(password);
             setSuccess('Пароль успешно изменен');
+            setTimeout(() => {
+              handleClose();
+            }, 1000);
             break;
         }
-        //  Таймер при успешном выполнении на секунду
-        setTimeout(() => {
-          handleClose();
-        }, 1000);
       } catch (err) {
         if (err instanceof Error) {
           setError('Пароль введён неверно, попробуйте ещё раз.');
@@ -153,12 +159,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
     if (error) {
       return (
         <p className="w-[280px] font-roboto text-[14px] leading-[110%] text-center text-[#DB0030] flex-none order-2 flex-grow-0">
-          {error} {' '}
+          {error}
+          {' '}
           {type === 'login' && (
-            <span
-              className="text-blue-500 cursor-pointer hover:underline"
-              onClick={() => handleSwitchType('resetPassword')}
-            >
+            <span className="text-blue-500 cursor-pointer hover:underline" onClick={() => handleSwitchType('resetPassword')}>
               Восстановить пароль?
             </span>
           )}
@@ -198,7 +202,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
                 required
               />
             )}
-
             {(type === 'register' || type === 'newPassword') && (
               <input
                 type="password"
@@ -218,7 +221,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
           </div>
           <div className="flex flex-col gap-2.5">
             <Button type="submit" variant="primary" className="w-full h-[52px]" disabled={isLoading}>
-              {isLoading ? 'Загрузка...' : type === 'login' ? 'Войти' : type === 'register' ? 'Зарегистрироваться' : type === 'resetPassword' ? 'Сбросить пароль' : 'Подтвердить'}
+              {type === 'login' ? 'Войти' : type === 'register' ? 'Зарегистрироваться' : type === 'resetPassword' ? 'Сбросить пароль' : 'Подтвердить'}
             </Button>
             {type === 'login' && (
               <Button variant="secondary" className="w-full h-[52px]" onClick={() => handleSwitchType('register')} disabled={isLoading}>
@@ -241,6 +244,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
     </div>
   );
 };
+
+export default Modal;
 {/* <InfoModal
               isOpen={isResetPasswordModalOpen}
               onClose={() => setIsResetPasswordModalOpen(false)}
@@ -248,4 +253,3 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
               type="resetPassword"
               email={userEmail} 
             /> Для добавления модального окна об отправке ссылкы на восстановление пароля, надо ли делать?*/}
-export default Modal;
