@@ -32,14 +32,6 @@ function CoursePage() {
 		fetchCourse();
 	}, [id, getCourse]);
 
-	if (loading) {
-		return <div>Загрузка..</div>;
-	}
-
-	if (!course) {
-		return <div>Авторизуйтесь для просмотра курса</div>;
-	}
-
 	const handleAddCourse = async () => {
 		if (user && id) {
 			try {
@@ -56,6 +48,14 @@ function CoursePage() {
 			setIsModalOpen(true);
 		}
 	};
+
+	if (loading) {
+		return <div>Загрузка...</div>;
+	}
+
+	if (!course) {
+		return <div>Курс не найден</div>;
+	}
 
 	return (
 		<main className='relative mt-[60px]'>
@@ -150,6 +150,7 @@ function CoursePage() {
 				isOpen={isModalOpen}
 				onClose={() => setIsModalOpen(false)}
 				message={modalMessage}
+				type="progress"
 			/>
 		</main>
 	);

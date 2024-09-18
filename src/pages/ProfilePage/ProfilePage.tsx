@@ -1,24 +1,30 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MyCourseCard from "../../components/Cards/MyCourseCard";
+import CourseCard from "../../components/Cards/CourseCard";
 import { useAuth } from '../../hooks/useAuth';
 import { useCourses } from '../../hooks/useCourses';
 import Profile from "./Profile";
 import { Course } from '../../types/interfaces';
+import Footer from '../../components/Footer';
 
 function ProfilePage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const { getUserCourses } = useCourses();
   const [userCourses, setUserCourses] = useState<Course[]>([]);
 
   useEffect(() => {
-    const fetchUserCourses = async () => {
-      if (user) {
+    if (!loading && !user) {
+      navigate('/');
+    } else {
+      const fetchUserCourses = async () => {
         const courses = await getUserCourses(user.uid);
         setUserCourses(courses);
-      }
-    };
-    fetchUserCourses();
-  }, [user, getUserCourses]);
+      };
+      fetchUserCourses();
+    }
+  }, [user, getUserCourses, navigate]);
 
   return (
     <>
@@ -32,10 +38,11 @@ function ProfilePage() {
         </h1>
         <article className='flex flex-wrap gap-[40px] mt-[50px]'>
           {userCourses.map((course) => (
-            <MyCourseCard key={course._id} course={course} />
+            <CourseCard key={course._id} course={course} />
           ))}
         </article>
       </main>
+      <Footer />
     </>
   );
 }

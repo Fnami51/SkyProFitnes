@@ -84,7 +84,7 @@ function TrainingPage() {
       setIsInfoModalOpen(true);
       setTimeout(() => {
         setIsInfoModalOpen(false);
-      }, 1000);
+      }, 3000);
     } catch (error) {
       console.error('Error saving progress:', error);
     }

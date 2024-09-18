@@ -128,14 +128,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
             setSuccess('Инструкции по сбросу пароля отправлены на ваш email');
             setTimeout(() => {
               handleClose();
-            }, 1000);
+            }, 2000);
             break;
           case 'newPassword':
             await changeUserPassword(password);
             setSuccess('Пароль успешно изменен');
             setTimeout(() => {
               handleClose();
-            }, 1000);
+            }, 2000);
             break;
         }
       } catch (err) {

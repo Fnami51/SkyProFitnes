@@ -1,38 +1,81 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useCourses } from '../../hooks/useCourses';
 import Level from "./Level";
 import Modal from '../Modal';
 import InfoModal from '../infoModal';
 import { Course } from '../../types/interfaces';
+import { database } from '../../config/firebase';
+import { ref, get, set } from "firebase/database";
+import Button from "../Button";
+import WorkoutListModal from '../WorkoutListModal';
 
 interface CourseCardProps {
   course: Course;
+  onCourseRemoved?: () => void;
 }
 
-function CourseCard({ course }: CourseCardProps) {
+function CourseCard({ course, onCourseRemoved }: CourseCardProps) {
   const { user } = useAuth();
-  const { addCourse } = useCourses();
+  const { addCourse, getUserCourses } = useCourses();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
+  const isUserProfile = location.pathname === '/user';
 
-  const handleAddCourse = async (e: React.MouseEvent) => {
+  const [isWorkoutListModalOpen, setIsWorkoutListModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsWorkoutListModalOpen(true);
+  };
+
+  const handleSelectWorkout = (workoutId: string) => {
+    navigate(`/training/${workoutId}`);
+  };
+
+  const handleCourseAction = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (user) {
-      try {
-        await addCourse(course._id);
-        setInfoMessage('Курс успешно добавлен!');
-        setIsInfoModalOpen(true);
-      } catch (error) {
-        console.error('Error adding course:', error);
-        setInfoMessage('Ошибка при добавлении курса. Попробуйте еще раз.');
-        setIsInfoModalOpen(true);
+      if (isUserProfile) {
+        try {
+          await removeCourse(course._id);
+          setInfoMessage('Курс успешно удален!');
+          setIsInfoModalOpen(true);
+          if (onCourseRemoved) {
+            onCourseRemoved();
+          }
+        } catch (error) {
+          console.error('Error removing course:', error);
+          setInfoMessage('Ошибка при удалении курса. Попробуйте еще раз.');
+          setIsInfoModalOpen(true);
+        }
+      } else {
+        try {
+          await addCourse(course._id);
+          setInfoMessage('Курс успешно добавлен!');
+          setIsInfoModalOpen(true);
+        } catch (error) {
+          console.error('Error adding course:', error);
+          setInfoMessage('Ошибка при добавлении курса. Попробуйте еще раз.');
+          setIsInfoModalOpen(true);
+        }
       }
     } else {
       setIsLoginModalOpen(true);
+    }
+  };
+
+  const removeCourse = async (courseId: string) => {
+    if (!user) return;
+    const userCoursesRef = ref(database, `userCourses/${user.uid}`);
+    const snapshot = await get(userCoursesRef);
+    if (snapshot.exists()) {
+      const courses = snapshot.val();
+      const updatedCourses = courses.filter((id: string) => id !== courseId);
+      await set(userCoursesRef, updatedCourses);
     }
   };
 
@@ -57,14 +100,24 @@ function CourseCard({ course }: CourseCardProps) {
     return null;
   }
 
+  console.log("COURSE", course);
+
   return (
     <>
       <section className="w-[360px] pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] cursor-pointer overflow-hidden" onClick={handleCardClick}>
         <div className="relative">
           <img src={getCourseImage(course.nameEN)} alt={course.nameRU} className="w-full h-[325px] object-cover" />
-          <button className="absolute top-5 right-5 w-[32px] h-[32px]" onClick={handleAddCourse}>
+          <button className="absolute top-5 right-5 w-[32px] h-[32px]" onClick={handleCourseAction}>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" clipRule="evenodd" d="M16 29.3333C23.3638 29.3333 29.3333 23.3638 29.3333 16C29.3333 8.63616 23.3638 2.66663 16 2.66663C8.63619 2.66663 2.66666 8.63616 2.66666 16C2.66666 23.3638 8.63619 29.3333 16 29.3333ZM14.6667 14.6666V9.33329H17.3333V14.6666H22.6667V17.3333H17.3333V22.6666H14.6667V17.3333H9.33332V14.6666H14.6667Z" fill="white" />
+              <circle cx="16" cy="16" r="14" fill="white" />
+              {isUserProfile ? (
+                <path d="M10 16h12" stroke="black" strokeWidth="2" />
+              ) : (
+                <>
+                  <path d="M10 16h12" stroke="black" strokeWidth="2" />
+                  <path d="M16 10v12" stroke="black" strokeWidth="2" />
+                </>
+              )}
             </svg>
           </button>
         </div>
@@ -85,18 +138,18 @@ function CourseCard({ course }: CourseCardProps) {
               </div>
             )}
           </div>
+          <Button variant='primary' className='w-[300px] h-[52px] mt-[40px]' onClick={handleOpenModal}>
+            Продолжить
+          </Button>
         </div>
       </section>
-      <Modal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        type="login"
-        onSwitchType={() => { }}
-      />
-      <InfoModal
-        isOpen={isInfoModalOpen}
-        onClose={() => setIsInfoModalOpen(false)}
-        message={infoMessage}
+      <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} type="login" onSwitchType={() => { }} />
+      <InfoModal isOpen={isInfoModalOpen} onClose={() => setIsInfoModalOpen(false)} message={infoMessage} type="progress" />
+      <WorkoutListModal
+        isOpen={isWorkoutListModalOpen}
+        onClose={() => setIsWorkoutListModalOpen(false)}
+        workoutIds={course.workouts || []}
+        onSelectWorkout={handleSelectWorkout}
       />
     </>
   );
