@@ -128,7 +128,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
             setSuccess('Пароль успешно изменен');
             break;
         }
-        // Устанавливаем таймер только при успешном выполнении операции
+        //  Таймер при успешном выполнении на секунду
         setTimeout(() => {
           handleClose();
         }, 1000);
@@ -198,6 +198,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
                 required
               />
             )}
+
             {(type === 'register' || type === 'newPassword') && (
               <input
                 type="password"
@@ -240,5 +241,11 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
     </div>
   );
 };
-
+{/* <InfoModal
+              isOpen={isResetPasswordModalOpen}
+              onClose={() => setIsResetPasswordModalOpen(false)}
+              message=""
+              type="resetPassword"
+              email={userEmail} 
+            /> Для добавления модального окна об отправке ссылкы на восстановление пароля, надо ли делать?*/}
 export default Modal;

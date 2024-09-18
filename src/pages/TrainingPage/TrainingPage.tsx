@@ -4,6 +4,7 @@ import { useCourses } from '../../hooks/useCourses';
 import { useAuth } from '../../hooks/useAuth';
 import { Workout } from '../../types/interfaces';
 import ProgressModal from '../../components/ProgressModal';
+import InfoModal from '../../components/infoModal';
 import { database } from '../../config/firebase';
 import { ref, set, get } from "firebase/database";
 
@@ -14,6 +15,7 @@ function TrainingPage() {
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [loading, setLoading] = useState(true);
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
   const videoRef = useRef<HTMLIFrameElement>(null);
 
@@ -41,9 +43,7 @@ function TrainingPage() {
         handleAutoSaveProgress();
       }
     };
-
     window.addEventListener('message', handleMessage);
-
     return () => {
       window.removeEventListener('message', handleMessage);
     };
@@ -51,12 +51,10 @@ function TrainingPage() {
 
   const handleAutoSaveProgress = async () => {
     if (!user || !id || !workout || Object.keys(progress).length > 0) return;
-
     const newProgress = workout.exercises?.reduce((acc, exercise) => {
       acc[exercise.name] = exercise.quantity;
       return acc;
     }, {} as { [key: string]: number }) || {};
-
     try {
       const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
       await set(progressRef, newProgress);
@@ -82,6 +80,11 @@ function TrainingPage() {
       await set(progressRef, newProgress);
       setProgress(newProgress);
       console.log('Progress saved:', newProgress);
+      setIsProgressModalOpen(false);
+      setIsInfoModalOpen(true);
+      setTimeout(() => {
+        setIsInfoModalOpen(false);
+      }, 1000);
     } catch (error) {
       console.error('Error saving progress:', error);
     }
@@ -93,6 +96,10 @@ function TrainingPage() {
     if (!exercise) return 0;
     const completed = progress[exerciseName] || 0;
     return Math.min(Math.round((completed / exercise.quantity) * 100), 100);
+  };
+
+  const isProgressZero = () => {
+    return Object.values(progress).every(value => value === 0);
   };
 
   if (loading) {
@@ -148,7 +155,7 @@ function TrainingPage() {
             onClick={handleOpenProgressModal}
             className="w-[320px] h-[52px] mobile:w-[283px] bg-[#BCEC30] text-black rounded-[46px] font-roboto text-[18px] font-normal leading-[19.8px]"
           >
-            Заполнить свой прогресс
+            {isProgressZero() ? "Заполнить свой прогресс" : "Обновить свой прогресс"}
           </button>
         </section>
       )}
@@ -157,6 +164,12 @@ function TrainingPage() {
         onClose={handleCloseProgressModal}
         exercises={workout.exercises || []}
         onSave={handleSaveProgress}
+      />
+      <InfoModal
+        isOpen={isInfoModalOpen}
+        onClose={() => setIsInfoModalOpen(false)}
+        message="Ваш прогресс засчитан!"
+        type="progress"
       />
     </main>
   );

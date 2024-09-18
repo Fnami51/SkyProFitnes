@@ -33,6 +33,7 @@ module.exports = {
       },
       fontFamily: {
         roboto: ['Roboto', 'sans-serif'],
+        stratos: ['StratosSkyeng', 'sans-serif'],
       },
       fontSize: {
         '18px': '18px',

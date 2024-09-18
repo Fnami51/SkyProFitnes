@@ -4,7 +4,7 @@ import Button from '../../components/Button';
 import { useCoursesContext } from '../../context/CoursesContext';
 import { useAuth } from '../../hooks/useAuth';
 import { Course } from '../../types/interfaces';
-import InfoModal from '../../components/infoMoodal';
+import InfoModal from '../../components/infoModal';
 
 function CoursePage() {
 	const { id } = useParams<{ id: string }>();
@@ -42,20 +42,20 @@ function CoursePage() {
 
 	const handleAddCourse = async () => {
 		if (user && id) {
-		  try {
-		    await addCourse(id);
-		    setModalMessage('Курс успешно добавлен!');
-		    setIsModalOpen(true);
-		  } catch (error) {
-		    console.error('Error adding course:', error);
-		    setModalMessage('Не удалось добавить курс. Попробуйте еще раз.');
-		    setIsModalOpen(true);
-		  }
+			try {
+				await addCourse(id);
+				setModalMessage('Курс успешно добавлен!');
+				setIsModalOpen(true);
+			} catch (error) {
+				console.error('Error adding course:', error);
+				setModalMessage('Не удалось добавить курс. Попробуйте еще раз.');
+				setIsModalOpen(true);
+			}
 		} else {
-		  setModalMessage('Пожалуйста, авторизуйтесь для добавления курса');
-		  setIsModalOpen(true);
+			setModalMessage('Пожалуйста, авторизуйтесь для добавления курса');
+			setIsModalOpen(true);
 		}
-	   };
+	};
 
 	return (
 		<main className='relative mt-[60px]'>
@@ -150,7 +150,7 @@ function CoursePage() {
 				isOpen={isModalOpen}
 				onClose={() => setIsModalOpen(false)}
 				message={modalMessage}
-      		/>
+			/>
 		</main>
 	);
 }

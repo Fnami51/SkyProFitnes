@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useCourses } from '../../hooks/useCourses';
 import Level from "./Level";
 import Modal from '../Modal';
-import InfoModal from '../infoMoodal';
+import InfoModal from '../infoModal';
 import { Course } from '../../types/interfaces';
 
 interface CourseCardProps {
@@ -91,7 +91,7 @@ function CourseCard({ course }: CourseCardProps) {
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
         type="login"
-        onSwitchType={() => {}}
+        onSwitchType={() => { }}
       />
       <InfoModal
         isOpen={isInfoModalOpen}
