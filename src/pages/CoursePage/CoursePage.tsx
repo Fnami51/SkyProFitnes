@@ -6,6 +6,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Course } from '../../types/interfaces';
 import InfoModal from '../../components/infoModal';
 import Footer from '../../components/Footer';
+import Modal from '../../components/Modal';
 
 function CoursePage() {
 	const { id } = useParams<{ id: string }>();
@@ -16,6 +17,7 @@ function CoursePage() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalMessage, setModalMessage] = useState('');
 	const previousId = useRef<string | null>(null);
+	const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
 	useEffect(() => {
 		const fetchCourse = async () => {
@@ -53,8 +55,7 @@ function CoursePage() {
 				setIsModalOpen(true);
 			}
 		} else {
-			setModalMessage('Пожалуйста, авторизуйтесь для добавления курса');
-			setIsModalOpen(true);
+			setIsLoginModalOpen(true);
 		}
 	};
 
@@ -155,11 +156,11 @@ function CoursePage() {
 
 			<img src='/images/runner.png' alt='Бегун' className='absolute top-[900px] right-[40px] z-[3] mobile:w-[313.22px] mobile:h-[348.91px] mobile:top-[1410px] mobile:right-[-69px] mobile:z-[1]' />
 			<img src='/images/6084.png' alt='Салатовый_2' className='hidden mobile:block absolute mobile:w-[750.93px] mobile:h-[300px] mobile:top-[1530px] mobile:right-[27px]' />
-			<InfoModal
-				isOpen={isModalOpen}
-				onClose={() => setIsModalOpen(false)}
-				message={modalMessage}
-				type="progress"
+			<Modal
+				isOpen={isLoginModalOpen}
+				onClose={() => setIsLoginModalOpen(false)}
+				type="login"
+				onSwitchType={() => { }}
 			/>
 			<Footer />
 		</main>
