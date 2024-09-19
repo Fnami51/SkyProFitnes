@@ -30,10 +30,6 @@ function Profile() {
     setIsModalOpen(false)
   }
 
-  const handleEditName = () => {
-    setIsEditing(true)
-  }
-
   const handleSaveName = async () => {
     if (user) {
       try {
@@ -41,6 +37,7 @@ function Profile() {
         await updateUser({ ...user, customDisplayName: editedName });
         setIsEditing(false);
         setSaveMessage('Имя успешно сохранено');
+        // Убираем перезагрузку страницы и просто скрываем сообщение через 3 секунды
         setTimeout(() => setSaveMessage(''), 3000);
       } catch (error) {
         console.error('Error updating display name:', error);
@@ -69,7 +66,7 @@ function Profile() {
         ) : (
           <h2 className='text-left font-roboto text-[32px] font-medium leading-[35.2px] flex items-center'>
             {user?.customDisplayName || user?.displayName || user?.name || user?.email?.split('@')[0]}
-            <button onClick={handleEditName} className='ml-2 text-gray'>
+            <button onClick={() => setIsEditing(true)} className='ml-2 text-gray'>
               ✎
             </button>
           </h2>

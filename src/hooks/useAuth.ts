@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { User } from '../types/interfaces';
-import { auth } from '../config/firebase';
-import { onAuthStateChanged, updateProfile as updateFirebaseProfile } from 'firebase/auth';
+import { auth, database } from '../config/firebase';
+import { onAuthStateChanged, updateProfile as updateFirebaseProfile, User as FirebaseUser } from 'firebase/auth';
+import { ref, get, set } from "firebase/database";
 import { registerUser, loginUser, logoutUser, resetPassword, changePassword } from '../api/auth';
 
 export const useAuth = () => {
@@ -9,15 +10,26 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       try {
         if (firebaseUser) {
-          setUser({
-            uid: firebaseUser.uid,
-            email: firebaseUser.email!,
-            displayName: firebaseUser.displayName || undefined,
-            customDisplayName: (firebaseUser as any).customDisplayName,
-          });
+          const userRef = ref(database, `users/${firebaseUser.uid}`);
+          const snapshot = await get(userRef);
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
+            setUser({
+              uid: firebaseUser.uid,
+              email: firebaseUser.email!,
+              displayName: userData.displayName || firebaseUser.displayName,
+              customDisplayName: userData.customDisplayName,
+            });
+          } else {
+            setUser({
+              uid: firebaseUser.uid,
+              email: firebaseUser.email!,
+              displayName: firebaseUser.displayName || undefined,
+            });
+          }
         } else {
           setUser(null);
         }
@@ -35,6 +47,8 @@ export const useAuth = () => {
   const updateUser = async (updatedUser: User) => {
     if (auth.currentUser) {
       try {
+        const userRef = ref(database, `users/${updatedUser.uid}`);
+        await set(userRef, updatedUser);
         await updateFirebaseProfile(auth.currentUser, {
           displayName: updatedUser.customDisplayName || updatedUser.displayName,
         });
@@ -102,6 +116,14 @@ export const useAuth = () => {
     }
   };
 
-  return { user, loading, register, login, logout, resetUserPassword, changeUserPassword,
-    updateUser, };
+  return {
+    user,
+    loading,
+    register,
+    login,
+    logout,
+    resetUserPassword,
+    changeUserPassword,
+    updateUser,
+  };
 };

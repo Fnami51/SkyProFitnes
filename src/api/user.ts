@@ -1,12 +1,12 @@
-import { firestore, auth } from '../config/firebase';
-import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { auth, database } from '../config/firebase';
+import { ref, set, get } from "firebase/database";
 import { updateProfile } from 'firebase/auth';
 import { User } from '../types/interfaces';
 
 export const createUserProfile = async (user: User): Promise<void> => {
   try {
-    const userDocRef = doc(firestore, 'users', user.uid);
-    await setDoc(userDocRef, {
+    const userRef = ref(database, `users/${user.uid}`);
+    await set(userRef, {
       email: user.email,
       displayName: user.displayName || '',
       customDisplayName: user.customDisplayName || '',
@@ -19,10 +19,10 @@ export const createUserProfile = async (user: User): Promise<void> => {
 
 export const getUserProfile = async (userId: string): Promise<User | null> => {
   try {
-    const userDocRef = doc(firestore, 'users', userId);
-    const userDoc = await getDoc(userDocRef);
-    if (userDoc.exists()) {
-      return { uid: userDoc.id, ...userDoc.data() } as User;
+    const userRef = ref(database, `users/${userId}`);
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+      return { uid: userId, ...snapshot.val() } as User;
     }
     return null;
   } catch (error) {
@@ -33,8 +33,8 @@ export const getUserProfile = async (userId: string): Promise<User | null> => {
 
 export const updateUserProfile = async (userId: string, data: Partial<User>): Promise<void> => {
   try {
-    const userDocRef = doc(firestore, 'users', userId);
-    await updateDoc(userDocRef, data);
+    const userRef = ref(database, `users/${userId}`);
+    await set(userRef, data);
     const currentUser = auth.currentUser;
     if (currentUser) {
       await updateProfile(currentUser, {
