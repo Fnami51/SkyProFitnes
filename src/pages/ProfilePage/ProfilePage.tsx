@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CourseCard from "../../components/Cards/CourseCard";
+import MyCourseCard from "../../components/Cards/MyCourseCard";
 import { useAuth } from '../../hooks/useAuth';
 import { useCourses } from '../../hooks/useCourses';
 import Profile from "./Profile";
@@ -45,7 +45,7 @@ function ProfilePage() {
         </h1>
         <article className='flex flex-wrap gap-[40px] mt-[50px]'>
           {userCourses.map((course) => (
-            <CourseCard 
+            <MyCourseCard 
               key={course._id} 
               course={course} 
               onCourseRemoved={handleCourseRemoved}
@@ -53,7 +53,7 @@ function ProfilePage() {
           ))}
         </article>
       </main>
-      <Footer />
+      <Footer showScrollToTop={userCourses.length > 0} />
     </>
   );
 }

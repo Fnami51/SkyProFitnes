@@ -5,7 +5,7 @@ import { useCoursesContext } from '../../context/CoursesContext';
 import { useAuth } from '../../hooks/useAuth';
 import { Course } from '../../types/interfaces';
 import InfoModal from '../../components/infoModal';
-
+import Footer from '../../components/Footer';
 function CoursePage() {
 	const { id } = useParams<{ id: string }>();
 	const { user } = useAuth();
@@ -152,7 +152,9 @@ function CoursePage() {
 				message={modalMessage}
 				type="progress"
 			/>
+			<Footer />
 		</main>
+
 	);
 }
 

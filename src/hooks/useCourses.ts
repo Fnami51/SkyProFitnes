@@ -15,13 +15,13 @@ export const useCourses = () => {
     try {
       // Загружаем все курсы независимо от авторизации
       const allCourses = await getAllCourses();
-      console.log('Fetched courses:', allCourses);
+      // console.log('Fetched courses:', allCourses);
       setCourses(allCourses);
       
       if (authUser) {
         // Если пользователь авторизован, загружаем его курсы
         const userCoursesData = await getUserCoursesAPI(authUser.uid);
-        console.log('Fetched user courses:', userCoursesData);
+        // console.log('Fetched user courses:', userCoursesData);
         setUserCourses(userCoursesData);
       } else {
         // Если пользователь не авторизован, очищаем пользовательские курсы
