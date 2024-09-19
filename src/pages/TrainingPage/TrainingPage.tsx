@@ -50,13 +50,18 @@ function TrainingPage() {
   }, [workout, user]);
 
   const handleAutoSaveProgress = async () => {
-    if (!user || !id || !workout || Object.keys(progress).length > 0) return;
-    const newProgress = workout.exercises?.reduce((acc, exercise) => {
-      acc[exercise.name] = exercise.quantity;
-      return acc;
-    }, {} as { [key: string]: number }) || {};
+    if (!user || !id || !workout) return;
     try {
       const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
+      let newProgress: { [key: string]: number };
+      if (!workout.exercises || workout.exercises.length === 0) {
+        newProgress = { completed: 100 };
+      } else {
+        newProgress = workout.exercises.reduce((acc, exercise) => {
+          acc[exercise.name] = 0;
+          return acc;
+        }, {} as { [key: string]: number });
+      }
       await set(progressRef, newProgress);
       setProgress(newProgress);
       console.log('Progress auto-saved:', newProgress);
@@ -90,15 +95,23 @@ function TrainingPage() {
     }
   };
 
-  const calculatePercentage = (exerciseName: string) => {
+  const calculatePercentage = () => {
     if (!workout) return 0;
-    const exercise = workout.exercises?.find(e => e.name === exerciseName);
-    if (!exercise) return 0;
-    const completed = progress[exerciseName] || 0;
-    return Math.min(Math.round((completed / exercise.quantity) * 100), 100);
+    if (!workout.exercises || workout.exercises.length === 0) {
+      return progress.completed ? 100 : 0;
+    }
+    const totalExercises = workout.exercises.length;
+    const completedExercises = workout.exercises.reduce((sum, exercise) => {
+      return sum + (progress[exercise.name] || 0) / exercise.quantity;
+    }, 0);
+    return Math.round((completedExercises / totalExercises) * 100);
   };
 
   const isProgressZero = () => {
+    if (!workout) return true;
+    if (!workout.exercises || workout.exercises.length === 0) {
+      return !progress.completed;
+    }
     return Object.values(progress).every(value => value === 0);
   };
 
@@ -119,7 +132,7 @@ function TrainingPage() {
       <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto mb-[40px]">
         {workout.name}
       </h1>
-      <Link to='/'>Вернуться к списку курсов</Link>
+      <Link to='/user'>Вернуться в профиль</Link>
       <iframe
         ref={videoRef}
         width="100%"
@@ -135,35 +148,30 @@ function TrainingPage() {
           }
         }}
       ></iframe>
-      {workout.exercises && (
-        <section className="flex flex-col mobile:items-center w-[100%] p-[40px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
-          <h2 className="text-[32px] font-normal mb-[48px] text-center">{workout.name}</h2>
-          <div className="mt-[20px] mb-[40px] grid grid-cols-3 gap-y-[20px] gap-x-[60px]">
-            {workout.exercises.map((exercise, index) => (
-              <div key={index}>
-                <p>{exercise.name} ({calculatePercentage(exercise.name)}%)</p>
-                <div className="w-full bg-[#F7F7F7] rounded-full h-2.5 mt-2">
-                  <div
-                    className="bg-[#00C1FF] h-2.5 rounded-full"
-                    style={{ width: `${calculatePercentage(exercise.name)}%` }}
-                  ></div>
-                </div>
-              </div>
-            ))}
+      <section className="flex flex-col mobile:items-center w-[100%] p-[40px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+        <h2 className="text-[32px] font-normal mb-[48px] text-center">{workout.name}</h2>
+        <div className="mt-[20px] mb-[40px] w-full">
+          <p>Общий прогресс: {calculatePercentage()}%</p>
+          <div className="w-full bg-[#F7F7F7] rounded-full h-2.5 mt-2">
+            <div
+              className="bg-[#00C1FF] h-2.5 rounded-full"
+              style={{ width: `${calculatePercentage()}%` }}
+            ></div>
           </div>
-          <button
-            onClick={handleOpenProgressModal}
-            className="w-[320px] h-[52px] mobile:w-[283px] bg-[#BCEC30] text-black rounded-[46px] font-roboto text-[18px] font-normal leading-[19.8px]"
-          >
-            {isProgressZero() ? "Заполнить свой прогресс" : "Обновить свой прогресс"}
-          </button>
-        </section>
-      )}
+        </div>
+        <button
+          onClick={handleOpenProgressModal}
+          className="w-[320px] h-[52px] mobile:w-[283px] bg-[#BCEC30] text-black rounded-[46px] font-roboto text-[18px] font-normal leading-[19.8px]"
+        >
+          {isProgressZero() ? "Заполнить свой прогресс" : "Обновить свой прогресс"}
+        </button>
+      </section>
       <ProgressModal
         isOpen={isProgressModalOpen}
         onClose={handleCloseProgressModal}
         exercises={workout.exercises || []}
         onSave={handleSaveProgress}
+        initialProgress={progress}
       />
       <InfoModal
         isOpen={isInfoModalOpen}

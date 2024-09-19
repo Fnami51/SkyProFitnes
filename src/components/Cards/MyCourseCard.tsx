@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from "../Button";
 import Level from "./Level";
 import WorkoutListModal from '../WorkoutListModal';
-import { Course } from '../../types/interfaces';
+import { Course, Workout } from '../../types/interfaces';
 import { database } from '../../config/firebase';
 import { ref, get, set } from "firebase/database";
 import { useAuth } from '../../hooks/useAuth';
@@ -22,28 +22,31 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
   useEffect(() => {
     const fetchProgress = async () => {
       if (user && course._id && course.workouts) {
-        let totalExercises = 0;
-        let completedExercises = 0;
+        let totalProgress = 0;
+        let completedWorkouts = 0;
 
         for (const workoutId of course.workouts) {
           const workoutRef = ref(database, `courses/workouts/${workoutId}`);
           const workoutSnapshot = await get(workoutRef);
-          const workoutData = workoutSnapshot.val();
+          const workoutData = workoutSnapshot.val() as Workout;
 
-          if (workoutData && workoutData.exercises) {
-            const progressRef = ref(database, `userProgress/${user.uid}/${workoutId}`);
-            const progressSnapshot = await get(progressRef);
-            const progressData = progressSnapshot.val() || {};
+          const progressRef = ref(database, `userProgress/${user.uid}/${workoutId}`);
+          const progressSnapshot = await get(progressRef);
+          const progressData = progressSnapshot.val() || {};
 
-            workoutData.exercises.forEach((exercise: { name: string, quantity: number }) => {
-              totalExercises += exercise.quantity;
-              completedExercises += Math.min(progressData[exercise.name] || 0, exercise.quantity);
-            });
+          if (progressData.completed === 100) {
+            totalProgress += 100;
+            completedWorkouts++;
+          } else if (workoutData && workoutData.exercises) {
+            const exerciseProgress = workoutData.exercises.reduce((sum, exercise) => {
+              return sum + (progressData[exercise.name] || 0) / exercise.quantity;
+            }, 0);
+            totalProgress += (exerciseProgress / workoutData.exercises.length) * 100;
           }
         }
 
-        const progressPercentage = totalExercises > 0 ? Math.round((completedExercises / totalExercises) * 100) : 0;
-        setProgress(progressPercentage);
+        const averageProgress = totalProgress / course.workouts.length;
+        setProgress(Math.round(averageProgress));
       }
     };
 
