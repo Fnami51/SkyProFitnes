@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User } from '../types/interfaces';
 import { auth } from '../config/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, updateProfile as updateFirebaseProfile } from 'firebase/auth';
 import { registerUser, loginUser, logoutUser, resetPassword, changePassword } from '../api/auth';
 
 export const useAuth = () => {
@@ -16,6 +16,7 @@ export const useAuth = () => {
             uid: firebaseUser.uid,
             email: firebaseUser.email!,
             displayName: firebaseUser.displayName || undefined,
+            customDisplayName: (firebaseUser as any).customDisplayName,
           });
         } else {
           setUser(null);
@@ -30,6 +31,20 @@ export const useAuth = () => {
 
     return () => unsubscribe();
   }, []);
+
+  const updateUser = async (updatedUser: User) => {
+    if (auth.currentUser) {
+      try {
+        await updateFirebaseProfile(auth.currentUser, {
+          displayName: updatedUser.customDisplayName || updatedUser.displayName,
+        });
+        setUser(updatedUser);
+      } catch (error) {
+        console.error('Error updating user profile:', error);
+        throw error;
+      }
+    }
+  };
 
   const register = async (email: string, password: string) => {
     try {
@@ -87,5 +102,6 @@ export const useAuth = () => {
     }
   };
 
-  return { user, loading, register, login, logout, resetUserPassword, changeUserPassword };
+  return { user, loading, register, login, logout, resetUserPassword, changeUserPassword,
+    updateUser, };
 };

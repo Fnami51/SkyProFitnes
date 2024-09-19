@@ -131,16 +131,24 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
             }, 2000);
             break;
           case 'newPassword':
-            await changeUserPassword(password);
-            setSuccess('Пароль успешно изменен');
-            setTimeout(() => {
-              handleClose();
-            }, 2000);
+            try {
+              await changeUserPassword(password);
+              setSuccess('Пароль успешно изменен');
+              setTimeout(() => {
+                handleClose();
+              }, 2000);
+            } catch (err) {
+              if (err instanceof Error) {
+                setError(`Ошибка при смене пароля: ${err.message}`);
+              } else {
+                setError('Произошла неизвестная ошибка при смене пароля.');
+              }
+            }
             break;
         }
       } catch (err) {
         if (err instanceof Error) {
-          setError('Пароль введён неверно, попробуйте ещё раз.');
+          setError(err.message);
         } else {
           setError('Произошла ошибка. Попробуйте позже.');
         }

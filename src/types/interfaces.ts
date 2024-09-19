@@ -7,6 +7,7 @@ export interface User {
   login?: string;
   password?: string;
   url_img?: string;
+  customDisplayName?: string;
 }
 
 export interface Course {

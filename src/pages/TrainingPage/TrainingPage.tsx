@@ -84,7 +84,6 @@ function TrainingPage() {
       const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
       await set(progressRef, newProgress);
       setProgress(newProgress);
-      console.log('Progress saved:', newProgress);
       setIsProgressModalOpen(false);
       setIsInfoModalOpen(true);
       setTimeout(() => {
