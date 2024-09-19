@@ -34,8 +34,8 @@ function Header({ onLoginClick }: HeaderProps) {
       <div className='relative'>
         {user ? (
           <div
-          ref={userRef}
-          onClick={handleUserClick}
+            ref={userRef}
+            onClick={handleUserClick}
             className="flex items-center cursor-pointer gap-5"
           >
             <img

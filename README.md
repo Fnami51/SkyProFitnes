@@ -10,7 +10,7 @@
    ```bash
    git clone https://github.com/your-username/sky-fitnes-pro.git
    ```
-
+   
 2. **Перейдите в директорию проекта:**
 3. **Установите зависимости:**
    ```bash
