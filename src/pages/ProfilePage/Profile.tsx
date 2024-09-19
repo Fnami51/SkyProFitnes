@@ -9,7 +9,7 @@ function Profile() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalType, setModalType] = useState<'newPassword'>('newPassword')
   const [isEditing, setIsEditing] = useState(false)
-  const [editedName, setEditedName] = useState(user?.customDisplayName || user?.displayName || user?.name || user?.email?.split('@')[0] || '')
+  const [editedName, setEditedName] = useState(user?.customDisplayName || user?.displayName || user?.email?.split('@')[0] || '')
   const [saveMessage, setSaveMessage] = useState('')
 
   const handleChangePassword = () => {
@@ -33,11 +33,9 @@ function Profile() {
   const handleSaveName = async () => {
     if (user) {
       try {
-        await updateProfile({ customDisplayName: editedName });
-        await updateUser({ ...user, customDisplayName: editedName });
+        await updateUser({ displayName: editedName });
         setIsEditing(false);
         setSaveMessage('Имя успешно сохранено');
-        // Убираем перезагрузку страницы и просто скрываем сообщение через 3 секунды
         setTimeout(() => setSaveMessage(''), 3000);
       } catch (error) {
         console.error('Error updating display name:', error);
@@ -49,7 +47,7 @@ function Profile() {
 
   return (
     <section className='flex mobile:flex-col mobile:items-center gap-[33px] w-[100%] p-[30px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]'>
-      <img src={user?.photoURL || user?.url_img || '/images/profile_no-img.png'} className='w-[197px] h-[197px] rounded-[30px] mobile:w-[141px] mobile:h-[141px]' />
+      <img src={user?.photoURL || '/images/profile_no-img.png'} className='w-[197px] h-[197px] rounded-[30px] mobile:w-[141px] mobile:h-[141px]' />
       <div className='flex flex-col gap-[30px] mobile:w-full'>
         {isEditing ? (
           <div className='flex items-center'>
@@ -65,7 +63,7 @@ function Profile() {
           </div>
         ) : (
           <h2 className='text-left font-roboto text-[32px] font-medium leading-[35.2px] flex items-center'>
-            {user?.customDisplayName || user?.displayName || user?.name || user?.email?.split('@')[0]}
+            {user?.displayName || user?.email?.split('@')[0]}
             <button onClick={() => setIsEditing(true)} className='ml-2 text-gray'>
               ✎
             </button>
@@ -88,8 +86,8 @@ function Profile() {
             </p>
           </button>
         </div>
-      </div>
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal} type={modalType} onSwitchType={() => { }} />
+        </div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} type={modalType} onSwitchType={() => {}} />
     </section>
   )
 }

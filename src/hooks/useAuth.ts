@@ -44,15 +44,21 @@ export const useAuth = () => {
     return () => unsubscribe();
   }, []);
 
-  const updateUser = async (updatedUser: User) => {
+  const updateUser = async (updatedUser: Partial<User>) => {
     if (auth.currentUser) {
       try {
-        const userRef = ref(database, `users/${updatedUser.uid}`);
-        await set(userRef, updatedUser);
+        const userRef = ref(database, `users/${auth.currentUser.uid}`);
         await updateFirebaseProfile(auth.currentUser, {
-          displayName: updatedUser.customDisplayName || updatedUser.displayName,
+          displayName: updatedUser.displayName,
         });
-        setUser(updatedUser);
+        await set(userRef, updatedUser);
+        
+        setUser(currentUser => {
+          if (currentUser) {
+            return { ...currentUser, ...updatedUser };
+          }
+          return currentUser;
+        });
       } catch (error) {
         console.error('Error updating user profile:', error);
         throw error;
@@ -124,6 +130,6 @@ export const useAuth = () => {
     logout,
     resetUserPassword,
     changeUserPassword,
-    updateUser,
+    updateUser, 
   };
 };
