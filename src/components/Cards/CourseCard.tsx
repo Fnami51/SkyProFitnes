@@ -25,7 +25,6 @@ function CourseCard({ course, onCourseRemoved }: CourseCardProps) {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
   const isUserProfile = location.pathname === '/user';
-
   const [isWorkoutListModalOpen, setIsWorkoutListModalOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -100,12 +99,10 @@ function CourseCard({ course, onCourseRemoved }: CourseCardProps) {
     return null;
   }
 
-  console.log("COURSE", course);
-
   return (
     <>
-      <section className="w-[360px] pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] cursor-pointer overflow-hidden" onClick={handleCardClick}>
-        <div className="relative">
+      <section className="w-[360px] pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] overflow-hidden">
+        <div className="relative" onClick={handleCardClick}>
           <img src={getCourseImage(course.nameEN)} alt={course.nameRU} className="w-full h-[325px] object-cover" />
           <button className="absolute top-5 right-5 w-[32px] h-[32px]" onClick={handleCourseAction}>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -143,14 +140,9 @@ function CourseCard({ course, onCourseRemoved }: CourseCardProps) {
           </Button>
         </div>
       </section>
-      <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} type="login" onSwitchType={() => { }} />
+      <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} type="login" onSwitchType={() => {}} />
       <InfoModal isOpen={isInfoModalOpen} onClose={() => setIsInfoModalOpen(false)} message={infoMessage} type="progress" />
-      <WorkoutListModal
-        isOpen={isWorkoutListModalOpen}
-        onClose={() => setIsWorkoutListModalOpen(false)}
-        workoutIds={course.workouts || []}
-        onSelectWorkout={handleSelectWorkout}
-      />
+      <WorkoutListModal isOpen={isWorkoutListModalOpen} onClose={() => setIsWorkoutListModalOpen(false)} workoutIds={course.workouts || []} onSelectWorkout={handleSelectWorkout} />
     </>
   );
 }
