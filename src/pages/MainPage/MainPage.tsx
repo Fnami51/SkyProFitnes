@@ -19,7 +19,7 @@ function MainPage() {
                     </div>
                 </article>
                 <article className='flex flex-wrap gap-[40px] mt-[50px]'>
-                    <CourseCard name="Йога" day={25} time="25-30" url_img="/images/yoga_small.png" />
+                    <CourseCard name="Йога" day={25} time="25-30" url_img="/images/yoga_small.png" level={3}/>
                 </article>
             </main>
             <Footer />

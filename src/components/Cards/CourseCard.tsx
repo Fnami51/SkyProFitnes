@@ -4,10 +4,11 @@ interface CourseCardProps {
     name: string;
     day: number;
     time: string;
-    url_img: string
+    url_img: string;
+    level: number;
 }
 
-function CourseCard({ name, day, time, url_img }: CourseCardProps) {
+function CourseCard({ name, day, time, url_img, level }: CourseCardProps) {
     return (
         <section className="w-[360px] pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
             <button
@@ -36,7 +37,7 @@ function CourseCard({ name, day, time, url_img }: CourseCardProps) {
                         <p>{time} мин/день</p>
                     </div>
                     <div className="flex rounded-[30px] bg-gray-super-light items-center p-[10px] gap-[6px]">
-                        <Level value={4} />
+                        <Level value={level} />
                         <p>Сложность</p>
                     </div>
                 </div>

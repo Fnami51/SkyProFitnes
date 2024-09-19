@@ -7,9 +7,10 @@ interface MyCourseCardProps {
   time: string;
   url_img: string
   progress: number;
+  level: number;
 }
 
-function MyCourseCard({name, day, time, url_img, progress}: MyCourseCardProps) {
+function MyCourseCard({name, day, time, url_img, progress, level}: MyCourseCardProps) {
     return (
         <section className="w-[360px] pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
             <button 
@@ -38,7 +39,7 @@ function MyCourseCard({name, day, time, url_img, progress}: MyCourseCardProps) {
                         <p>{time} мин/день</p>
                     </div>
                     <div className="flex rounded-[30px] bg-gray-super-light items-center p-[10px] gap-[6px]">
-                        <Level value={3}/>
+                        <Level value={level}/>
                         <p>Сложность</p>
                     </div>
                 </div>

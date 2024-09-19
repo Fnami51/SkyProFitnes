@@ -17,7 +17,7 @@ function ProfilPage() {
                 Мои курсы
             </h1>
             <article className='flex flex-wrap gap-[40px] mt-[50px]'>
-                <MyCourseCard name="Йога" day={25} time="25-30" url_img="/images/yoga_small.png" progress={40} />
+                <MyCourseCard name="Йога" day={25} time="25-30" url_img="/images/yoga_small.png" progress={40} level={4}/>
             </article>
         </main>
     </>
