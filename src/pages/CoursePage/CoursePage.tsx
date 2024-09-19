@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from '../../components/Button';
 import { useCoursesContext } from '../../context/CoursesContext';
@@ -6,6 +6,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Course } from '../../types/interfaces';
 import InfoModal from '../../components/infoModal';
 import Footer from '../../components/Footer';
+
 function CoursePage() {
 	const { id } = useParams<{ id: string }>();
 	const { user } = useAuth();
@@ -14,21 +15,29 @@ function CoursePage() {
 	const [loading, setLoading] = useState(true);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalMessage, setModalMessage] = useState('');
+	const previousId = useRef<string | null>(null);
 
 	useEffect(() => {
 		const fetchCourse = async () => {
 			if (id) {
+				if (id === previousId.current) {
+					return;
+				}
+
 				setLoading(true);
 				try {
 					const courseData = await getCourse(id);
 					setCourse(courseData);
 				} catch (error) {
-					console.error('Error fetching course:', error);
+					console.error('Ошибка получения курса:', error);
 				} finally {
 					setLoading(false);
 				}
+
+				previousId.current = id;
 			}
 		};
+
 		fetchCourse();
 	}, [id, getCourse]);
 

@@ -9,7 +9,7 @@ import TrainingPage from './pages/TrainingPage/TrainingPage';
 import { CoursesProvider } from './context/CoursesContext';
 
 function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalSigninOpen, setIsModalSigninOpen] = useState(false);
   const [modalType, setModalType] = useState<'login' | 'register' | 'resetPassword' | 'newPassword'>('login');
 
   const handleSwitchModalType = useCallback((newType: 'login' | 'register' | 'resetPassword' | 'newPassword') => {
@@ -18,11 +18,11 @@ function App() {
 
   const handleLoginClick = useCallback(() => {
     setModalType('login');
-    setIsModalOpen(true);
+    setIsModalSigninOpen(true);
   }, []);
 
   const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false);
+    setIsModalSigninOpen(false);
   }, []);
 
   return (
@@ -38,7 +38,7 @@ function App() {
           <Route path='/training/:id' element={<TrainingPage />} />
         </Routes>
         <Modal
-          isOpen={isModalOpen}
+          isOpen={isModalSigninOpen}
           onClose={handleCloseModal}
           type={modalType}
           onSwitchType={handleSwitchModalType}
