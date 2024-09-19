@@ -1,11 +1,8 @@
+import MyCourseCard from "../../components/Cards/MyCourseCard"
+import Profile from "./Profile"
 
-import MyCourseCard from '../../components/Cards/MyCourseCard';
-import Profile from './Profile';
+function ProfilePage() {
 
-
-
-function ProfilPage() {
-    
     return (
     <>
         <main className="mt-[60px] mb-[60px]">
@@ -17,12 +14,17 @@ function ProfilPage() {
                 Мои курсы
             </h1>
             <article className='flex flex-wrap gap-[40px] mt-[50px]'>
-                <MyCourseCard name="Йога" day={25} time="25-30" url_img="/images/yoga_small.png" progress={40} level={4}/>
+                <MyCourseCard 
+                    name="Йога" 
+                    day={25} 
+                    time="25-30" 
+                    url_img="/images/yoga_small.png" 
+                    progress={40} 
+                    level={4}/>
             </article>
         </main>
     </>
     )
   }
   
-  export default ProfilPage
-
+  export default ProfilePage
