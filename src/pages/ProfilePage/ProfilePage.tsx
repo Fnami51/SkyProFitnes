@@ -44,13 +44,16 @@ function ProfilePage() {
           Мои курсы
         </h1>
         <article className='flex flex-wrap gap-[40px] mt-[50px]'>
-          {userCourses.map((course) => (
-            <MyCourseCard 
-              key={course._id} 
-              course={course} 
-              onCourseRemoved={handleCourseRemoved}
-            />
-          ))}
+          {userCourses
+            .slice()
+            .sort((a, b) => a.order - b.order)
+            .map((course) => (
+              <MyCourseCard
+                key={course._id}
+                course={course}
+                onCourseRemoved={handleCourseRemoved}
+              />
+            ))}
         </article>
       </main>
       <Footer showScrollToTop={userCourses.length > 0} />

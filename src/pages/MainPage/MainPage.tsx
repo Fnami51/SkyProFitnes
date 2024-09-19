@@ -32,9 +32,12 @@ function MainPage() {
                     </div>
                 </article>
                 <article className='flex flex-wrap gap-[40px] mt-[50px]'>
-                    {displayCourses.map((course) => (
-                        <CourseCard key={course._id} course={course} />
-                    ))}
+                    {displayCourses
+                        .slice()
+                        .sort((a, b) => a.order - b.order)
+                        .map((course) => (
+                            <CourseCard key={course._id} course={course} />
+                        ))}
                 </article>
             </main>
             <Footer />

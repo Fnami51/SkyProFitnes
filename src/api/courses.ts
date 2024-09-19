@@ -9,10 +9,12 @@ export const getAllCourses = async (): Promise<Course[]> => {
     const snapshot = await get(coursesRef);
     if (snapshot.exists()) {
       const coursesData = snapshot.val();
-      // console.log('Raw courses data:', coursesData);
       const formattedCourses = Object.entries(coursesData)
-        .map(([id, data]) => ({ _id: id, ...(data as Omit<Course, '_id'>) }));
-      // console.log('Formatted courses:', formattedCourses);
+        .map(([id, data]) => ({
+          _id: id,
+          ...(data as Omit<Course, '_id'>),
+          difficulty: (data as any).difficulty || 0 // Убедимся, что difficulty всегда определено
+        }));
       return formattedCourses;
     } else {
       console.log("No courses available");

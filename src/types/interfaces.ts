@@ -18,8 +18,8 @@ export interface Course {
   fitting: string[];
   order: number;
   workouts: string[];
-  imageUrl?: string; 
-  difficulty?: number;
+  imageUrl?: string;
+  difficult?: number;
   totalDuration?: number;
   progress?: number;
 }

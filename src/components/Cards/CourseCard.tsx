@@ -84,16 +84,14 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
               </svg>
               <p>20-50 мин/день</p>
             </div>
-            {course.difficulty !== undefined && (
-              <div className="flex rounded-[30px] bg-gray-super-light items-center p-[10px] gap-[6px]">
-                <Level value={course.difficulty} />
-                <p>Сложность</p>
-              </div>
-            )}
+            <div className="flex rounded-[30px] bg-gray-super-light items-center p-[10px] gap-[6px]">
+              <Level value={course.difficult || 0} />
+              <p className="font-roboto text-[16px] leading-[110%] text-[#202020]">Сложность</p>
+            </div>
           </div>
         </div>
       </div>
-      <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} type="login" onSwitchType={() => {}} />
+      <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} type="login" onSwitchType={() => { }} />
       <InfoModal isOpen={isInfoModalOpen} onClose={() => setIsInfoModalOpen(false)} message={infoMessage} type="progress" />
     </>
   );
