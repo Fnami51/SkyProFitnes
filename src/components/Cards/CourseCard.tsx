@@ -16,6 +16,7 @@ interface CourseCardProps {
   onCourseRemoved?: () => void;
 }
 
+
 function CourseCard({ course, onCourseRemoved }: CourseCardProps) {
   const { user } = useAuth();
   const { addCourse } = useCourses();
@@ -53,6 +54,17 @@ function CourseCard({ course, onCourseRemoved }: CourseCardProps) {
         }
       } else {
         try {
+          const userCoursesRef = ref(database, `userCourses/${user.uid}`);
+          const snapshot = await get(userCoursesRef);
+          if (snapshot.exists()) {
+            const userCourses = snapshot.val();
+            if (userCourses.includes(course._id)) {
+              setInfoMessage('Этот курс уже добавлен.');
+              setIsInfoModalOpen(true);
+              return;
+            }
+          }
+          
           await addCourse(course._id);
           setInfoMessage('Курс успешно добавлен!');
           setIsInfoModalOpen(true);
