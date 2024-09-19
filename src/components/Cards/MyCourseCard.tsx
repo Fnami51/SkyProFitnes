@@ -23,33 +23,32 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
     const fetchProgress = async () => {
       if (user && course._id && course.workouts) {
         let totalProgress = 0;
-        let completedWorkouts = 0;
-
+        const totalWorkouts = course.workouts.length;
+  
         for (const workoutId of course.workouts) {
           const workoutRef = ref(database, `courses/workouts/${workoutId}`);
           const workoutSnapshot = await get(workoutRef);
           const workoutData = workoutSnapshot.val() as Workout;
-
           const progressRef = ref(database, `userProgress/${user.uid}/${workoutId}`);
           const progressSnapshot = await get(progressRef);
           const progressData = progressSnapshot.val() || {};
-
-          if (progressData.completed === 100) {
-            totalProgress += 100;
-            completedWorkouts++;
-          } else if (workoutData && workoutData.exercises) {
-            const exerciseProgress = workoutData.exercises.reduce((sum, exercise) => {
-              return sum + (progressData[exercise.name] || 0) / exercise.quantity;
-            }, 0);
-            totalProgress += (exerciseProgress / workoutData.exercises.length) * 100;
+  
+          if (workoutData && workoutData.exercises) {
+            if (Object.keys(progressData).length > 0) {
+              const exerciseProgress = workoutData.exercises.reduce((sum, exercise) => {
+                return sum + (progressData[exercise.name] || 0) / exercise.quantity;
+              }, 0);
+              totalProgress += (exerciseProgress / workoutData.exercises.length);
+            }
+          } else if (progressData.completed) {
+            totalProgress += 1; // Добавляем 1 (100%) за полностью выполненную тренировку
           }
         }
-
-        const averageProgress = totalProgress / course.workouts.length;
+  
+        const averageProgress = (totalProgress / totalWorkouts) * 100;
         setProgress(Math.round(averageProgress));
       }
     };
-
     fetchProgress();
   }, [user, course._id, course.workouts]);
 

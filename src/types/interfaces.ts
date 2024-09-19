@@ -21,6 +21,7 @@ export interface Course {
   imageUrl?: string; 
   difficulty?: number;
   totalDuration?: number;
+  progress?: number;
 }
 
 export interface Workout {
