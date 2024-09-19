@@ -18,7 +18,7 @@ interface CourseCardProps {
 
 function CourseCard({ course, onCourseRemoved }: CourseCardProps) {
   const { user } = useAuth();
-  const { addCourse, getUserCourses } = useCourses();
+  const { addCourse } = useCourses();
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);

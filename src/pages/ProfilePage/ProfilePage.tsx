@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MyCourseCard from "../../components/Cards/MyCourseCard";
 import CourseCard from "../../components/Cards/CourseCard";
 import { useAuth } from '../../hooks/useAuth';
 import { useCourses } from '../../hooks/useCourses';
@@ -14,17 +13,25 @@ function ProfilePage() {
   const { getUserCourses } = useCourses();
   const [userCourses, setUserCourses] = useState<Course[]>([]);
 
+  const fetchUserCourses = useCallback(async () => {
+    if (user) {
+      const courses = await getUserCourses(user.uid);
+      setUserCourses(courses);
+    }
+  }, [user, getUserCourses]);
+
+
   useEffect(() => {
     if (!loading && !user) {
       navigate('/');
     } else {
-      const fetchUserCourses = async () => {
-        const courses = await getUserCourses(user.uid);
-        setUserCourses(courses);
-      };
       fetchUserCourses();
     }
-  }, [user, getUserCourses, navigate]);
+  }, [user, fetchUserCourses, navigate, loading]);
+
+  const handleCourseRemoved = useCallback(() => {
+    fetchUserCourses();
+  }, [fetchUserCourses]);
 
   return (
     <>
@@ -38,7 +45,11 @@ function ProfilePage() {
         </h1>
         <article className='flex flex-wrap gap-[40px] mt-[50px]'>
           {userCourses.map((course) => (
-            <CourseCard key={course._id} course={course} />
+            <CourseCard 
+              key={course._id} 
+              course={course} 
+              onCourseRemoved={handleCourseRemoved}
+            />
           ))}
         </article>
       </main>
