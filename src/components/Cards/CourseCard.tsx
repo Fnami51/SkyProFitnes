@@ -30,7 +30,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         if (snapshot.exists()) {
           const userCourses = snapshot.val();
           if (userCourses.includes(course._id)) {
-            setInfoMessage('Этот курс уже добавлен.');
+            setInfoMessage('Этот курс уже добавлен');
             setIsInfoModalOpen(true);
             return;
           }
@@ -92,7 +92,12 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         </div>
       </div>
       <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} type="login" onSwitchType={() => { }} />
-      <InfoModal isOpen={isInfoModalOpen} onClose={() => setIsInfoModalOpen(false)} message={infoMessage} type="progress" />
+      <InfoModal
+        isOpen={isInfoModalOpen}
+        onClose={() => setIsInfoModalOpen(false)}
+        message={infoMessage}
+        type="progress"
+      />
     </>
   );
 };

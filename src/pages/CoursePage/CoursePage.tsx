@@ -5,8 +5,10 @@ import { useCoursesContext } from '../../context/CoursesContext';
 import { useAuth } from '../../hooks/useAuth';
 import { Course } from '../../types/interfaces';
 import InfoModal from '../../components/infoModal';
-import Footer from '../../components/Footer';
 import Modal from '../../components/Modal';
+import Footer from '../../components/Footer';
+import { database } from '../../config/firebase';
+import { ref, get } from "firebase/database";
 
 function CoursePage() {
 	const { id } = useParams<{ id: string }>();
@@ -14,18 +16,14 @@ function CoursePage() {
 	const { getCourse, addCourse } = useCoursesContext();
 	const [course, setCourse] = useState<Course | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [modalMessage, setModalMessage] = useState('');
-	const previousId = useRef<string | null>(null);
+	const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 	const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+	const [infoMessage, setInfoMessage] = useState('');
+	const previousId = useRef<string | null>(null);
 
 	useEffect(() => {
 		const fetchCourse = async () => {
-			if (id) {
-				if (id === previousId.current) {
-					return;
-				}
-
+			if (id && id !== previousId.current) {
 				setLoading(true);
 				try {
 					const courseData = await getCourse(id);
@@ -35,24 +33,32 @@ function CoursePage() {
 				} finally {
 					setLoading(false);
 				}
-
 				previousId.current = id;
 			}
 		};
-
 		fetchCourse();
 	}, [id, getCourse]);
 
 	const handleAddCourse = async () => {
 		if (user && id) {
 			try {
+				const userCoursesRef = ref(database, `userCourses/${user.uid}`);
+				const snapshot = await get(userCoursesRef);
+				if (snapshot.exists()) {
+					const userCourses = snapshot.val();
+					if (userCourses.includes(id)) {
+						setInfoMessage('Этот курс уже добавлен');
+						setIsInfoModalOpen(true);
+						return;
+					}
+				}
 				await addCourse(id);
-				setModalMessage('Курс успешно добавлен!');
-				setIsModalOpen(true);
+				setInfoMessage('Курс успешно добавлен!');
+				setIsInfoModalOpen(true);
 			} catch (error) {
 				console.error('Error adding course:', error);
-				setModalMessage('Не удалось добавить курс. Попробуйте еще раз.');
-				setIsModalOpen(true);
+				setInfoMessage('Не удалось добавить курс. Попробуйте еще раз.');
+				setIsInfoModalOpen(true);
 			}
 		} else {
 			setIsLoginModalOpen(true);
@@ -147,15 +153,20 @@ function CoursePage() {
 						className='w-[437px] h-[52px] mobile:w-[283px] mobile:h-[50px]'
 						onClick={handleAddCourse}
 					>
-						{user ? 'Добавить курс' : 'Войдите, чтобы добавить курс'}
-					</Button>
-				</div>
+						{user ? 'Добавить курс' : 'Войти и добавить курс'}
+					</Button>	</div>
 				<img src='/images/6094.png' alt='Черный' className='absolute top-[22px] right-[385px] mobile:w-[32.16px] mobile:h-[27.33px] mobile:top-[-183px] mobile:right-[154px] mobile:z-[3]' />
 				<img src='/images/6084.png' alt='Салатовый' className='absolute top-[105px] right-[15px] w-[670.18px] h-[440.98px] order-3 mobile:hidden' />
 			</section>
 
 			<img src='/images/runner.png' alt='Бегун' className='absolute top-[900px] right-[40px] z-[3] mobile:w-[313.22px] mobile:h-[348.91px] mobile:top-[1410px] mobile:right-[-69px] mobile:z-[1]' />
 			<img src='/images/6084.png' alt='Салатовый_2' className='hidden mobile:block absolute mobile:w-[750.93px] mobile:h-[300px] mobile:top-[1530px] mobile:right-[27px]' />
+			<InfoModal
+				isOpen={isInfoModalOpen}
+				onClose={() => setIsInfoModalOpen(false)}
+				message={infoMessage}
+				type="progress"
+			/>
 			<Modal
 				isOpen={isLoginModalOpen}
 				onClose={() => setIsLoginModalOpen(false)}
