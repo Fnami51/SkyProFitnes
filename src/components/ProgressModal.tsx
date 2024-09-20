@@ -38,7 +38,7 @@ const ProgressModal: React.FC<ProgressModalProps> = ({ isOpen, onClose, exercise
           {exercises.length > 0 ? (
             exercises.map((exercise) => (
               <div key={exercise.name} className="flex flex-col gap-[10px]">
-                <label className="text-[18px]">{`Сколько раз вы сделали ${exercise.name.toLowerCase()} (${exercise.quantity} повторений)?`}</label>
+                <label className="text-[18px]">{`Сколько раз вы сделали ${exercise.name}?`}</label>
                 <input
                   type="number"
                   className="border border-[#D0CECE] rounded-[8px] p-[16px]"

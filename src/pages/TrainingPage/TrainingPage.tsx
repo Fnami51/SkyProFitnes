@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useCourses } from '../../hooks/useCourses';
 import { useAuth } from '../../hooks/useAuth';
-import { Workout } from '../../types/interfaces';
+import { Workout, Exercise } from '../../types/interfaces';
 import ProgressModal from '../../components/ProgressModal';
 import InfoModal from '../../components/infoModal';
 import { database } from '../../config/firebase';
@@ -18,9 +18,6 @@ function TrainingPage() {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
   const videoRef = useRef<HTMLIFrameElement>(null);
-
-  const location = useLocation();
-  const { course } = location.state || {};
 
   const fetchWorkout = useCallback(async () => {
     if (id && user) {
@@ -106,17 +103,17 @@ function TrainingPage() {
     }
   };
 
-  const calculatePercentage = () => {
-    if (!workout) return 0;
-    if (!workout.exercises || workout.exercises.length === 0) {
-      return progress.completed ? 100 : 0;
-    }
-    const totalExercises = workout.exercises.length;
-    const completedExercises = workout.exercises.reduce((sum, exercise) => {
-      return sum + (progress[exercise.name] || 0) / exercise.quantity;
-    }, 0);
-    return Math.round((completedExercises / totalExercises) * 100);
-  };
+  // const calculatePercentage = () => {
+  //   if (!workout) return 0;
+  //   if (!workout.exercises || workout.exercises.length === 0) {
+  //     return progress.completed ? 100 : 0;
+  //   }
+  //   const totalExercises = workout.exercises.length;
+  //   const completedExercises = workout.exercises.reduce((sum, exercise) => {
+  //     return sum + (progress[exercise.name] || 0) / exercise.quantity;
+  //   }, 0);
+  //   return Math.round((completedExercises / totalExercises) * 100);
+  // };
 
   const isProgressZero = () => {
     if (!workout) return true;
@@ -124,6 +121,29 @@ function TrainingPage() {
       return !progress.completed;
     }
     return Object.values(progress).every(value => value === 0);
+  };
+
+  const renderExercises = () => {
+    if (!workout || !workout.exercises) return null;
+    
+    return workout.exercises.map((exercise: Exercise) => {
+      const exerciseProgress = progress[exercise.name] || 0;
+      const progressPercentage = Math.round((exerciseProgress / exercise.quantity) * 100);
+      
+      return (
+        <div key={exercise.name} className="mt-4">
+          <p className="text-[18px] font-normal">
+            {exercise.name.split('(')[0].trim()} {progressPercentage}%
+          </p>
+          <div className="w-full bg-[#F7F7F7] rounded-full h-2.5 mt-2">
+            <div 
+              className="bg-[#00C1FF] h-2.5 rounded-full" 
+              style={{ width: `${progressPercentage}%` }}
+            ></div>
+          </div>
+        </div>
+      );
+    });
   };
 
   if (authLoading || loading) {
@@ -140,12 +160,11 @@ function TrainingPage() {
 
   return (
     <main className="mt-[60px]">
-      <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto mb-[24px]">
-        {String(course)}
+      <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto mb-[40px]">
+        {workout.name}
       </h1>
-      <Link to='/user' className="font-roboto text-2xl font-normal leading-[35.2px] text-left">{workout.name}</Link>
+      <Link to='/user'>Вернуться в профиль</Link>
       <iframe
-      className='mt-[40px] rounded-[30px]'
         ref={videoRef}
         width="100%"
         height="500"
@@ -154,27 +173,17 @@ function TrainingPage() {
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
-        onLoad={() => {
-          if (videoRef.current) {
-            videoRef.current.contentWindow?.postMessage('{"event":"listening"}', '*');
-          }
-        }}
       ></iframe>
-      
       <section className="flex flex-col mobile:items-center w-[100%] p-[40px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
-        <h2 className="text-[32px] font-normal mb-[48px] text-center">{workout.name}</h2>
-        <div className="mt-[20px] mb-[40px] w-full">
-          <p>Общий прогресс: {calculatePercentage()}%</p>
-          <div className="w-full bg-[#F7F7F7] rounded-full h-2.5 mt-2">
-            <div
-              className="bg-[#00C1FF] h-2.5 rounded-full"
-              style={{ width: `${calculatePercentage()}%` }}
-            ></div>
-          </div>
+        <div className="w-full">
+          <h3 className="text-[24px] font-medium mb-4">
+            Упражнения тренировки {workout.name.split(' ').pop()}
+          </h3>
+          {renderExercises()}
         </div>
         <button
           onClick={handleOpenProgressModal}
-          className="w-[320px] h-[52px] mobile:w-[283px] bg-[#BCEC30] text-black rounded-[46px] font-roboto text-[18px] font-normal leading-[19.8px]"
+          className="w-[320px] h-[52px] mobile:w-[283px] bg-[#BCEC30] text-black rounded-[46px] font-roboto text-[18px] font-normal leading-[19.8px] mt-8"
         >
           {isProgressZero() ? "Заполнить свой прогресс" : "Обновить свой прогресс"}
         </button>
