@@ -56,10 +56,15 @@ export const logoutUser = async (): Promise<void> => {
 
 export const resetPassword = async (email: string): Promise<void> => {
   try {
+    console.log('Attempting to send password reset email to:', email);
     await sendPasswordResetEmail(auth, email);
-    console.log('Password reset email sent to:', email);
+    console.log('Password reset email sent successfully to:', email);
   } catch (error) {
     console.error('Error resetting password:', error);
+    if (error instanceof FirebaseError) {
+      console.error('Firebase error code:', error.code);
+      console.error('Firebase error message:', error.message);
+    }
     throw error;
   }
 };

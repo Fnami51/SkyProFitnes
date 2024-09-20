@@ -140,10 +140,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
             }
             break;
           case 'resetPassword':
-            await resetUserPassword(email);
-            setResetEmail(email);
-            handleClose(); // Закрываем основное модальное окно
-            setIsResetPasswordModalOpen(true); // Открываем InfoModal
+          case 'resetPassword':
+            try {
+              await resetUserPassword(email);
+              setResetEmail(email);
+              handleClose();
+              setIsResetPasswordModalOpen(true);
+            } catch (error) {
+              console.error('Error in password reset:', error);
+              setError('Ошибка при отправке письма для сброса пароля. Пожалуйста, попробуйте еще раз.');
+            }
             break;
           case 'newPassword':
             try {
