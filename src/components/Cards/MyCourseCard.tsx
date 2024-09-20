@@ -67,8 +67,10 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
   };
 
   const handleRemoveCourse = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+    if (e && e.stopPropagation) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (user && course._id) {
       try {
         const userCoursesRef = ref(database, `userCourses/${user.uid}`);

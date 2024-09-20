@@ -22,7 +22,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
   const [infoMessage, setInfoMessage] = React.useState('');
 
   const handleCourseAction = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+    if (e && e.stopPropagation) {
+      e.stopPropagation();
+    }
+
     if (user) {
       try {
         const userCoursesRef = ref(database, `userCourses/${user.uid}`);

@@ -13,9 +13,11 @@ function Header({ onLoginClick }: HeaderProps) {
   const [isUserModalOpen, setUserModalOpen] = useState(false);
   const userRef = useRef<HTMLDivElement>(null);
 
-  const handleUserClick = (e: React.MouseEvent) => {
+  const handleUserClick = async (e: React.MouseEvent) => {
+    if (e && e.stopPropagation) {
     e.stopPropagation(); // Предотвращаем распространение события
-    setUserModalOpen(!isUserModalOpen); // Переключаем состояние
+    setUserModalOpen(!isUserModalOpen);
+    } // Переключаем состояние
   };
 
   return (
