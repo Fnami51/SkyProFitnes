@@ -69,7 +69,7 @@ function Profile() {
           <p>Логин: {user?.email || user?.login}</p>
           <p>Пароль: ********</p>
         </div>
-        <div className='flex gap-[10px] mobile:flex-col'>
+        <div className='flex flex-wrap gap-[10px] mobile:flex-col'>
           <button onClick={handleChangePassword} className='w-[192px] mobile:w-full h-[52px] rounded-btnRad bg-green'>
             <p className='text-black font-roboto text-[18px] font-normal leading-[19.8px]'>
               Изменить пароль

@@ -96,8 +96,8 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
                         className="sr-only"
                       />
                       <span className="w-6 h-6 border-2 border-black rounded-full mr-2.5 flex items-center justify-center group-hover:border-[#BCEC30] transition-colors">
-                        <span className={`w-4 h-4 rounded-full ${false /*Исправь условия*/ ? 'bg-[#BCEC30]' : ''} transition-colors`}>
-                          {false /*Исправь условия*/ && (
+                        <span className={`w-4 h-4 rounded-full ${true /*Исправь условия*/ ? 'bg-[#BCEC30]' : ''} transition-colors`}>
+                          {true /*Исправь условия*/ && (
                             <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                               <polyline points="20 6 9 17 4 12"></polyline>
                             </svg>

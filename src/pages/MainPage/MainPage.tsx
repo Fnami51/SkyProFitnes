@@ -25,7 +25,7 @@ function MainPage() {
                     <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto">
                         Начните заниматься спортом и улучшите качество жизни
                     </h1>
-                    <div className="h-[120px] mobile:hidden">
+                    <div className="h-[120px] mobile:hidden tablet:hidden">
                         <div className="w-[288px] h-[120px] bg-[url('/speech_bubble.svg')] bg-no-repeat bg-cover pt-[16px] pl-[20px] font-roboto text-[32px] text-left leading-[35.2px]">
                             <p>Измени своё тело за полгода!</p>
                         </div>
