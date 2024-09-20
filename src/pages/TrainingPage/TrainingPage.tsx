@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCourses } from '../../hooks/useCourses';
 import { useAuth } from '../../hooks/useAuth';
@@ -10,7 +10,7 @@ import { ref, set, get } from "firebase/database";
 
 function TrainingPage() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { getWorkout } = useCourses();
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,9 +19,10 @@ function TrainingPage() {
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
   const videoRef = useRef<HTMLIFrameElement>(null);
 
-  useEffect(() => {
-    const fetchWorkout = async () => {
-      if (id) {
+  const fetchWorkout = useCallback(async () => {
+    if (id && user) {
+      try {
+        setLoading(true);
         const workoutData = await getWorkout(id);
         setWorkout(workoutData);
         if (user) {
@@ -31,11 +32,19 @@ function TrainingPage() {
             setProgress(snapshot.val());
           }
         }
+      } catch (error) {
+        console.error('Error fetching workout:', error);
+      } finally {
         setLoading(false);
       }
-    };
-    fetchWorkout();
-  }, [id, getWorkout, user]);
+    }
+  }, [id, user, getWorkout]);
+
+  useEffect(() => {
+    if (!authLoading) {
+      fetchWorkout();
+    }
+  }, [authLoading, fetchWorkout]);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -49,7 +58,7 @@ function TrainingPage() {
     };
   }, [workout, user]);
 
-  const handleAutoSaveProgress = async () => {
+  const handleAutoSaveProgress = useCallback(async () => {
     if (!user || !id || !workout) return;
     try {
       const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
@@ -68,7 +77,7 @@ function TrainingPage() {
     } catch (error) {
       console.error('Error auto-saving progress:', error);
     }
-  };
+  }, [user, id, workout]);
 
   const handleOpenProgressModal = () => {
     setIsProgressModalOpen(true);
@@ -114,7 +123,7 @@ function TrainingPage() {
     return Object.values(progress).every(value => value === 0);
   };
 
-  if (loading) {
+  if (authLoading || loading) {
     return <div>Loading...</div>;
   }
 
