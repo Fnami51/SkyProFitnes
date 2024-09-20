@@ -8,12 +8,14 @@ interface WorkoutListModalProps {
   isOpen: boolean;
   onClose: () => void;
   workoutIds: string[];
+  course: string;
 }
 
 const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
   isOpen,
   onClose,
   workoutIds,
+  course
 }) => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const { getWorkout } = useCourses();
@@ -77,9 +79,6 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div ref={modalRef} className="bg-white shadow-lg rounded-[30px] p-10 w-full max-w-[460px] h-[609px] flex flex-col">
           <h2 className="text-[32px] font-normal mb-12 text-center font-[stratos] leading-[110%]">Выберите тренировку</h2>
-
-          <button onClick={() => console.log(workouts)}>console.log</button>
-
           <div
             ref={listRef}
             className={`flex-grow overflow-y-auto pr-4 ${showScroll ? 'scrollbar' : ''}`}
@@ -105,7 +104,7 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
                           )}
                         </span>
                       </span>
-                      <Link to={`/training/${workout._id}`} >
+                      <Link to={`/training/${workout._id}`} state={{course}}>
                         <p className="text-[20px] font-normal font-roboto leading-[110%]">{workout.name}</p>
                         <p className="text-[14px] text-black font-roboto leading-[110%] mt-[10px]">Тренировка {index + 1}</p>
                       </Link>

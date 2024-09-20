@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { useCourses } from '../../hooks/useCourses';
 import { useAuth } from '../../hooks/useAuth';
 import { Workout } from '../../types/interfaces';
@@ -18,6 +18,9 @@ function TrainingPage() {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
   const videoRef = useRef<HTMLIFrameElement>(null);
+
+  const location = useLocation();
+  const { course } = location.state || {};
 
   const fetchWorkout = useCallback(async () => {
     if (id && user) {
@@ -137,11 +140,12 @@ function TrainingPage() {
 
   return (
     <main className="mt-[60px]">
-      <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto mb-[40px]">
-        {workout.name}
+      <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto mb-[24px]">
+        {String(course)}
       </h1>
-      <Link to='/user'>Вернуться в профиль</Link>
+      <Link to='/user' className="font-roboto text-2xl font-normal leading-[35.2px] text-left">{workout.name}</Link>
       <iframe
+      className='mt-[40px] rounded-[30px]'
         ref={videoRef}
         width="100%"
         height="500"

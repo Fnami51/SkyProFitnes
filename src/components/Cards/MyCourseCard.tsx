@@ -135,6 +135,7 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
         isOpen={isWorkoutListModalOpen}
         onClose={() => setIsWorkoutListModalOpen(false)}
         workoutIds={course.workouts || []}
+        course={course.nameRU}
       />
     </div>
   );
