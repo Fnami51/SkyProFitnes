@@ -160,6 +160,7 @@ function TrainingPage() {
           }
         }}
       ></iframe>
+      
       <section className="flex flex-col mobile:items-center w-[100%] p-[40px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
         <h2 className="text-[32px] font-normal mb-[48px] text-center">{workout.name}</h2>
         <div className="mt-[20px] mb-[40px] w-full">

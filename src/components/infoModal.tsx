@@ -31,11 +31,11 @@ const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose, message, type, e
 `;
 
   const iconStyles = `
-    w-[56.67px] h-[56.67px] ${type === 'progress' ? 'text-[#BCEC30]' : 'text-[#271A58]'}
+    w-[68px] h-[68px] ${type === 'progress' ? 'text-[#BCEC30]' : 'text-[#271A58]'}
   `;
 
   const textStyles = `
-    font-['StratosSkyeng'] text-[40px] font-normal leading-[48px] text-center mb-[30px]
+    font-roboto text-[40px] font-[450] leading-[48px] text-center mb-[30px]
   `;
   return (
     <div className={baseStyles}>

@@ -98,14 +98,14 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
                       <span className="w-6 h-6 border-2 border-black rounded-full mr-2.5 flex items-center justify-center group-hover:border-[#BCEC30] transition-colors">
                         <span className={`w-4 h-4 rounded-full ${false /*Исправь условия*/ ? 'bg-[#BCEC30]' : ''} transition-colors`}>
                           {false /*Исправь условия*/ && (
-                            <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                               <polyline points="20 6 9 17 4 12"></polyline>
                             </svg>
                           )}
                         </span>
                       </span>
-                      <Link to={`/training/${workout._id}`} state={{course}}>
-                        <p className="text-[20px] font-normal font-roboto leading-[110%]">{workout.name}</p>
+                      <Link to={`/training/${workout._id}`} state={{course}} className="max-w-[320px]">
+                        <p className="text-[21px] font-normal font-roboto leading-[110%]">{workout.name}</p>
                         <p className="text-[14px] text-black font-roboto leading-[110%] mt-[10px]">Тренировка {index + 1}</p>
                       </Link>
                     </label>
