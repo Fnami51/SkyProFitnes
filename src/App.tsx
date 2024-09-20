@@ -55,8 +55,8 @@ function App() {
           <Route path='/' element={<MainPage />} />
           <Route path='/user' element={<ProfilePage />} />
           <Route path='/course/:id' element={<CoursePage />} />
-          <Route path='/course' element={<MainPage />} />
-          <Route path='/training/' element={<ProfilePage />} />
+          <Route path='/course' element={<CoursePage />} />
+          <Route path='/training/' element={<TrainingPage />} />
           <Route path='/training/:id' element={<TrainingPage />} />
         </Routes>
         <Modal

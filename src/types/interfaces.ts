@@ -47,6 +47,6 @@ interface ImportMetaEnv {
   VITE_FIREBASE_DATABASE_URL: string;
 }
 
-interface ImportMeta {
+export interface ImportMeta {
   readonly env: ImportMetaEnv;
 }

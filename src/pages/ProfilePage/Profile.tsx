@@ -10,6 +10,7 @@ function Profile() {
   const [editedName, setEditedName] = useState(user?.customDisplayName || user?.displayName || user?.email?.split('@')[0] || '')
   const [saveMessage, setSaveMessage] = useState('')
 
+
   const handleChangePassword = () => {
     setModalType('newPassword')
     setIsModalOpen(true)

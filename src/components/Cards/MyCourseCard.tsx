@@ -9,6 +9,7 @@ import { ref, get, set } from "firebase/database";
 import { useAuth } from '../../hooks/useAuth';
 
 interface MyCourseCardProps {
+
   course: Course;
   onCourseRemoved?: () => void;
 }
