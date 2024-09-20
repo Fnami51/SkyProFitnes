@@ -78,7 +78,7 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div ref={modalRef} className="bg-white shadow-lg rounded-[30px] p-10 w-full max-w-[460px] h-[609px] flex flex-col">
-          <h2 className="text-[32px] font-normal mb-12 text-center font-[stratos] leading-[110%]">Выберите тренировку</h2>
+          <h2 className="text-[32px] font-[450] mb-12 text-center font-roboto leading-[110%]">Выберите тренировку</h2>
           <div
             ref={listRef}
             className={`flex-grow overflow-y-auto pr-4 ${showScroll ? 'scrollbar' : ''}`}
