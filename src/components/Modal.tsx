@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Button from './Button';
 import { useAuth } from '../hooks/useAuth';
+import InfoModal from './infoModal';
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,6 +17,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+
   const { register, login, resetUserPassword, changeUserPassword } = useAuth();
 
   const resetForm = useCallback(() => {
@@ -37,6 +41,19 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
       resetForm();
     }
   }, [isOpen, resetForm]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isResetPasswordModalOpen) {
+      timer = setTimeout(() => {
+        setIsResetPasswordModalOpen(false);
+        setResetEmail('');
+      }, 1000); // Закрываем через 1 секунду
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [isResetPasswordModalOpen]);
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.(ru|com)$/i;
@@ -124,11 +141,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
             break;
           case 'resetPassword':
             await resetUserPassword(email);
-            console.log('Reset password requested for:', email);
-            setSuccess('Инструкции по сбросу пароля отправлены на ваш email');
-            setTimeout(() => {
-              handleClose();
-            }, 2000);
+            setResetEmail(email);
+            handleClose(); // Закрываем основное модальное окно
+            setIsResetPasswordModalOpen(true); // Открываем InfoModal
             break;
           case 'newPassword':
             try {
@@ -167,10 +182,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
     if (error) {
       return (
         <p className="w-[280px] font-roboto text-[14px] leading-[110%] text-center text-[#DB0030] flex-none order-2 flex-grow-0">
-          {error}
-          {' '}
+          {error}{' '}
           {type === 'login' && (
-            <span className="text-blue-500 cursor-pointer hover:underline" onClick={() => handleSwitchType('resetPassword')}>
+            <span
+              className="text-blue-500 cursor-pointer hover:underline"
+              onClick={() => handleSwitchType('resetPassword')}
+            >
               Восстановить пароль?
             </span>
           )}
@@ -180,84 +197,88 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
     return null;
   };
 
-  if (!isOpen) return null;
+  if (!isOpen && !isResetPasswordModalOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleClose}>
-      <div className="bg-white shadow-lg rounded-[30px] p-10 w-full max-w-[360px]" onClick={e => e.stopPropagation()}>
-        <div className="flex justify-center mb-12">
-          <img src="/logo.png" alt="SkyFitnessPro" className="w-[220px] h-[35px]" />
+    <>
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleClose}>
+          <div className="bg-white shadow-lg rounded-[30px] p-10 w-full max-w-[360px]" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-center mb-12">
+              <img src="/logo.png" alt="SkyFitnessPro" className="w-[220px] h-[35px]" />
+            </div>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-[34px]">
+              <div className="flex flex-col gap-2.5">
+                {type !== 'newPassword' && (
+                  <input
+                    type="email"
+                    placeholder="Логин"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full h-[52px] pt-4 pr-[18px] pb-4 pl-[18px] border border-[#D0CECE] rounded-lg text-[18px] leading-[19.8px] text-black placeholder-[#D0CECE]"
+                    required
+                  />
+                )}
+                {type !== 'resetPassword' && (
+                  <input
+                    type="password"
+                    placeholder={type === 'newPassword' ? "Новый пароль" : "Пароль"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full h-[52px] pt-4 pr-[18px] pb-4 pl-[18px] border border-[#D0CECE] rounded-lg text-[18px] leading-[19.8px] text-black placeholder-[#D0CECE]"
+                    required
+                  />
+                )}
+                {(type === 'register' || type === 'newPassword') && (
+                  <input
+                    type="password"
+                    placeholder="Повторите пароль"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full h-[52px] pt-4 pr-[18px] pb-4 pl-[18px] border border-[#D0CECE] rounded-lg text-[18px] leading-[19.8px] text-black placeholder-[#D0CECE]"
+                    required
+                  />
+                )}
+                {renderErrorMessage()}
+                {success && (
+                  <p className="w-[280px] h-[30px] font-roboto text-[14px] leading-[110%] text-center text-green-500 flex-none order-2 flex-grow-0">
+                    {success}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2.5">
+                <Button type="submit" variant="primary" className="w-full h-[52px]" disabled={isLoading}>
+                  {type === 'login' ? 'Войти' : type === 'register' ? 'Зарегистрироваться' : type === 'resetPassword' ? 'Сбросить пароль' : 'Подтвердить'}
+                </Button>
+                {type === 'login' && (
+                  <Button variant="secondary" className="w-full h-[52px]" onClick={() => handleSwitchType('register')} disabled={isLoading}>
+                    Зарегистрироваться
+                  </Button>
+                )}
+                {type === 'register' && (
+                  <Button variant="secondary" className="w-full h-[52px]" onClick={() => handleSwitchType('login')} disabled={isLoading}>
+                    Войти
+                  </Button>
+                )}
+                {type === 'resetPassword' && (
+                  <Button variant="secondary" className="w-full h-[52px]" onClick={() => handleSwitchType('login')} disabled={isLoading}>
+                    Вернуться к входу
+                  </Button>
+                )}
+              </div>
+            </form>
+          </div>
         </div>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-[34px]">
-          <div className="flex flex-col gap-2.5">
-            {type !== 'newPassword' && (
-              <input
-                type="email"
-                placeholder="Логин"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-[52px] pt-4 pr-[18px] pb-4 pl-[18px] border border-[#D0CECE] rounded-lg text-[18px] leading-[19.8px] text-black placeholder-[#D0CECE]"
-                required
-              />
-            )}
-            {type !== 'resetPassword' && (
-              <input
-                type="password"
-                placeholder={type === 'newPassword' ? "Новый пароль" : "Пароль"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-[52px] pt-4 pr-[18px] pb-4 pl-[18px] border border-[#D0CECE] rounded-lg text-[18px] leading-[19.8px] text-black placeholder-[#D0CECE]"
-                required
-              />
-            )}
-            {(type === 'register' || type === 'newPassword') && (
-              <input
-                type="password"
-                placeholder="Повторите пароль"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full h-[52px] pt-4 pr-[18px] pb-4 pl-[18px] border border-[#D0CECE] rounded-lg text-[18px] leading-[19.8px] text-black placeholder-[#D0CECE]"
-                required
-              />
-            )}
-            {renderErrorMessage()}
-            {success && (
-              <p className="w-[280px] h-[30px] font-roboto text-[14px] leading-[110%] text-center text-green-500 flex-none order-2 flex-grow-0">
-                {success}
-              </p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2.5">
-            <Button type="submit" variant="primary" className="w-full h-[52px]" disabled={isLoading}>
-              {type === 'login' ? 'Войти' : type === 'register' ? 'Зарегистрироваться' : type === 'resetPassword' ? 'Сбросить пароль' : 'Подтвердить'}
-            </Button>
-            {type === 'login' && (
-              <Button variant="secondary" className="w-full h-[52px]" onClick={() => handleSwitchType('register')} disabled={isLoading}>
-                Зарегистрироваться
-              </Button>
-            )}
-            {type === 'register' && (
-              <Button variant="secondary" className="w-full h-[52px]" onClick={() => handleSwitchType('login')} disabled={isLoading}>
-                Войти
-              </Button>
-            )}
-            {type === 'resetPassword' && (
-              <Button variant="secondary" className="w-full h-[52px]" onClick={() => handleSwitchType('login')} disabled={isLoading}>
-                Вернуться к входу
-              </Button>
-            )}
-          </div>
-        </form>
-      </div>
-    </div>
+      )}
+      <InfoModal
+        isOpen={isResetPasswordModalOpen}
+        onClose={() => setIsResetPasswordModalOpen(false)}
+        message={`Запрос на сброс пароля отправлен на ${resetEmail}`}
+        type="resetPassword"
+        email={resetEmail}
+      />
+    </>
   );
 };
 
 export default Modal;
-{/* <InfoModal
-              isOpen={isResetPasswordModalOpen}
-              onClose={() => setIsResetPasswordModalOpen(false)}
-              message=""
-              type="resetPassword"
-              email={userEmail} 
-            /> Для добавления модального окна об отправке ссылкы на восстановление пароля, надо ли делать?*/}

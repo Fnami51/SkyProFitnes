@@ -1,11 +1,9 @@
 import { useState } from 'react'
 import Modal from '../../components/Modal'
 import { useAuth } from '../../hooks/useAuth'
-import { useCourses } from '../../hooks/useCourses'
 
 function Profile() {
   const { user, logout, updateUser } = useAuth()
-  const { updateProfile } = useCourses()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalType, setModalType] = useState<'newPassword'>('newPassword')
   const [isEditing, setIsEditing] = useState(false)
@@ -24,10 +22,6 @@ function Profile() {
     } catch (error) {
       console.error('Error logging out:', error)
     }
-  }
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
   }
 
   const handleSaveName = async () => {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from '../../components/Button';
 import { useCoursesContext } from '../../context/CoursesContext';
@@ -20,7 +20,12 @@ function CoursePage() {
 	const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 	const [infoMessage, setInfoMessage] = useState('');
 	const previousId = useRef<string | null>(null);
+	const [modalType, setModalType] = useState<'login' | 'register' | 'resetPassword'>('login');
 
+	const handleSwitchModalType = useCallback((newType: 'login' | 'register' | 'resetPassword') => {
+	  setModalType(newType);
+	}, []);
+	
 	useEffect(() => {
 		const fetchCourse = async () => {
 			if (id && id !== previousId.current) {
@@ -170,8 +175,8 @@ function CoursePage() {
 			<Modal
 				isOpen={isLoginModalOpen}
 				onClose={() => setIsLoginModalOpen(false)}
-				type="login"
-				onSwitchType={() => { }}
+				type={modalType}
+				onSwitchType={handleSwitchModalType}
 			/>
 			<Footer />
 		</main>
