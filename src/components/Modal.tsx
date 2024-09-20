@@ -140,7 +140,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
             }
             break;
           case 'resetPassword':
-          case 'resetPassword':
             try {
               await resetUserPassword(email);
               setResetEmail(email);

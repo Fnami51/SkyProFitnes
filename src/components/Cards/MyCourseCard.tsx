@@ -57,10 +57,6 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
     setIsWorkoutListModalOpen(true);
   };
 
-  const handleSelectWorkout = (workoutId: string) => {
-    navigate(`/training/${workoutId}`);
-  };
-
   const getButtonText = () => {
     if (progress === 0) return "Начать тренировку";
     if (progress === 100) return "Начать заново";
@@ -139,7 +135,6 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
         isOpen={isWorkoutListModalOpen}
         onClose={() => setIsWorkoutListModalOpen(false)}
         workoutIds={course.workouts || []}
-        onSelectWorkout={handleSelectWorkout}
       />
     </div>
   );
