@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import Modal from '../../components/Modal'
-import { useAuth } from '../../hooks/useAuth'  // Измените путь импорта
+import { useAuth } from '../../hooks/useAuth'
 import { User } from '../../types/interfaces'
 
 function Profile() {
-	const { user, logout } = useAuth() as { user: User | null, logout: () => Promise<void> } // Получаем user и logout из контекста
+	const { user, logout } = useAuth() as { user: User | null, logout: () => Promise<void> }
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [modalType, setModalType] = useState<'newPassword'>('newPassword')
 
@@ -19,7 +19,6 @@ function Profile() {
 	const handleLogout = async () => {
 		try {
 			await logout()
-			// Редирект на главную страницу
 			window.location.href = '/'
 		} catch (error) {
 			console.error('Error logging out:', error)

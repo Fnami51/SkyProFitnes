@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Level matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="flex gap-[0.75px] items-end h-[18px] w-[18px] p-[2px]"
+  >
+    <div
+      class="w-[2.25px] rounded-[50px] bg-[#00C1FF]"
+      style="height: 3px;"
+    />
+    <div
+      class="w-[2.25px] rounded-[50px] bg-[#00C1FF]"
+      style="height: 6px;"
+    />
+    <div
+      class="w-[2.25px] rounded-[50px] bg-[#00C1FF]"
+      style="height: 9px;"
+    />
+    <div
+      class="w-[2.25px] rounded-[50px] bg-[#D9D9D9]"
+      style="height: 11px;"
+    />
+    <div
+      class="w-[2.25px] rounded-[50px] bg-[#D9D9D9]"
+      style="height: 14px;"
+    />
+  </div>
+</DocumentFragment>
+`;
