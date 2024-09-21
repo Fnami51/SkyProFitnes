@@ -3,11 +3,10 @@ module.exports = {
 	content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
 	theme: {
 		screens: {
-			mobile: { max: '425px' }, // до 425px
-			tablet: { min: '426px', max: '1024px' }, // от 426px до 1024px
-			desktop: { min: '1025px', max: '1160px' }, // от 1025px до 1160px
-			mediumDesktop: { min: '1161px', max: '1300px' }, // от 1161px до 1300px
-			largeDesktop: { min: '1301px' }, // от 1301px и больше
+			mobile: { min: '320px', max: '1024px' },
+			desktop: { min: '1025px', max: '1160px' },
+			mediumDesktop: { min: '1161px', max: '1300px' },
+			largeDesktop: { min: '1301px' },
 		},
 		extend: {
 			colors: {
