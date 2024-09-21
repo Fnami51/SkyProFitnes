@@ -161,13 +161,7 @@ function TrainingPage() {
       <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto mb-[24px]">
         {String(course)}
       </h1>
-      <Link
-        to='/user'
-        className="font-roboto text-[32px] font-normal leading-[35.2px] text-left mb-[40px]  underline leading-[90px]"
-      >
-        Вернуться в профиль
-      </Link>
-      {/* <Link to='/user'>Вернуться в профиль</Link> */}
+      <Link to='/user' className="font-roboto text-2xl font-normal leading-[35.2px] underline text-left">{workout.name}</Link>
       <iframe
         className='mt-[40px] rounded-[30px]'
         ref={videoRef}
