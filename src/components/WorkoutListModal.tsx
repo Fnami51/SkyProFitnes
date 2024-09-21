@@ -126,7 +126,7 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
                           )}
                         </span>
                       </span>
-                      <Link to={`/training/${workout._id}`} state={{ course }} className="max-w-[320px]">
+                      <Link to={`/training/${workout._id}`} state={{ course: course,  workoutNumber: index + 1 }} className="max-w-[320px]">
                         <p className="text-[21px] font-normal font-roboto leading-[110%]">{workout.name}</p>
                         <p className="text-[14px] text-black font-roboto leading-[110%] mt-[10px]">Тренировка {index + 1}</p>
                       </Link>
