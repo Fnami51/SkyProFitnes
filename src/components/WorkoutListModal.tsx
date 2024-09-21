@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Workout } from '../types/interfaces';
+import { Workout, Exercise } from '../types/interfaces';
 import { useCourses } from '../hooks/useCourses';
 import Modal from './Modal';
 import { Link } from 'react-router-dom';
@@ -22,7 +22,7 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({ isOpen, onClose, wo
   const [showScroll, setShowScroll] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const { user } = useAuth();
-  const [workoutProgress, setWorkoutProgress] = useState<{[key: string]: boolean}>({});
+  const [workoutProgress, setWorkoutProgress] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     const fetchWorkouts = async () => {
@@ -37,13 +37,27 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({ isOpen, onClose, wo
             const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
             const snapshot = await get(progressRef);
             const progressData = snapshot.val();
-            return { id, completed: progressData?.completed === 100 };
+
+            const workout = fetchedWorkouts.find(w => w?._id === id);
+            if (!workout) return { id, completed: false };
+
+            if (workout.exercises && workout.exercises.length > 0) {
+              // Для тренировок с упражнениями
+              const allExercisesCompleted = workout.exercises.every((exercise: Exercise) => {
+                const exerciseProgress = progressData?.[exercise.name] || 0;
+                return exerciseProgress >= exercise.quantity;
+              });
+              return { id, completed: allExercisesCompleted };
+            } else {
+              // Для тренировок без упражнений
+              return { id, completed: progressData?.completed === 100 };
+            }
           });
           const progressResults = await Promise.all(progressPromises);
           const progressObject = progressResults.reduce((acc, { id, completed }) => {
             acc[id] = completed;
             return acc;
-          }, {} as {[key: string]: boolean});
+          }, {} as { [key: string]: boolean });
           setWorkoutProgress(progressObject);
         }
       } else {
@@ -116,7 +130,7 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({ isOpen, onClose, wo
                           )}
                         </span>
                       </span>
-                      <Link to={`/training/${workout._id}`} state={{course}} className="max-w-[320px]">
+                      <Link to={`/training/${workout._id}`} state={{ course }} className="max-w-[320px]">
                         <p className="text-[21px] font-normal font-roboto leading-[110%]">{workout.name}</p>
                         <p className="text-[14px] text-black font-roboto leading-[110%] mt-[10px]">Тренировка {index + 1}</p>
                       </Link>
