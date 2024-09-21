@@ -31,7 +31,7 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({ isOpen, onClose, wo
         const fetchedWorkouts = await Promise.all(workoutPromises);
         setWorkouts(fetchedWorkouts.filter((w): w is Workout => w !== null));
 
-        // Fetch progress for each workout
+        // Получение прогресса для каждой тренировки
         if (user) {
           const progressPromises = workoutIds.map(async (id) => {
             const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
