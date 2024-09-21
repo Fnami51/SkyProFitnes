@@ -49,7 +49,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose, message, type, e
           </>
         ) : (
           <>
-            <img src="/logo.png" alt="SkyFitnessPro" className="w-[220px] h-[35px]" />
+            <img src="/logo.png" alt="SkyFitnessPro" className="w-[220px] h-[35px]" loading="lazy" />
             <p className="text-center font-roboto text-[18px] leading-[22px]">
               Ссылка для восстановления<br />пароля отправлена<br />на {email}
             </p>

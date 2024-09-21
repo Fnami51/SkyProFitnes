@@ -1,13 +1,14 @@
-import { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Modal from './components/Modal';
-import CoursePage from './pages/CoursePage/CoursePage';
-import MainPage from './pages/MainPage/MainPage';
-import ProfilePage from './pages/ProfilePage/ProfilePage';
-import TrainingPage from './pages/TrainingPage/TrainingPage';
 import { CoursesProvider } from './context/CoursesContext';
 import { useAuth } from './hooks/useAuth';
+
+const MainPage = React.lazy(() => import('./pages/MainPage/MainPage').then(module => ({ default: module.default })));
+const ProfilePage = React.lazy(() => import('./pages/ProfilePage/ProfilePage').then(module => ({ default: module.default })));
+const CoursePage = React.lazy(() => import('./pages/CoursePage/CoursePage').then(module => ({ default: module.default })));
+const TrainingPage = React.lazy(() => import('./pages/TrainingPage/TrainingPage').then(module => ({ default: module.default })));
 
 function App() {
   const [isModalSigninOpen, setIsModalSigninOpen] = useState(false);
@@ -49,25 +50,21 @@ function App() {
 
   return (
     <CoursesProvider>
-      <div className='bg-background min-h-screen flex flex-col px-[16px] mobil:px-[16px] desktop:px-[70px] mediumDesktop:px-[140px] pb-page-padding overflow-x-hidden'>
+      <div className='bg-background min-h-screen flex flex-col px-[16px] mobile:px-[16px] desktop:px-[70px] mediumDesktop:px-[140px] pb-page-padding overflow-x-hidden'>
         <Header onLoginClick={handleLoginClick} />
-        <Routes>
-          <Route path='/' element={<MainPage />} />
-          <Route path='/user' element={<ProfilePage />} />
-          <Route path='/course/:id' element={<CoursePage />} />
-          <Route path='/course' element={<CoursePage />} />
-          <Route path='/training/' element={<TrainingPage />} />
-          <Route path='/training/:id' element={<TrainingPage />} />
-        </Routes>
-        <Modal
-          isOpen={isModalSigninOpen}
-          onClose={handleCloseModal}
-          type={modalType}
-          onSwitchType={handleSwitchModalType}
-        />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route path='/' element={<MainPage />} />
+            <Route path='/user' element={<ProfilePage />} />
+            <Route path='/course/:id' element={<CoursePage />} />
+            <Route path='/course' element={<CoursePage />} />
+            <Route path='/training/' element={<TrainingPage />} />
+            <Route path='/training/:id' element={<TrainingPage />} />
+          </Routes>
+        </Suspense>
+        <Modal isOpen={isModalSigninOpen} onClose={handleCloseModal} type={modalType} onSwitchType={handleSwitchModalType} />
       </div>
     </CoursesProvider>
   );
 }
-
 export default App;

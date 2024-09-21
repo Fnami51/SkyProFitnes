@@ -61,7 +61,12 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
     <>
       <div className="w-[360px] pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] overflow-hidden" onClick={handleCardClick}>
         <div className="relative">
-          <img src={`/images/${course.nameEN}.png`} alt={course.nameRU} className="w-full h-[325px] object-cover" />
+          <img
+            src={`/images/${course.nameEN}.png`}
+            alt={course.nameRU}
+            className="w-full h-[325px] object-cover"
+            loading="lazy"
+          />
           <button className="absolute top-5 right-5 w-[32px] h-[32px]" onClick={handleCourseAction}>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="16" cy="16" r="14" fill="white" />
@@ -71,7 +76,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
           </button>
         </div>
         <div className="mt-[24px] ml-[30px] mr-[30px]">
-          <h2 className="text-[32px] font-medium leading-[35.2px] text-left font-roboto">{course.nameRU}</h2>
+          <h2 className="text-[32px] font-medium leading-[35.2px] text-left font-roboto h-[71px] flex items-center">{course.nameRU}</h2>
           <div className="flex flex-wrap gap-[6px] mt-[20px]">
             <div className="flex rounded-[30px] bg-gray-super-light items-center p-[10px] gap-[6px]">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">

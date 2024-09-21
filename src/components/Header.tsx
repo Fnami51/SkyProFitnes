@@ -23,7 +23,8 @@ function Header({ onLoginClick }: HeaderProps) {
   return (
     <header className="flex justify-between mt-[50px] items-center">
       <Link to="/" className='flex flex-col gap-[15px]'>
-        <img src={headerLogo} className="w-[220px] h-[35px]" alt="logo" />
+        <img src={headerLogo} className="w-[220px] h-[35px]" alt="logo" loading="lazy"/>
+        
         <p className="font-roboto text-[18px] font-normal leading-[19.8px] text-left text-gray mobile:hidden">
           Онлайн-тренировки для занятий дома
         </p>

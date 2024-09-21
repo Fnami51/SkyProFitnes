@@ -88,29 +88,38 @@ function CoursePage() {
 					src={`/images/${course.nameEN}.png`}
 					alt={course.nameRU}
 					className='absolute right-0 top-0 w-full h-full object-cover z-0'
-				/>
-				<img src={`/images/${course.nameEN}.png`}
-					alt={course.nameRU}
-					className='hidden mobile:block absolute z-20 w-full h-auto'
+					loading='lazy'
 				/>
 
+				<img
+					src={`/images/${course.nameEN}.png`}
+					srcSet={`/images/${course.nameEN}-small.webp 300w, /images/${course.nameEN}-medium.webp 600w, /images/${course.nameEN}.webp 900w`}
+					sizes='(max-width: 600px) 300px, (max-width: 1200px) 600px, 900px'
+					alt={course.nameRU}
+					className='hidden mobile:block absolute z-20 w-full h-auto'
+					loading='lazy'
+				/>
 			</div>
 			<section>
 				<div className='text-left mb-[60px] mobile:mb-[30px]'>
 					<h3 className='text-[40px] font-semibold leading-[44px] text-left mb-[40px] mobile:text-[24px] mobile:mb-[24px]'>
 						Подойдет для вас, если:
 					</h3>
-					<div className='flex justify-between gap-[17px] tablet:flex-wrap tablet:gap-[12px] mobile:flex-col mobile:gap-[10px]'>
-						{course.fitting && course.fitting.map((fit, index) => (
-							<div key={index} className='flex-grow-[1.2] flex-basis-0 flex items-center p-[20px] text-white rounded-[28px] text-center gap-[25px] bg-gradient-to-r from-[#151720] to-[#1E212E] relative overflow-hidden flex-shrink-0'>
-								<span className='w-[43px] h-[101px] font-roboto text-[75px] font-medium leading-[101.25px] text-left text-[#BCEC30]'>
-									{index + 1}
-								</span>
-								<p className='text-left font-roboto text-[24px] font-normal leading-[26.4px] mobile:text-[20px] mobile:leading-[24px]'>
-									{fit}
-								</p>
-							</div>
-						))}
+					<div className='flex justify-between gap-[17px] tablet:flex-wrap tablet:gap-[12px] mobile:flex-col mobile:gap-[10px] max-w-full'>
+						{course.fitting &&
+							course.fitting.map((fit, index) => (
+								<div
+									key={index}
+									className='flex-grow-[1] flex-shrink-0 basis-0 flex items-center p-[20px] text-white rounded-[28px] text-center gap-[25px] bg-gradient-to-r from-[#151720] to-[#1E212E] relative overflow-hidden min-h-[160px]'
+								>
+									<span className='w-[43px] h-[101px] font-roboto text-[75px] font-medium leading-[101.25px] text-left text-[#BCEC30]'>
+										{index + 1}
+									</span>
+									<p className='text-left font-roboto text-[24px] font-normal leading-[26.4px] mobile:text-[20px] mobile:leading-[24px]'>
+										{fit}
+									</p>
+								</div>
+							))}
 					</div>
 				</div>
 			</section>
@@ -120,14 +129,20 @@ function CoursePage() {
 					Направления
 				</h3>
 				<ul className='bg-[#BCEC30] grid grid-cols-3 rounded-[28px] h-[146px] p-[30px] gap-x-[85px] gap-y-[30px] mobile:grid-cols-1 mobile:h-auto mobile:gap-y-[20px]'>
-					{course.directions && course.directions.map((direction, index) => (
-						<li key={index} className='flex items-center gap-[8px]'>
-							<img src='/images/sparcle.png' alt='Icon' className='w-[26px] h-[26px]' />
-							<p className='m-0 font-roboto text-[24px] leading-[26.4px] mobile:text-[18px]'>
-								{direction}
-							</p>
-						</li>
-					))}
+					{course.directions &&
+						course.directions.map((direction, index) => (
+							<li key={index} className='flex items-center gap-[8px]'>
+								<img
+									src='/images/sparcle.png'
+									alt='Icon'
+									className='w-[26px] h-[26px]'
+									loading='lazy'
+								/>
+								<p className='m-0 font-roboto text-[24px] leading-[26.4px] mobile:text-[18px]'>
+									{direction}
+								</p>
+							</li>
+						))}
 				</ul>
 			</section>
 
@@ -159,18 +174,39 @@ function CoursePage() {
 						onClick={handleAddCourse}
 					>
 						{user ? 'Добавить курс' : 'Войти и добавить курс'}
-					</Button>	</div>
-				<img src='/images/6094.png' alt='Черный' className='absolute top-[22px] right-[385px] mobile:w-[32.16px] mobile:h-[27.33px] mobile:top-[-183px] mobile:right-[154px] mobile:z-[3]' />
-				<img src='/images/6084.png' alt='Салатовый' className='absolute top-[105px] right-[15px] w-[670.18px] h-[440.98px] order-3 mobile:hidden' />
+					</Button>{' '}
+				</div>
+				<img
+					src='/images/6094.png'
+					alt='Черный'
+					className='absolute bottom-[410px] right-[385px] mobile:w-[32.16px] mobile:h-[27.33px] mobile:top-[-183px] mobile:right-[154px] mobile:z-[3]'
+					loading='lazy'
+				/>
+				<img
+					src='/images/6084.png'
+					alt='Салатовый'
+					className='absolute top-[105px] right-[15px] w-[670.18px] h-[440.98px] order-3 mobile:hidden'
+					loading='lazy'
+				/>
 			</section>
 
-			<img src='/images/runner.png' alt='Бегун' className='absolute top-[900px] right-[40px] z-[3] mobile:w-[313.22px] mobile:h-[348.91px] mobile:top-[1410px] mobile:right-[-69px] mobile:z-[1]' />
-			<img src='/images/6084.png' alt='Салатовый_2' className='hidden mobile:block absolute mobile:w-[750.93px] mobile:h-[300px] mobile:top-[1530px] mobile:right-[27px]' />
+			<img
+				src='/images/runner.png'
+				alt='Бегун'
+				className='absolute bottom-[160px] right-[40px] z-[3] mobile:w-[313.22px] mobile:h-[348.91px] mobile:bottom-[520px] mobile:right-[-69px] mobile:z-[1]'
+				loading='lazy'
+			/>
+			<img
+				src='/images/6084.png'
+				alt='Салатовый_2'
+				className='hidden mobile:block absolute mobile:w-[750.93px] mobile:h-[300px] mobile:bottom-[450px] mobile:right-[27px]'
+				loading='lazy'
+			/>
 			<InfoModal
 				isOpen={isInfoModalOpen}
 				onClose={() => setIsInfoModalOpen(false)}
 				message={infoMessage}
-				type="progress"
+				type='progress'
 			/>
 			<Modal
 				isOpen={isLoginModalOpen}
@@ -180,8 +216,7 @@ function CoursePage() {
 			/>
 			<Footer />
 		</main>
-
-	);
+	)
 }
 
 export default CoursePage;

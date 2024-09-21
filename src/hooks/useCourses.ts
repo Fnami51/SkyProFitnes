@@ -3,6 +3,41 @@ import { Course, Workout, User } from '../types/interfaces';
 import { getAllCourses, addCourseToUser, getUserCourses as getUserCoursesAPI, getCourseById, getWorkoutById } from '../api/courses';
 import { getUserProfile as getUserProfileFromAPI, updateUserProfile } from '../api/user';
 import { useAuth } from './useAuth';
+import { database } from '../config/firebase';
+import { ref, get, remove } from "firebase/database";
+
+const CACHE_EXPIRATION_TIME = 8 * 60 * 60 * 1000; // 8 часов в миллисекундах
+interface CachedData<T> {
+  data: T;
+  timestamp: number;
+}
+
+const getCachedData = <T>(key: string): T | null => {
+  try {
+    const cachedItem = localStorage.getItem(key);
+    if (cachedItem) {
+      const { data, timestamp }: CachedData<T> = JSON.parse(cachedItem);
+      if (Date.now() - timestamp < CACHE_EXPIRATION_TIME) {
+        return data;
+      }
+    }
+  } catch (error) {
+    console.error('Error reading from localStorage:', error);
+  }
+  return null;
+};
+
+const setCachedData = <T>(key: string, data: T) => {
+  try {
+    const cacheItem: CachedData<T> = {
+      data,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(key, JSON.stringify(cacheItem));
+  } catch (error) {
+    console.error('Error writing to localStorage:', error);
+  }
+};
 
 export const useCourses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -13,18 +48,25 @@ export const useCourses = () => {
   const fetchCourses = useCallback(async () => {
     setLoading(true);
     try {
-      // Загружаем все курсы независимо от авторизации
-      const allCourses = await getAllCourses();
-      // console.log('Fetched courses:', allCourses);
-      setCourses(allCourses);
-      
-      if (authUser) {
-        // Если пользователь авторизован, загружаем его курсы
-        const userCoursesData = await getUserCoursesAPI(authUser.uid);
-        // console.log('Fetched user courses:', userCoursesData);
-        setUserCourses(userCoursesData);
+      const cachedCourses = getCachedData<Course[]>('allCourses');
+      if (cachedCourses) {
+        setCourses(cachedCourses);
       } else {
-        // Если пользователь не авторизован, очищаем пользовательские курсы
+        const allCourses = await getAllCourses();
+        setCourses(allCourses);
+        setCachedData('allCourses', allCourses);
+      }
+
+      if (authUser) {
+        const cachedUserCourses = getCachedData<Course[]>(`userCourses_${authUser.uid}`);
+        if (cachedUserCourses) {
+          setUserCourses(cachedUserCourses);
+        } else {
+          const userCoursesData = await getUserCoursesAPI(authUser.uid);
+          setUserCourses(userCoursesData);
+          setCachedData(`userCourses_${authUser.uid}`, userCoursesData);
+        }
+      } else {
         setUserCourses([]);
       }
     } catch (error) {
@@ -87,7 +129,7 @@ export const useCourses = () => {
       throw error;
     }
   };
-
+  
   const getUserCourses = useCallback(async (userId: string): Promise<Course[]> => {
     try {
       return await getUserCoursesAPI(userId);
@@ -96,6 +138,30 @@ export const useCourses = () => {
       return [];
     }
   }, []);
+
+  const resetCourseProgress = async (userId: string, courseId: string) => {
+    if (!userId || !courseId) return;
+    try {
+      const courseRef = ref(database, `courses/courses/${courseId}`);
+      const courseSnapshot = await get(courseRef);
+      if (courseSnapshot.exists()) {
+        const courseData = courseSnapshot.val();
+        const workoutIds = courseData.workouts || [];
+        const progressRef = ref(database, `userProgress/${userId}`);
+        const progressSnapshot = await get(progressRef);
+        if (progressSnapshot.exists()) {
+          const progressData = progressSnapshot.val();
+          for (const workoutId of workoutIds) {
+            if (progressData[workoutId]) {
+              await remove(ref(database, `userProgress/${userId}/${workoutId}`));
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error resetting course progress:', error);
+    }
+  };
 
   return {
     courses,
@@ -107,5 +173,6 @@ export const useCourses = () => {
     getUserProfile,
     updateProfile,
     getUserCourses,
+    resetCourseProgress,
   };
 };

@@ -9,7 +9,6 @@ import { ref, get, set } from "firebase/database";
 import { useAuth } from '../../hooks/useAuth';
 
 interface MyCourseCardProps {
-
   course: Course;
   onCourseRemoved?: () => void;
 }
@@ -19,6 +18,8 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [modalAction, setModalAction] = useState<'start' | 'continue' | 'restart'>('start');
+
 
   useEffect(() => {
     const fetchProgress = async () => {
@@ -53,7 +54,8 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
     fetchProgress();
   }, [user, course._id, course.workouts]);
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (action: 'start' | 'continue' | 'restart') => {
+    setModalAction(action);
     setIsWorkoutListModalOpen(true);
   };
 
@@ -89,7 +91,12 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
   return (
     <div className="w-[360px] pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
       <div className="relative" onClick={() => navigate(`/course/${course._id}`)}>
-        <img src={`/images/${course.nameEN}.png`} className="w-[360px] h-[325px] rounded-[30px] object-cover" alt={course.nameRU} />
+        <img 
+          src={`/images/${course.nameEN}.png`}
+          alt={course.nameRU} 
+          className="w-[360px] h-[325px] rounded-[30px] object-cover"
+          loading="lazy"
+        />
         <button className="absolute top-5 right-5 w-[32px] h-[32px]" onClick={handleRemoveCourse}>
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="16" cy="16" r="14" fill="white" />
@@ -98,7 +105,7 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
         </button>
       </div>
       <div className="mt-[24px] ml-[30px] mr-[30px]">
-        <h2 className="text-[32px] font-medium leading-[35.2px] text-left font-roboto">{course.nameRU}</h2>
+        <h2 className="text-[32px] font-medium leading-[35.2px] text-left font-roboto h-[71px] flex items-center">{course.nameRU}</h2>
         <div className="flex flex-wrap gap-[6px] mt-[20px]">
           <div className="flex rounded-[30px] bg-gray-super-light items-center p-[10px] gap-[6px]">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -127,15 +134,21 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
             <div className="bg-[#00C1FF] h-2.5 rounded-full" style={{ width: `${progress}%` }}></div>
           </div>
         </div>
-        <Button variant='primary' className='w-[300px] h-[52px] mt-[40px]' onClick={handleOpenModal}>
+        <Button 
+          variant='primary' 
+          className='w-[300px] h-[52px] mt-[40px]' 
+          onClick={() => handleOpenModal(progress === 0 ? 'start' : progress === 100 ? 'restart' : 'continue')}
+        >
           {getButtonText()}
         </Button>
       </div>
-      <WorkoutListModal
-        isOpen={isWorkoutListModalOpen}
-        onClose={() => setIsWorkoutListModalOpen(false)}
-        workoutIds={course.workouts || []}
+      <WorkoutListModal 
+        isOpen={isWorkoutListModalOpen} 
+        onClose={() => setIsWorkoutListModalOpen(false)} 
+        workoutIds={course.workouts || []} 
         course={course.nameRU}
+        action={modalAction}
+        courseId={course._id}
       />
     </div>
   );
