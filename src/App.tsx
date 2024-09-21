@@ -1,48 +1,70 @@
-import { useState } from 'react';
+import React, { useState, useCallback, useEffect, Suspense } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Modal from './components/Modal';
-import CoursePage from './pages/CoursePage/CoursePage'
-import ExampleModal from './components/Example/ExampleModal'; // Временный файл
-import MainPage from './pages/MainPage/MainPage'
-import ProfilPage from './pages/ProfilePage/ProfilePage'
+import { CoursesProvider } from './context/CoursesContext';
+import { useAuth } from './hooks/useAuth';
+
+const MainPage = React.lazy(() => import('./pages/MainPage/MainPage').then(module => ({ default: module.default })));
+const ProfilePage = React.lazy(() => import('./pages/ProfilePage/ProfilePage').then(module => ({ default: module.default })));
+const CoursePage = React.lazy(() => import('./pages/CoursePage/CoursePage').then(module => ({ default: module.default })));
+const TrainingPage = React.lazy(() => import('./pages/TrainingPage/TrainingPage').then(module => ({ default: module.default })));
 
 function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalSigninOpen, setIsModalSigninOpen] = useState(false);
   const [modalType, setModalType] = useState<'login' | 'register' | 'resetPassword' | 'newPassword'>('login');
+  const { logout } = useAuth();
 
-  const handleSwitchModalType = (newType: 'login' | 'register') => {
+  const handleSwitchModalType = useCallback((newType: 'login' | 'register' | 'resetPassword' | 'newPassword') => {
     setModalType(newType);
-  };
+  }, []);
 
-  const handleLoginClick = () => {
+  const handleLoginClick = useCallback(() => {
     setModalType('login');
-    setIsModalOpen(true);
-  };
+    setIsModalSigninOpen(true);
+  }, []);
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  const handleCloseModal = useCallback(() => {
+    setIsModalSigninOpen(false);
+  }, []);
+
+  useEffect(() => {
+    const checkInactivity = () => {
+      const lastActivity = localStorage.getItem('lastActivity');
+      if (lastActivity) {
+        const inactiveTime = Date.now() - parseInt(lastActivity);
+        if (inactiveTime > 3 * 60 * 1000) { // 3 минуты
+          logout();
+        }
+      }
+    };
+
+    // Проверяем неактивность при загрузке приложения
+    checkInactivity();
+
+    // Устанавливаем интервал для регулярной проверки
+    const intervalId = setInterval(checkInactivity, 60000); // Проверка каждую минуту
+
+    return () => clearInterval(intervalId);
+  }, [logout]);
 
   return (
-    <div className='bg-background min-h-screen flex flex-col px-[16px] mobil:px-[16px] desktop:px-[70px] mediumDesktop:px-[140px] pb-page-padding overflow-x-hidden'>
-      <Header onLoginClick={handleLoginClick} />
-      
-      <ProfilPage />
-      
-      <MainPage />
-      
-      <CoursePage />
-      
-      <ExampleModal />  {/* Это временное решение для просмотра примера. Эту строчку, а также модуль Example, потом можно будет удалить (или не удалять, в проекте он мешать не будет)  */}
-      
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        type={modalType}
-        onSwitchType={handleSwitchModalType}
-      />
-    </div>
+    <CoursesProvider>
+      <div className='bg-background min-h-screen flex flex-col px-[16px] mobile:px-[16px] desktop:px-[70px] mediumDesktop:px-[140px] pb-page-padding overflow-x-hidden'>
+        <Header onLoginClick={handleLoginClick} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route path='/' element={<MainPage />} />
+            <Route path='/user' element={<ProfilePage />} />
+            <Route path='/course/:id' element={<CoursePage />} />
+            <Route path='/course' element={<CoursePage />} />
+            <Route path='/training/' element={<TrainingPage />} />
+            <Route path='/training/:id' element={<TrainingPage />} />
+          </Routes>
+        </Suspense>
+        <Modal isOpen={isModalSigninOpen} onClose={handleCloseModal} type={modalType} onSwitchType={handleSwitchModalType} />
+      </div>
+    </CoursesProvider>
   );
 }
-
-export default App
+export default App;
