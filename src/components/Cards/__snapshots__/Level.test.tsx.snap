@@ -11,15 +11,15 @@ exports[`Level matches snapshot 1`] = `
     />
     <div
       class="w-[2.25px] rounded-[50px] bg-[#00C1FF]"
-      style="height: 6px;"
+      style="height: 5.75px;"
     />
     <div
       class="w-[2.25px] rounded-[50px] bg-[#00C1FF]"
-      style="height: 9px;"
+      style="height: 8.5px;"
     />
     <div
       class="w-[2.25px] rounded-[50px] bg-[#D9D9D9]"
-      style="height: 11px;"
+      style="height: 11.25px;"
     />
     <div
       class="w-[2.25px] rounded-[50px] bg-[#D9D9D9]"
