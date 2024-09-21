@@ -9,7 +9,6 @@ import { ref, get, set } from "firebase/database";
 import { useAuth } from '../../hooks/useAuth';
 
 interface MyCourseCardProps {
-
   course: Course;
   onCourseRemoved?: () => void;
 }
@@ -19,6 +18,8 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [modalAction, setModalAction] = useState<'start' | 'continue' | 'restart'>('start');
+
 
   useEffect(() => {
     const fetchProgress = async () => {
@@ -53,7 +54,8 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
     fetchProgress();
   }, [user, course._id, course.workouts]);
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (action: 'start' | 'continue' | 'restart') => {
+    setModalAction(action);
     setIsWorkoutListModalOpen(true);
   };
 
@@ -132,15 +134,21 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
             <div className="bg-[#00C1FF] h-2.5 rounded-full" style={{ width: `${progress}%` }}></div>
           </div>
         </div>
-        <Button variant='primary' className='w-[300px] h-[52px] mt-[40px]' onClick={handleOpenModal}>
+        <Button 
+          variant='primary' 
+          className='w-[300px] h-[52px] mt-[40px]' 
+          onClick={() => handleOpenModal(progress === 0 ? 'start' : progress === 100 ? 'restart' : 'continue')}
+        >
           {getButtonText()}
         </Button>
       </div>
-      <WorkoutListModal
-        isOpen={isWorkoutListModalOpen}
-        onClose={() => setIsWorkoutListModalOpen(false)}
-        workoutIds={course.workouts || []}
+      <WorkoutListModal 
+        isOpen={isWorkoutListModalOpen} 
+        onClose={() => setIsWorkoutListModalOpen(false)} 
+        workoutIds={course.workouts || []} 
         course={course.nameRU}
+        action={modalAction}
+        courseId={course._id}
       />
     </div>
   );

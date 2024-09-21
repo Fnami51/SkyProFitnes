@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Workout, Exercise } from '../types/interfaces';
 import { useCourses } from '../hooks/useCourses';
 import Modal from './Modal';
@@ -12,12 +12,20 @@ interface WorkoutListModalProps {
   onClose: () => void;
   workoutIds: string[];
   course: string;
+  action: 'start' | 'continue' | 'restart';
+  courseId: string;
 }
 
-const WorkoutListModal: React.FC<WorkoutListModalProps> = ({ isOpen, onClose, workoutIds, course }) => {
-
+const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
+  isOpen,
+  onClose,
+  workoutIds,
+  course,
+  action,
+  courseId
+}) => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
-  const { getWorkout } = useCourses();
+  const { getWorkout, resetCourseProgress } = useCourses();
   const modalRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const [showScroll, setShowScroll] = useState(false);
@@ -25,51 +33,49 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({ isOpen, onClose, wo
   const { user } = useAuth();
   const [workoutProgress, setWorkoutProgress] = useState<{ [key: string]: boolean }>({});
 
-  useEffect(() => {
-    const fetchWorkouts = async () => {
-      if (workoutIds && workoutIds.length > 0) {
-        const workoutPromises = workoutIds.map(id => getWorkout(id));
-        const fetchedWorkouts = await Promise.all(workoutPromises);
-        setWorkouts(fetchedWorkouts.filter((w): w is Workout => w !== null));
+  const fetchWorkouts = useCallback(async () => {
+    if (workoutIds && workoutIds.length > 0 && user) {
+      const workoutPromises = workoutIds.map(id => getWorkout(id));
+      const fetchedWorkouts = await Promise.all(workoutPromises);
+      setWorkouts(fetchedWorkouts.filter((w): w is Workout => w !== null));
 
-        // Получение прогресса для каждой тренировки
-        if (user) {
-          const progressPromises = workoutIds.map(async (id) => {
-            const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
-            const snapshot = await get(progressRef);
-            const progressData = snapshot.val();
-
-            const workout = fetchedWorkouts.find(w => w?._id === id);
-            if (!workout) return { id, completed: false };
-
-            if (workout.exercises && workout.exercises.length > 0) {
-              // Для тренировок с упражнениями
-              const allExercisesCompleted = workout.exercises.every((exercise: Exercise) => {
-                const exerciseProgress = progressData?.[exercise.name] || 0;
-                return exerciseProgress >= exercise.quantity;
-              });
-              return { id, completed: allExercisesCompleted };
-            } else {
-              // Для тренировок без упражнений
-              return { id, completed: progressData?.completed === 100 };
-            }
-          });
-          const progressResults = await Promise.all(progressPromises);
-          const progressObject = progressResults.reduce((acc, { id, completed }) => {
-            acc[id] = completed;
-            return acc;
-          }, {} as { [key: string]: boolean });
-          setWorkoutProgress(progressObject);
-        }
-      } else {
-        setWorkouts([]);
+      if (action === 'restart') {
+        await resetCourseProgress(user.uid, courseId);
       }
-    };
 
+      const progressPromises = workoutIds.map(async (id) => {
+        const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
+        const snapshot = await get(progressRef);
+        const progressData = snapshot.val();
+        const workout = fetchedWorkouts.find(w => w?._id === id);
+        if (!workout) return { id, completed: false };
+        if (workout.exercises && workout.exercises.length > 0) {
+          const allExercisesCompleted = workout.exercises.every((exercise: Exercise) => {
+            const exerciseProgress = progressData?.[exercise.name] || 0;
+            return exerciseProgress >= exercise.quantity;
+          });
+          return { id, completed: allExercisesCompleted };
+        } else {
+          return { id, completed: progressData?.completed === 100 };
+        }
+      });
+
+      const progressResults = await Promise.all(progressPromises);
+      const progressObject = progressResults.reduce((acc, { id, completed }) => {
+        acc[id] = completed;
+        return acc;
+      }, {} as { [key: string]: boolean });
+      setWorkoutProgress(progressObject);
+    } else {
+      setWorkouts([]);
+    }
+  }, [workoutIds, getWorkout, user, action, courseId, resetCourseProgress]);
+
+  useEffect(() => {
     if (isOpen) {
       fetchWorkouts();
     }
-  }, [isOpen, workoutIds, getWorkout, user]);
+  }, [isOpen, fetchWorkouts]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -77,11 +83,9 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({ isOpen, onClose, wo
         onClose();
       }
     };
-
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -93,10 +97,8 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({ isOpen, onClose, wo
         setShowScroll(listRef.current.scrollHeight > listRef.current.clientHeight);
       }
     };
-
     checkScroll();
     window.addEventListener('resize', checkScroll);
-
     return () => {
       window.removeEventListener('resize', checkScroll);
     };
@@ -115,13 +117,6 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({ isOpen, onClose, wo
                 {workouts.map((workout, index) => (
                   <div key={workout._id} className="flex flex-col">
                     <label className="flex items-center cursor-pointer mb-2.5 group">
-                      <input
-                        type="radio"
-                        name="workout"
-                        value={workout._id}
-                        onChange={() => { }} // Добавляем пустой обработчик onChange
-                        className="sr-only"
-                      />
                       <span className={`w-6 h-6 border-2 border-black rounded-full mr-2.5 flex items-center justify-center group-hover:border-[#BCEC30] transition-colors ${workoutProgress[workout._id] ? 'bg-[#BCEC30]' : ''}`}>
                         <span className={`w-4 h-4 rounded-full ${workoutProgress[workout._id] ? 'bg-[#BCEC30]' : ''} transition-colors`}>
                           {workoutProgress[workout._id] && (
@@ -146,7 +141,7 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({ isOpen, onClose, wo
           </div>
         </div>
       </div>
-      <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} type="login" onSwitchType={() => { }} />
+      <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} type="login" onSwitchType={() => {}} />
     </>
   );
 };

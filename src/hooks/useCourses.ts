@@ -3,6 +3,8 @@ import { Course, Workout, User } from '../types/interfaces';
 import { getAllCourses, addCourseToUser, getUserCourses as getUserCoursesAPI, getCourseById, getWorkoutById } from '../api/courses';
 import { getUserProfile as getUserProfileFromAPI, updateUserProfile } from '../api/user';
 import { useAuth } from './useAuth';
+import { database } from '../config/firebase';
+import { ref, get, remove } from "firebase/database";
 
 const CACHE_EXPIRATION_TIME = 8 * 60 * 60 * 1000; // 8 часов в миллисекундах
 interface CachedData<T> {
@@ -137,6 +139,30 @@ export const useCourses = () => {
     }
   }, []);
 
+  const resetCourseProgress = async (userId: string, courseId: string) => {
+    if (!userId || !courseId) return;
+    try {
+      const courseRef = ref(database, `courses/courses/${courseId}`);
+      const courseSnapshot = await get(courseRef);
+      if (courseSnapshot.exists()) {
+        const courseData = courseSnapshot.val();
+        const workoutIds = courseData.workouts || [];
+        const progressRef = ref(database, `userProgress/${userId}`);
+        const progressSnapshot = await get(progressRef);
+        if (progressSnapshot.exists()) {
+          const progressData = progressSnapshot.val();
+          for (const workoutId of workoutIds) {
+            if (progressData[workoutId]) {
+              await remove(ref(database, `userProgress/${userId}/${workoutId}`));
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error resetting course progress:', error);
+    }
+  };
+
   return {
     courses,
     userCourses,
@@ -147,5 +173,6 @@ export const useCourses = () => {
     getUserProfile,
     updateProfile,
     getUserCourses,
+    resetCourseProgress,
   };
 };
