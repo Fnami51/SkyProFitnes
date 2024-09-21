@@ -84,16 +84,21 @@ function CoursePage() {
 				<h2 className='pt-[40px] ml-[40px] leading-[66px] text-[60px] font-medium text-white flex items-center text-center relative z-10 mobile:hidden'>
 					{course.nameRU}
 				</h2>
-				<img
+				<img 
 					src={`/images/${course.nameEN}.png`}
-					alt={course.nameRU}
+					alt={course.nameRU} 
 					className='absolute right-0 top-0 w-full h-full object-cover z-0'
-				/>
-				<img src={`/images/${course.nameEN}.png`}
-					alt={course.nameRU}
-					className='hidden mobile:block absolute z-20 w-full h-auto'
+					loading="lazy"
 				/>
 
+				<img 
+					src={`/images/${course.nameEN}.png`} 
+					srcSet={`/images/${course.nameEN}-small.webp 300w, /images/${course.nameEN}-medium.webp 600w, /images/${course.nameEN}.webp 900w`}
+					sizes="(max-width: 600px) 300px, (max-width: 1200px) 600px, 900px"
+					alt={course.nameRU} 
+					className='hidden mobile:block absolute z-20 w-full h-auto'
+					loading="lazy"
+				/>
 			</div>
 			<section>
 				<div className='text-left mb-[60px] mobile:mb-[30px]'>
@@ -122,7 +127,7 @@ function CoursePage() {
 				<ul className='bg-[#BCEC30] grid grid-cols-3 rounded-[28px] h-[146px] p-[30px] gap-x-[85px] gap-y-[30px] mobile:grid-cols-1 mobile:h-auto mobile:gap-y-[20px]'>
 					{course.directions && course.directions.map((direction, index) => (
 						<li key={index} className='flex items-center gap-[8px]'>
-							<img src='/images/sparcle.png' alt='Icon' className='w-[26px] h-[26px]' />
+							<img src='/images/sparcle.png' alt='Icon' className='w-[26px] h-[26px]' loading="lazy"/>
 							<p className='m-0 font-roboto text-[24px] leading-[26.4px] mobile:text-[18px]'>
 								{direction}
 							</p>
@@ -160,12 +165,12 @@ function CoursePage() {
 					>
 						{user ? 'Добавить курс' : 'Войти и добавить курс'}
 					</Button>	</div>
-				<img src='/images/6094.png' alt='Черный' className='absolute top-[22px] right-[385px] mobile:w-[32.16px] mobile:h-[27.33px] mobile:top-[-183px] mobile:right-[154px] mobile:z-[3]' />
-				<img src='/images/6084.png' alt='Салатовый' className='absolute top-[105px] right-[15px] w-[670.18px] h-[440.98px] order-3 mobile:hidden' />
+				<img src='/images/6094.png' alt='Черный' className='absolute top-[22px] right-[385px] mobile:w-[32.16px] mobile:h-[27.33px] mobile:top-[-183px] mobile:right-[154px] mobile:z-[3]' loading="lazy"/>
+				<img src='/images/6084.png' alt='Салатовый' className='absolute top-[105px] right-[15px] w-[670.18px] h-[440.98px] order-3 mobile:hidden' loading="lazy"/>
 			</section>
 
-			<img src='/images/runner.png' alt='Бегун' className='absolute top-[900px] right-[40px] z-[3] mobile:w-[313.22px] mobile:h-[348.91px] mobile:top-[1410px] mobile:right-[-69px] mobile:z-[1]' />
-			<img src='/images/6084.png' alt='Салатовый_2' className='hidden mobile:block absolute mobile:w-[750.93px] mobile:h-[300px] mobile:top-[1530px] mobile:right-[27px]' />
+			<img src='/images/runner.png' alt='Бегун' className='absolute top-[900px] right-[40px] z-[3] mobile:w-[313.22px] mobile:h-[348.91px] mobile:top-[1410px] mobile:right-[-69px] mobile:z-[1]' loading="lazy"/>
+			<img src='/images/6084.png' alt='Салатовый_2' className='hidden mobile:block absolute mobile:w-[750.93px] mobile:h-[300px] mobile:top-[1530px] mobile:right-[27px]' loading="lazy"/>
 			<InfoModal
 				isOpen={isInfoModalOpen}
 				onClose={() => setIsInfoModalOpen(false)}

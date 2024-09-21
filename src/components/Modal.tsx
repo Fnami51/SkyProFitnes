@@ -210,7 +210,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, type, onSwitchType }) =>
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleClose}>
           <div className="bg-white shadow-lg rounded-[30px] p-10 w-full max-w-[360px]" onClick={e => e.stopPropagation()}>
             <div className="flex justify-center mb-12">
-              <img src="/logo.png" alt="SkyFitnessPro" className="w-[220px] h-[35px]" />
+              <img src="/logo.png" alt="SkyFitnessPro" className="w-[220px] h-[35px]" loading="lazy"/>
             </div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-[34px]">
               <div className="flex flex-col gap-2.5">

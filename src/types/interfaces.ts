@@ -37,7 +37,7 @@ export interface Exercise {
   quantity: number;
 }
 
-type CachedData<T> = {
+export type CachedData<T> = {
   data: T;
   timestamp: number;
 };

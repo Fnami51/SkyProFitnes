@@ -42,7 +42,7 @@ function Profile() {
 
   return (
     <section className='flex mobile:flex-col mobile:items-center gap-[33px] w-[100%] p-[30px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]'>
-      <img src={user?.photoURL || '/images/profile_no-img.png'} className='w-[197px] h-[197px] rounded-[30px] mobile:w-[141px] mobile:h-[141px]' />
+      <img src={user?.photoURL || '/images/profile_no-img.png'} className='w-[197px] h-[197px] rounded-[30px] mobile:w-[141px] mobile:h-[141px]' loading="lazy"/>
       <div className='flex flex-col gap-[30px] mobile:w-full'>
         {isEditing ? (
           <div className='flex items-center'>

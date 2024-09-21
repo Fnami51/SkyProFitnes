@@ -11,23 +11,32 @@ interface CachedData<T> {
 }
 
 const getCachedData = <T>(key: string): T | null => {
-  const cachedItem = localStorage.getItem(key);
-  if (cachedItem) {
-    const { data, timestamp }: CachedData<T> = JSON.parse(cachedItem);
-    if (Date.now() - timestamp < CACHE_EXPIRATION_TIME) {
-      return data;
+  try {
+    const cachedItem = localStorage.getItem(key);
+    if (cachedItem) {
+      const { data, timestamp }: CachedData<T> = JSON.parse(cachedItem);
+      if (Date.now() - timestamp < CACHE_EXPIRATION_TIME) {
+        return data;
+      }
     }
+  } catch (error) {
+    console.error('Error reading from localStorage:', error);
   }
   return null;
 };
 
 const setCachedData = <T>(key: string, data: T) => {
-  const cacheItem: CachedData<T> = {
-    data,
-    timestamp: Date.now(),
-  };
-  localStorage.setItem(key, JSON.stringify(cacheItem));
+  try {
+    const cacheItem: CachedData<T> = {
+      data,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(key, JSON.stringify(cacheItem));
+  } catch (error) {
+    console.error('Error writing to localStorage:', error);
+  }
 };
+
 export const useCourses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [userCourses, setUserCourses] = useState<Course[]>([]);

@@ -89,7 +89,12 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
   return (
     <div className="w-[360px] pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
       <div className="relative" onClick={() => navigate(`/course/${course._id}`)}>
-        <img src={`/images/${course.nameEN}.png`} className="w-[360px] h-[325px] rounded-[30px] object-cover" alt={course.nameRU} />
+        <img 
+          src={`/images/${course.nameEN}.png`}
+          alt={course.nameRU} 
+          className="w-[360px] h-[325px] rounded-[30px] object-cover"
+          loading="lazy"
+        />
         <button className="absolute top-5 right-5 w-[32px] h-[32px]" onClick={handleRemoveCourse}>
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="16" cy="16" r="14" fill="white" />
