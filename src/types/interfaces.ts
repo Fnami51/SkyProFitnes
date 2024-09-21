@@ -7,6 +7,7 @@ export interface User {
   login?: string;
   password?: string;
   url_img?: string;
+  customDisplayName?: string;
 }
 
 export interface Course {
@@ -18,6 +19,10 @@ export interface Course {
   fitting: string[];
   order: number;
   workouts: string[];
+  imageUrl?: string;
+  difficult?: number;
+  totalDuration?: number;
+  progress?: number;
 }
 
 export interface Workout {

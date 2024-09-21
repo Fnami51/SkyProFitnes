@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { useCourses } from '../../hooks/useCourses';
 import { useAuth } from '../../hooks/useAuth';
-import { Workout } from '../../types/interfaces';
+import { Workout, Exercise } from '../../types/interfaces';
 import ProgressModal from '../../components/ProgressModal';
+import InfoModal from '../../components/infoModal';
 import { database } from '../../config/firebase';
 import { ref, set, get } from "firebase/database";
 
@@ -14,32 +15,75 @@ function TrainingPage() {
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [loading, setLoading] = useState(true);
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
+  const videoRef = useRef<HTMLIFrameElement>(null);
 
-  useEffect(() => {
-    const fetchWorkout = async () => {
-      if (authLoading) return;
-      if (!user) {
-        setWorkout(null);
-        setLoading(false);
-        return;
-      }
-      if (id) {
+  const location = useLocation();
+  const { course, workoutNumber } = location.state || {};
+
+  const fetchWorkout = useCallback(async () => {
+    if (id && user) {
+      try {
+        setLoading(true);
         const workoutData = await getWorkout(id);
         setWorkout(workoutData);
-        // Fetch existing progress
-        const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
-        const snapshot = await get(progressRef);
-        if (snapshot.exists()) {
-          setProgress(snapshot.val());
+        if (user) {
+          const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
+          const snapshot = await get(progressRef);
+          if (snapshot.exists()) {
+            setProgress(snapshot.val());
+          }
         }
+      } catch (error) {
+        console.error('Error fetching workout:', error);
+      } finally {
         setLoading(false);
       }
+    }
+  }, [id, user, getWorkout]);
+
+  useEffect(() => {
+    if (!authLoading) {
+      fetchWorkout();
+    }
+  }, [authLoading, fetchWorkout]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data === 'videoStarted' && workout && user) {
+        handleAutoSaveProgress();
+      }
     };
-    fetchWorkout();
-  }, [id, getWorkout, user, authLoading]);
+    window.addEventListener('message', handleMessage);
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [workout, user]);
+
+  const handleAutoSaveProgress = useCallback(async () => {
+    if (!user || !id || !workout) return;
+    try {
+      const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
+      let newProgress: { [key: string]: number };
+      if (!workout.exercises || workout.exercises.length === 0) {
+        newProgress = { completed: 100 };
+      } else {
+        newProgress = workout.exercises.reduce((acc, exercise) => {
+          acc[exercise.name] = 0;
+          return acc;
+        }, {} as { [key: string]: number });
+      }
+      await set(progressRef, newProgress);
+      setProgress(newProgress);
+      console.log('Progress auto-saved:', newProgress);
+    } catch (error) {
+      console.error('Error auto-saving progress:', error);
+    }
+  }, [user, id, workout]);
 
   const handleOpenProgressModal = () => {
+    console.log(workout) //DEV
     setIsProgressModalOpen(true);
   };
 
@@ -49,27 +93,49 @@ function TrainingPage() {
 
   const handleSaveProgress = async (newProgress: { [key: string]: number }) => {
     if (!user || !id) return;
-
     try {
-      // Save progress to Firebase
       const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
       await set(progressRef, newProgress);
-
-      // Update local state
       setProgress(newProgress);
-      console.log('Progress saved:', newProgress);
+      setIsProgressModalOpen(false);
+      setIsInfoModalOpen(true);
+      setTimeout(() => {
+        setIsInfoModalOpen(false);
+      }, 3000);
     } catch (error) {
       console.error('Error saving progress:', error);
-      // Handle error (e.g., show error message to user)
     }
   };
 
-  const calculatePercentage = (exerciseName: string) => {
-    if (!workout) return 0;
-    const exercise = workout.exercises?.find(e => e.name === exerciseName);
-    if (!exercise) return 0;
-    const completed = progress[exerciseName] || 0;
-    return Math.min(Math.round((completed / exercise.quantity) * 100), 100);
+  const isProgressZero = () => {
+    if (!workout) return true;
+    if (!workout.exercises || workout.exercises.length === 0) {
+      return !progress.completed;
+    }
+    return Object.values(progress).every(value => value === 0);
+  };
+
+  const renderExercises = () => {
+    if (!workout || !workout.exercises) return null;
+    
+    return workout.exercises.map((exercise: Exercise) => {
+      const exerciseProgress = progress[exercise.name] || 0;
+      const progressPercentage = Math.round((exerciseProgress / exercise.quantity) * 100);
+      
+      return (
+        <div key={exercise.name} className="mt-4 ">
+          <p className="text-[18px] font-normal">
+            {exercise.name.split('(')[0].trim()} {progressPercentage}%
+          </p>
+          <div className="w-full bg-[#F7F7F7] rounded-full h-2.5 mt-2">
+            <div 
+              className="bg-[#00C1FF] h-2.5 rounded-full" 
+              style={{ width: `${progressPercentage}%` }}
+            ></div>
+          </div>
+        </div>
+      );
+    });
   };
 
   if (authLoading || loading) {
@@ -77,51 +143,56 @@ function TrainingPage() {
   }
 
   if (!user) {
-    return <div>Авторизируйтесь чтобы просматривать курсы</div>;
+    return <div>Пожалуйста, авторизуйтесь для просмотра тренировки</div>;
   }
 
   if (!workout) {
-    return <div>Workout not found</div>;
+    return <div>Тренировка не найдена</div>;
   }
 
   return (
     <main className="mt-[60px]">
-      <article className='flex flex-col gap-[25px] mb-[40px]'>
-        <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto">
-          {workout.name}
-        </h1>
-        <Link to='/'>Вернуться к списку курсов</Link>
-      </article>
-      <video src={workout.video} className='w-full rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]' controls></video>
-      {workout.exercises && (
-        <section className="flex flex-col mobile:items-center w-[100%] p-[40px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
-          <h2 className="text-[32px] font-normal leading-[35.2px] text-left">{workout.name}</h2>
-          <div className="mt-[20px] mb-[40px] grid grid-cols-3 gap-y-[20px] gap-x-[60px]">
-            {workout.exercises.map((exercise, index) => (
-              <div key={index}>
-                <p>{exercise.name} ({calculatePercentage(exercise.name)}%)</p>
-                <div className="w-full bg-[#F7F7F7] rounded-full h-2.5 mt-2">
-                  <div 
-                    className="bg-[#00C1FF] h-2.5 rounded-full" 
-                    style={{ width: `${calculatePercentage(exercise.name)}%` }}
-                  ></div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <button
-            onClick={handleOpenProgressModal}
-            className="w-[320px] h-[52px] mobile:w-[283px] bg-[#BCEC30] text-black rounded-[46px] font-roboto text-[18px] font-normal leading-[19.8px]"
-          >
-            Заполнить свой прогресс
-          </button>
-        </section>
-      )}
+      <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto mb-[24px]">
+        {String(course)}
+      </h1>
+      <Link to='/user' className="font-roboto text-2xl font-normal leading-[35.2px] text-left">{workout.name}</Link>
+      <iframe
+        className='mt-[40px] rounded-[30px]'
+        ref={videoRef}
+        width="100%"
+        height={500}
+        src={`https://www.youtube.com/embed/${workout?.video}?enablejsapi=1`}
+        title={workout?.name}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      ></iframe>
+      <section className="flex flex-col mobile:items-center w-[100%] p-[40px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+        <h3 className="text-[24px] font-medium mb-4">
+          Упражнения тренировки {workoutNumber}
+        </h3>
+        <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(260px,3fr))] gap-y-[20px] gap-x-[60px]">
+          {renderExercises()}
+        </div>
+        <button
+          onClick={handleOpenProgressModal}
+          className="w-[320px] h-[52px] mobile:w-[283px] bg-[#BCEC30] text-black rounded-[46px] font-roboto text-[18px] font-normal leading-[19.8px] mt-8"
+        >
+          {isProgressZero() ? "Заполнить свой прогресс" : "Обновить свой прогресс"}
+        </button>
+      </section>
       <ProgressModal
         isOpen={isProgressModalOpen}
         onClose={handleCloseProgressModal}
         exercises={workout.exercises || []}
         onSave={handleSaveProgress}
+        initialProgress={progress}
+      />
+      <InfoModal
+        isOpen={isInfoModalOpen}
+        onClose={() => setIsInfoModalOpen(false)}
+        message="Ваш прогресс засчитан!"
+        type="progress"
       />
     </main>
   );

@@ -1,18 +1,20 @@
-import { database } from '../config/firebase';
+import { auth, database } from '../config/firebase';
 import { ref, get, set } from "firebase/database";
 import { Course, Workout } from '../types/interfaces';
-
 // Получение всех курсов
 export const getAllCourses = async (): Promise<Course[]> => {
   try {
-    const coursesRef = ref(database, 'courses');
+    const coursesRef = ref(database, 'courses/courses');
     const snapshot = await get(coursesRef);
     if (snapshot.exists()) {
       const coursesData = snapshot.val();
-      return Object.entries(coursesData).map(([id, data]) => ({
-        id,
-        ...(data as Course)
-      }));
+      const formattedCourses = Object.entries(coursesData)
+        .map(([id, data]) => ({
+          _id: id,
+          ...(data as Omit<Course, '_id'>),
+          difficulty: (data as any).difficulty || 0 // Убедимся, что difficulty всегда определено
+        }));
+      return formattedCourses;
     } else {
       console.log("No courses available");
       return [];
@@ -79,6 +81,9 @@ export const getCourseById = async (courseId: string): Promise<Course | null> =>
 
 // Получение конкретной тренировки по ID
 export const getWorkoutById = async (workoutId: string): Promise<Workout | null> => {
+  if (!auth.currentUser) {
+    throw new Error("User not authenticated");
+  }
   try {
     const workoutRef = ref(database, `courses/workouts/${workoutId}`);
     const snapshot = await get(workoutRef);

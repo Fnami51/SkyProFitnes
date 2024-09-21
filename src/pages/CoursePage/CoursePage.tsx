@@ -1,9 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from '../../components/Button';
 import { useCoursesContext } from '../../context/CoursesContext';
 import { useAuth } from '../../hooks/useAuth';
 import { Course } from '../../types/interfaces';
+import InfoModal from '../../components/infoModal';
+import Modal from '../../components/Modal';
+import Footer from '../../components/Footer';
+import { database } from '../../config/firebase';
+import { ref, get } from "firebase/database";
 
 function CoursePage() {
 	const { id } = useParams<{ id: string }>();
@@ -11,39 +16,67 @@ function CoursePage() {
 	const { getCourse, addCourse } = useCoursesContext();
 	const [course, setCourse] = useState<Course | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+	const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+	const [infoMessage, setInfoMessage] = useState('');
+	const previousId = useRef<string | null>(null);
+	const [modalType, setModalType] = useState<'login' | 'register' | 'resetPassword'>('login');
 
+	const handleSwitchModalType = useCallback((newType: 'login' | 'register' | 'resetPassword') => {
+	  setModalType(newType);
+	}, []);
+	
 	useEffect(() => {
 		const fetchCourse = async () => {
-			if (id) {
-				const courseData = await getCourse(id);
-				setCourse(courseData);
-				setLoading(false);
+			if (id && id !== previousId.current) {
+				setLoading(true);
+				try {
+					const courseData = await getCourse(id);
+					setCourse(courseData);
+				} catch (error) {
+					console.error('Ошибка получения курса:', error);
+				} finally {
+					setLoading(false);
+				}
+				previousId.current = id;
 			}
 		};
 		fetchCourse();
 	}, [id, getCourse]);
 
-	if (loading) {
-		return <div>Loading...</div>;
-	}
-
-	if (!course) {
-		return <div>Авторизуйтесь для просмотра курса</div>;
-	}
-
 	const handleAddCourse = async () => {
 		if (user && id) {
 			try {
+				const userCoursesRef = ref(database, `userCourses/${user.uid}`);
+				const snapshot = await get(userCoursesRef);
+				if (snapshot.exists()) {
+					const userCourses = snapshot.val();
+					if (userCourses.includes(id)) {
+						setInfoMessage('Этот курс уже добавлен');
+						setIsInfoModalOpen(true);
+						return;
+					}
+				}
 				await addCourse(id);
-				alert('Course added successfully!');
+				setInfoMessage('Курс успешно добавлен!');
+				setIsInfoModalOpen(true);
 			} catch (error) {
 				console.error('Error adding course:', error);
-				alert('Failed to add course. Please try again.');
+				setInfoMessage('Не удалось добавить курс. Попробуйте еще раз.');
+				setIsInfoModalOpen(true);
 			}
 		} else {
-			alert('Please log in to add this course.');
+			setIsLoginModalOpen(true);
 		}
 	};
+
+	if (loading) {
+		return <div>Загрузка...</div>;
+	}
+
+	if (!course) {
+		return <div>Курс не найден</div>;
+	}
 
 	return (
 		<main className='relative mt-[60px]'>
@@ -51,10 +84,17 @@ function CoursePage() {
 				<h2 className='pt-[40px] ml-[40px] leading-[66px] text-[60px] font-medium text-white flex items-center text-center relative z-10 mobile:hidden'>
 					{course.nameRU}
 				</h2>
-				<img src='/images/yoga.jpg' alt='Йога' className='absolute right-[-250px] bottom-[-140px] h-[220%] object-cover z-0 rounded-[30px] mobile:hidden' />
-				<img src='/images/yoga_small.png' alt='Йога_мобил' className='hidden mobile:block absolute z-20 w-full h-auto' />
-			</div>
+				<img
+					src={`/images/${course.nameEN}.png`}
+					alt={course.nameRU}
+					className='absolute right-0 top-0 w-full h-full object-cover z-0'
+				/>
+				<img src={`/images/${course.nameEN}.png`}
+					alt={course.nameRU}
+					className='hidden mobile:block absolute z-20 w-full h-auto'
+				/>
 
+			</div>
 			<section>
 				<div className='text-left mb-[60px] mobile:mb-[30px]'>
 					<h3 className='text-[40px] font-semibold leading-[44px] text-left mb-[40px] mobile:text-[24px] mobile:mb-[24px]'>
@@ -118,34 +158,29 @@ function CoursePage() {
 						className='w-[437px] h-[52px] mobile:w-[283px] mobile:h-[50px]'
 						onClick={handleAddCourse}
 					>
-						{user ? 'Добавить курс' : 'Войдите, чтобы добавить курс'}
-					</Button>
-				</div>
+						{user ? 'Добавить курс' : 'Войти и добавить курс'}
+					</Button>	</div>
 				<img src='/images/6094.png' alt='Черный' className='absolute top-[22px] right-[385px] mobile:w-[32.16px] mobile:h-[27.33px] mobile:top-[-183px] mobile:right-[154px] mobile:z-[3]' />
 				<img src='/images/6084.png' alt='Салатовый' className='absolute top-[105px] right-[15px] w-[670.18px] h-[440.98px] order-3 mobile:hidden' />
 			</section>
 
 			<img src='/images/runner.png' alt='Бегун' className='absolute top-[900px] right-[40px] z-[3] mobile:w-[313.22px] mobile:h-[348.91px] mobile:top-[1410px] mobile:right-[-69px] mobile:z-[1]' />
 			<img src='/images/6084.png' alt='Салатовый_2' className='hidden mobile:block absolute mobile:w-[750.93px] mobile:h-[300px] mobile:top-[1530px] mobile:right-[27px]' />
-
-			{/* {course.workouts && course.workouts.length > 0 && (
-				<section className="mt-[60px]">
-					<h3 className='text-[40px] font-semibold leading-[44px] mb-[40px]'>Тренировки</h3>
-					<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-						{course.workouts.map((workoutId) => (
-							<li key={workoutId} className="bg-white rounded-lg shadow-md p-4">
-								<Link
-									to={`/training/${workoutId}`}
-									className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
-								>
-									Тренировка {workoutId}
-								</Link>
-							</li>
-						))}
-					</ul>
-				</section>
-			)} */}
+			<InfoModal
+				isOpen={isInfoModalOpen}
+				onClose={() => setIsInfoModalOpen(false)}
+				message={infoMessage}
+				type="progress"
+			/>
+			<Modal
+				isOpen={isLoginModalOpen}
+				onClose={() => setIsLoginModalOpen(false)}
+				type={modalType}
+				onSwitchType={handleSwitchModalType}
+			/>
+			<Footer />
 		</main>
+
 	);
 }
 

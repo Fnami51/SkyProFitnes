@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import { useCourses } from '../hooks/useCourses';
 
 const CoursesContext = createContext<ReturnType<typeof useCourses> | undefined>(undefined);
