@@ -103,18 +103,6 @@ function TrainingPage() {
     }
   };
 
-  // const calculatePercentage = () => {
-  //   if (!workout) return 0;
-  //   if (!workout.exercises || workout.exercises.length === 0) {
-  //     return progress.completed ? 100 : 0;
-  //   }
-  //   const totalExercises = workout.exercises.length;
-  //   const completedExercises = workout.exercises.reduce((sum, exercise) => {
-  //     return sum + (progress[exercise.name] || 0) / exercise.quantity;
-  //   }, 0);
-  //   return Math.round((completedExercises / totalExercises) * 100);
-  // };
-
   const isProgressZero = () => {
     if (!workout) return true;
     if (!workout.exercises || workout.exercises.length === 0) {
