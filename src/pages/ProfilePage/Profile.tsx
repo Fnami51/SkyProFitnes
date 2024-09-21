@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Modal from '../../components/Modal'
 import { useAuth } from '../../hooks/useAuth'
-import { User } from '../../types/interfaces'
 
 function Profile() {
   const { user, logout, updateUser } = useAuth()
