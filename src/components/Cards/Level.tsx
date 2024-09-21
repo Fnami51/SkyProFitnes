@@ -1,3 +1,5 @@
+import React from 'react' // нужно для тестов
+        
 interface LevelProps {
   value: number;
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Modal from '../../components/Modal'
 import { useAuth } from '../../hooks/useAuth'
+import { User } from '../../types/interfaces'
 
 function Profile() {
   const { user, logout, updateUser } = useAuth()
@@ -10,20 +11,19 @@ function Profile() {
   const [editedName, setEditedName] = useState(user?.customDisplayName || user?.displayName || user?.email?.split('@')[0] || '')
   const [saveMessage, setSaveMessage] = useState('')
 
-
   const handleChangePassword = () => {
     setModalType('newPassword')
     setIsModalOpen(true)
   }
 
-  const handleLogout = async () => {
-    try {
-      await logout()
-      window.location.href = '/'
-    } catch (error) {
-      console.error('Error logging out:', error)
-    }
-  }
+	const handleLogout = async () => {
+		try {
+			await logout()
+			window.location.href = '/'
+		} catch (error) {
+			console.error('Error logging out:', error)
+		}
+	}
 
   const handleSaveName = async () => {
     if (user) {
