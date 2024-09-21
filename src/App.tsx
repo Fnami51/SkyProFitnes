@@ -50,7 +50,9 @@ function App() {
 
   return (
     <CoursesProvider>
-      <div className='bg-background min-h-screen flex flex-col px-[16px] mobile:px-[16px] desktop:px-[70px] mediumDesktop:px-[140px] pb-page-padding overflow-x-hidden'>
+      <div 
+        style={{ paddingLeft: 'calc(50% - 634px)', paddingRight: 'calc(50% - 634px)' }}
+        className='bg-background min-h-screen flex flex-col mx-[16px] pb-page-padding overflow-x-hidden'>
         <Header onLoginClick={handleLoginClick} />
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
