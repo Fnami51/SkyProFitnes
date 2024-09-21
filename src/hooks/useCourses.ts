@@ -129,7 +129,7 @@ export const useCourses = () => {
       throw error;
     }
   };
-
+  
   const getUserCourses = useCallback(async (userId: string): Promise<Course[]> => {
     try {
       return await getUserCoursesAPI(userId);

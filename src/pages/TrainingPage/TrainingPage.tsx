@@ -90,9 +90,16 @@ function TrainingPage() {
   const handleSaveProgress = async (newProgress: { [key: string]: number }) => {
     if (!user || !id) return;
     try {
+      const validProgress = Object.entries(newProgress).reduce((acc, [key, value]) => {
+        if (!isNaN(value) && isFinite(value)) {
+          acc[key] = Math.max(0, Math.min(value, 100));
+        }
+        return acc;
+      }, {} as { [key: string]: number });
+
       const progressRef = ref(database, `userProgress/${user.uid}/${id}`);
-      await set(progressRef, newProgress);
-      setProgress(newProgress);
+      await set(progressRef, validProgress);
+      setProgress(validProgress);
       setIsProgressModalOpen(false);
       setIsInfoModalOpen(true);
       setTimeout(() => {
@@ -102,7 +109,6 @@ function TrainingPage() {
       console.error('Error saving progress:', error);
     }
   };
-
   const isProgressZero = () => {
     if (!workout) return true;
     if (!workout.exercises || workout.exercises.length === 0) {
@@ -113,19 +119,19 @@ function TrainingPage() {
 
   const renderExercises = () => {
     if (!workout || !workout.exercises) return null;
-    
+
     return workout.exercises.map((exercise: Exercise) => {
       const exerciseProgress = progress[exercise.name] || 0;
       const progressPercentage = Math.round((exerciseProgress / exercise.quantity) * 100);
-      
+
       return (
         <div key={exercise.name} className="mt-4">
           <p className="text-[18px] font-normal">
             {exercise.name.split('(')[0].trim()} {progressPercentage}%
           </p>
           <div className="w-full bg-[#F7F7F7] rounded-full h-2.5 mt-2">
-            <div 
-              className="bg-[#00C1FF] h-2.5 rounded-full" 
+            <div
+              className="bg-[#00C1FF] h-2.5 rounded-full"
               style={{ width: `${progressPercentage}%` }}
             ></div>
           </div>
@@ -151,7 +157,13 @@ function TrainingPage() {
       <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto mb-[40px]">
         {workout.name}
       </h1>
-      <Link to='/user'>Вернуться в профиль</Link>
+      <Link
+        to='/user'
+        className="font-roboto text-[32px] font-normal leading-[35.2px] text-left mb-[40px]  underline leading-[90px]"
+      >
+        Вернуться в профиль
+      </Link>
+      {/* <Link to='/user'>Вернуться в профиль</Link> */}
       <iframe
         ref={videoRef}
         width="100%"

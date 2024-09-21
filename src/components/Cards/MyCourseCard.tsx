@@ -105,7 +105,7 @@ const MyCourseCard: React.FC<MyCourseCardProps> = ({ course, onCourseRemoved }) 
         </button>
       </div>
       <div className="mt-[24px] ml-[30px] mr-[30px]">
-        <h2 className="text-[32px] font-medium leading-[35.2px] text-left font-roboto">{course.nameRU}</h2>
+        <h2 className="text-[32px] font-medium leading-[35.2px] text-left font-roboto h-[71px] flex items-center">{course.nameRU}</h2>
         <div className="flex flex-wrap gap-[6px] mt-[20px]">
           <div className="flex rounded-[30px] bg-gray-super-light items-center p-[10px] gap-[6px]">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
