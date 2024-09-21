@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { useCourses } from '../../hooks/useCourses';
 import { useAuth } from '../../hooks/useAuth';
 import { Workout, Exercise } from '../../types/interfaces';
@@ -18,6 +18,9 @@ function TrainingPage() {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
   const videoRef = useRef<HTMLIFrameElement>(null);
+
+  const location = useLocation();
+  const { course, workoutNumber } = location.state || {};
 
   const fetchWorkout = useCallback(async () => {
     if (id && user) {
@@ -80,6 +83,7 @@ function TrainingPage() {
   }, [user, id, workout]);
 
   const handleOpenProgressModal = () => {
+    console.log(workout) //DEV
     setIsProgressModalOpen(true);
   };
 
@@ -119,7 +123,7 @@ function TrainingPage() {
       const progressPercentage = Math.round((exerciseProgress / exercise.quantity) * 100);
       
       return (
-        <div key={exercise.name} className="mt-4">
+        <div key={exercise.name} className="mt-4 ">
           <p className="text-[18px] font-normal">
             {exercise.name.split('(')[0].trim()} {progressPercentage}%
           </p>
@@ -148,14 +152,15 @@ function TrainingPage() {
 
   return (
     <main className="mt-[60px]">
-      <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto mb-[40px]">
-        {workout.name}
+      <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto mb-[24px]">
+        {String(course)}
       </h1>
-      <Link to='/user'>Вернуться в профиль</Link>
+      <Link to='/user' className="font-roboto text-2xl font-normal leading-[35.2px] text-left">{workout.name}</Link>
       <iframe
+        className='mt-[40px] rounded-[30px]'
         ref={videoRef}
         width="100%"
-        height="500"
+        height={500}
         src={`https://www.youtube.com/embed/${workout?.video}?enablejsapi=1`}
         title={workout?.name}
         frameBorder="0"
@@ -163,10 +168,10 @@ function TrainingPage() {
         allowFullScreen
       ></iframe>
       <section className="flex flex-col mobile:items-center w-[100%] p-[40px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
-        <div className="w-full">
-          <h3 className="text-[24px] font-medium mb-4">
-            Упражнения тренировки {workout.name.split(' ').pop()}
-          </h3>
+        <h3 className="text-[24px] font-medium mb-4">
+          Упражнения тренировки {workoutNumber}
+        </h3>
+        <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(260px,3fr))] gap-y-[20px] gap-x-[60px]">
           {renderExercises()}
         </div>
         <button
