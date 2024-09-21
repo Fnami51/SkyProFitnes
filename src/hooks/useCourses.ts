@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Course, Workout, User } from '../types/interfaces';
-import { getAllCourses, addCourseToUser, getUserCourses, getCourseById, getWorkoutById } from '../api/courses';
+import { getAllCourses, addCourseToUser, getUserCourses as getUserCoursesAPI, getCourseById, getWorkoutById } from '../api/courses';
 import { getUserProfile as getUserProfileFromAPI, updateUserProfile } from '../api/user';
 import { useAuth } from './useAuth';
 
@@ -10,35 +10,39 @@ export const useCourses = () => {
   const [loading, setLoading] = useState(true);
   const { user: authUser } = useAuth();
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      if (!authUser) {
-        setCourses([]);
-        setUserCourses([]);
-        setLoading(false);
-        return;
-      }
-      try {
-        const [allCourses, userCoursesData] = await Promise.all([
-          getAllCourses(),
-          getUserCourses(authUser.uid)
-        ]);
-        setCourses(allCourses);
+  const fetchCourses = useCallback(async () => {
+    setLoading(true);
+    try {
+      // Загружаем все курсы независимо от авторизации
+      const allCourses = await getAllCourses();
+      // console.log('Fetched courses:', allCourses);
+      setCourses(allCourses);
+      
+      if (authUser) {
+        // Если пользователь авторизован, загружаем его курсы
+        const userCoursesData = await getUserCoursesAPI(authUser.uid);
+        // console.log('Fetched user courses:', userCoursesData);
         setUserCourses(userCoursesData);
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      } finally {
-        setLoading(false);
+      } else {
+        // Если пользователь не авторизован, очищаем пользовательские курсы
+        setUserCourses([]);
       }
-    };
-    fetchCourses();
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    } finally {
+      setLoading(false);
+    }
   }, [authUser]);
+
+  useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
 
   const addCourse = async (courseId: string) => {
     if (!authUser) return;
     try {
       await addCourseToUser(authUser.uid, courseId);
-      const updatedUserCourses = await getUserCourses(authUser.uid);
+      const updatedUserCourses = await getUserCoursesAPI(authUser.uid);
       setUserCourses(updatedUserCourses);
     } catch (error) {
       console.error('Error adding course:', error);
@@ -84,6 +88,15 @@ export const useCourses = () => {
     }
   };
 
+  const getUserCourses = useCallback(async (userId: string): Promise<Course[]> => {
+    try {
+      return await getUserCoursesAPI(userId);
+    } catch (error) {
+      console.error('Error fetching user courses:', error);
+      return [];
+    }
+  }, []);
+
   return {
     courses,
     userCourses,
@@ -92,6 +105,7 @@ export const useCourses = () => {
     getCourse,
     getWorkout,
     getUserProfile,
-    updateProfile
+    updateProfile,
+    getUserCourses,
   };
 };
