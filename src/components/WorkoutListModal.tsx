@@ -15,6 +15,7 @@ interface WorkoutListModalProps {
 }
 
 const WorkoutListModal: React.FC<WorkoutListModalProps> = ({ isOpen, onClose, workoutIds, course }) => {
+
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const { getWorkout } = useCourses();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -118,7 +119,7 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({ isOpen, onClose, wo
                         type="radio"
                         name="workout"
                         value={workout._id}
-                        checked={false}
+                        onChange={() => { }} // Добавляем пустой обработчик onChange
                         className="sr-only"
                       />
                       <span className={`w-6 h-6 border-2 border-black rounded-full mr-2.5 flex items-center justify-center group-hover:border-[#BCEC30] transition-colors ${workoutProgress[workout._id] ? 'bg-[#BCEC30]' : ''}`}>
