@@ -23,9 +23,9 @@ function CoursePage() {
 	const [modalType, setModalType] = useState<'login' | 'register' | 'resetPassword'>('login');
 
 	const handleSwitchModalType = useCallback((newType: 'login' | 'register' | 'resetPassword') => {
-	  setModalType(newType);
+		setModalType(newType);
 	}, []);
-	
+
 	useEffect(() => {
 		const fetchCourse = async () => {
 			if (id && id !== previousId.current) {
@@ -90,13 +90,12 @@ function CoursePage() {
 					className='absolute right-0 top-0 w-full h-full object-cover z-0'
 					loading='lazy'
 				/>
-
 				<img
 					src={`/images/${course.nameEN}.png`}
-					srcSet={`/images/${course.nameEN}-small.webp 300w, /images/${course.nameEN}-medium.webp 600w, /images/${course.nameEN}.webp 900w`}
+					srcSet={`/images/${course.nameEN}_small.png 300w, /images/${course.nameEN}_medium.png 600w, /images/${course.nameEN}.png 900w`}
 					sizes='(max-width: 600px) 300px, (max-width: 1200px) 600px, 900px'
 					alt={course.nameRU}
-					className='hidden mobile:block absolute z-20 w-full h-auto'
+					className='hidden mobile:block absolute z-20 w-full h-full object-cover'
 					loading='lazy'
 				/>
 			</div>
