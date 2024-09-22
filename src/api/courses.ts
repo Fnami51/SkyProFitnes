@@ -12,7 +12,7 @@ export const getAllCourses = async (): Promise<Course[]> => {
         .map(([id, data]) => ({
           _id: id,
           ...(data as Omit<Course, '_id'>),
-          difficulty: (data as any).difficulty || 0 // Убедимся, что difficulty всегда определено
+          difficult: (data as { difficult?: number }).difficult ?? 0 // Убедимся, что difficult всегда определено
         }));
       return formattedCourses;
     } else {
