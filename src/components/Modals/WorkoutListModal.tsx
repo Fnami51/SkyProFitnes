@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Workout, Exercise } from '../../types/interfaces';
 import { useCourses } from '../../hooks/useCourses';
 import Modal from './Modal';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { database } from '../../config/firebase';
 import { ref, get } from "firebase/database";
+import Button from '../Button';
 
 interface WorkoutListModalProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const { user } = useAuth();
   const [workoutProgress, setWorkoutProgress] = useState<{ [key: string]: boolean }>({});
+  const navigate = useNavigate();
 
   const fetchWorkouts = useCallback(async () => {
     if (workoutIds && workoutIds.length > 0 && user) {
@@ -106,6 +108,20 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
 
   if (!isOpen) return null;
 
+  function startWorkout() {
+    let workoutNumber = 0;    
+    for (const key in workoutProgress) {
+      workoutNumber++;      
+      if (!workoutProgress[key]) {
+        navigate(`/training/${key}`, { 
+          state: { course, workoutNumber } 
+        });
+        return;
+      }
+    }
+    navigate('/user');
+  }
+
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -113,11 +129,11 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
           <h2 className="text-[32px] font-[450] mb-12 text-center font-roboto leading-[110%]">Выберите тренировку</h2>
           <div ref={listRef} className={`flex-grow overflow-y-auto pr-4 ${showScroll ? 'scrollbar' : ''}`}>
             {workouts.length > 0 ? (
-              <div className="flex flex-col gap-[34px]">
+              <div className="flex flex-col gap-[10px]">
                 {workouts.map((workout, index) => (
                   <div key={workout._id} className="flex flex-col">
-                    <label className="flex items-center cursor-pointer mb-2.5 group">
-                      <span className={`w-6 h-6 border-2 border-black rounded-full mr-2.5 flex items-center justify-center group-hover:border-[#BCEC30] transition-colors ${workoutProgress[workout._id] ? 'bg-[#BCEC30]' : ''}`}>
+                    <label className="flex items-center cursor-pointer group">
+                      <span className={`w-6 h-6 border-2 border-black rounded-full mr-2.5 flex items-center justify-center transition-colors ${workoutProgress[workout._id] ? 'bg-[#BCEC30] border-[#BCEC30]' : ''}`}>
                         <span className={`w-4 h-4 rounded-full ${workoutProgress[workout._id] ? 'bg-[#BCEC30]' : ''} transition-colors`}>
                           {workoutProgress[workout._id] && (
                             <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -127,8 +143,8 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
                         </span>
                       </span>
                       <Link to={`/training/${workout._id}`} state={{ course: course,  workoutNumber: index + 1 }} className="max-w-[320px]">
-                        <p className="text-[21px] font-normal font-roboto leading-[110%]">{workout.name}</p>
-                        <p className="text-[14px] text-black font-roboto leading-[110%] mt-[10px]">Тренировка {index + 1}</p>
+                        <p className="text-[24px] font-normal font-roboto leading-[110%]">{workout.name}</p>
+                        {/*<p className="text-[14px] text-black font-roboto leading-[110%] mt-[10px]">Тренировка {index + 1}</p>*/}
                       </Link>
                     </label>
                     {index < workouts.length - 1 && <hr className="border-[#C4C4C4] w-full mt-4" />}
@@ -139,6 +155,13 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
               <p className="text-center">Нет доступных тренировок</p>
             )}
           </div>
+          <Button
+            variant="primary"
+            className="mt-8 w-full py-4 px-6.5 bg-[#BCEC30] rounded-[46px] text-[18px] font-roboto leading-[110%] text-black"
+            onClick={startWorkout}
+          >
+            Начать
+          </Button>
         </div>
       </div>
       <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} type="login" onSwitchType={() => {}} />
