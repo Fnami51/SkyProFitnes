@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
-import Modal from './components/Modal';
 import { CoursesProvider } from './context/CoursesContext';
 import { useAuth } from './hooks/useAuth';
+import Modal from './components/Modals/Modal';
 
 const MainPage = React.lazy(() => import('./pages/MainPage/MainPage').then(module => ({ default: module.default })));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage/ProfilePage').then(module => ({ default: module.default })));
@@ -51,8 +51,8 @@ function App() {
   return (
     <CoursesProvider>
       <div 
-        style={{ paddingLeft: 'calc(50% - 634px)', paddingRight: 'calc(50% - 634px)' }}
-        className='bg-background min-h-screen flex flex-col mx-[16px] pb-page-padding overflow-x-hidden'>
+        style={{ paddingLeft: 'max(16px, calc(50% - 634px))', paddingRight: 'max(16px, calc(50% - 634px))' }}
+        className='bg-background min-h-screen flex flex-col pb-page-padding overflow-x-hidden'>
         <Header onLoginClick={handleLoginClick} />
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
