@@ -19,7 +19,7 @@ describe('Footer component', () => {
 	it('scrolls to top when button is clicked', () => {
 		window.scrollTo = jest.fn()
 
-		const { getByText } = render(<Footer showScrollToTop={true} />)
+		const { getByText } = render(<React.Fragment><Footer showScrollToTop={true} /></React.Fragment>)
 
 		fireEvent.click(getByText('Наверх ↑'))
 

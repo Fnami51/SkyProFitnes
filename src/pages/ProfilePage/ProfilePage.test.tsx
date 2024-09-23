@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react'  // Импорт используется
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import ProfilePage from './ProfilePage'
 import { useAuth } from '../../hooks/useAuth'
@@ -49,7 +49,9 @@ describe('ProfilePage component', () => {
 
 		render(
 			<MemoryRouter>
-				<ProfilePage />
+				<React.Fragment>
+					<ProfilePage />
+				</React.Fragment>
 			</MemoryRouter>
 		)
 
@@ -81,7 +83,9 @@ describe('ProfilePage component', () => {
 
 		render(
 			<MemoryRouter>
-				<ProfilePage />
+				<React.Fragment>
+					<ProfilePage />
+				</React.Fragment>
 			</MemoryRouter>
 		)
 

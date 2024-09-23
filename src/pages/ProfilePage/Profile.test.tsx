@@ -19,6 +19,7 @@ jest.mock('../../config/firebase', () => ({
 
 describe('Profile component', () => {
 	beforeAll(() => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		;(global as any).importMeta = {
 			env: {
 				VITE_FIREBASE_API_KEY: 'mock-api-key',
@@ -45,7 +46,9 @@ describe('Profile component', () => {
 
 		const { asFragment, getByText } = render(
 			<MemoryRouter>
-				<Profile />
+				<React.Fragment>
+					<Profile />
+				</React.Fragment>
 			</MemoryRouter>
 		)
 
@@ -66,7 +69,9 @@ describe('Profile component', () => {
 
 		const { getByText, getByDisplayValue } = render(
 			<MemoryRouter>
-				<Profile />
+				<React.Fragment>
+					<Profile />
+				</React.Fragment>
 			</MemoryRouter>
 		)
 
@@ -89,7 +94,9 @@ describe('Profile component', () => {
 
 		const { getByText, getByRole } = render(
 			<MemoryRouter>
-				<Profile />
+				<React.Fragment>
+					<Profile />
+				</React.Fragment>
 			</MemoryRouter>
 		)
 
@@ -112,7 +119,9 @@ describe('Profile component', () => {
 
 		const { getByText } = render(
 			<MemoryRouter>
-				<Profile />
+				<React.Fragment>
+					<Profile />
+				</React.Fragment>
 			</MemoryRouter>
 		)
 

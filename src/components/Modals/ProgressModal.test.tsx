@@ -29,6 +29,7 @@ describe('ProgressModal Snapshot', () => {
 
 	it('renders nothing when the modal is closed', () => {
 		const { asFragment } = render(
+			<React.Fragment>
 			<ProgressModal
 				isOpen={false}
 				onClose={() => {}}
@@ -36,6 +37,7 @@ describe('ProgressModal Snapshot', () => {
 				onSave={() => {}}
 				initialProgress={mockInitialProgress}
 			/>
+			</React.Fragment>
 		)
 		expect(asFragment()).toMatchSnapshot()
 	})
@@ -45,6 +47,7 @@ describe('ProgressModal Snapshot', () => {
 		const mockOnClose = jest.fn()
 
 		const { getByText } = render(
+			<React.Fragment>
 			<ProgressModal
 				isOpen={true}
 				onClose={mockOnClose}
@@ -52,6 +55,7 @@ describe('ProgressModal Snapshot', () => {
 				onSave={mockOnSave}
 				initialProgress={mockInitialProgress}
 			/>
+			</React.Fragment>
 		)
 
 		const saveButton = getByText('Сохранить')

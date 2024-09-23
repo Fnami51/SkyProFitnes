@@ -15,6 +15,7 @@ describe('Header component', () => {
 	const mockOnLoginClick = jest.fn()
 
 	beforeAll(() => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		;(global as any).importMeta = {
 			env: {
 				VITE_FIREBASE_API_KEY: 'mock-api-key',
@@ -33,7 +34,9 @@ describe('Header component', () => {
 
 		const { asFragment, getByText } = render(
 			<MemoryRouter>
-				<Header onLoginClick={mockOnLoginClick} />
+				<React.Fragment>
+					<Header onLoginClick={mockOnLoginClick} />
+				</React.Fragment>
 			</MemoryRouter>
 		)
 
@@ -52,7 +55,9 @@ describe('Header component', () => {
 
 		const { asFragment, getByText, getByAltText } = render(
 			<MemoryRouter>
-				<Header onLoginClick={mockOnLoginClick} />
+				<React.Fragment>
+					<Header onLoginClick={mockOnLoginClick} />
+				</React.Fragment>
 			</MemoryRouter>
 		)
 
