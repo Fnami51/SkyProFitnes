@@ -1,14 +1,14 @@
-import { useState } from 'react'
+import React from 'react'
 import Modal from '../../components/Modals/Modal'
 import { useAuth } from '../../hooks/useAuth'
 
 function Profile() {
   const { user, logout, updateUser } = useAuth()
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [modalType, setModalType] = useState<'newPassword'>('newPassword')
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedName, setEditedName] = useState(user?.customDisplayName || user?.displayName || user?.email?.split('@')[0] || '')
-  const [saveMessage, setSaveMessage] = useState('')
+  const [isModalOpen, setIsModalOpen] = React.useState(false)
+  const [modalType, setModalType] = React.useState<'newPassword'>('newPassword')
+  const [isEditing, setIsEditing] = React.useState(false)
+  const [editedName, setEditedName] = React.useState(user?.customDisplayName || user?.displayName || user?.email?.split('@')[0] || '')
+  const [saveMessage, setSaveMessage] = React.useState('')
 
   const handleChangePassword = () => {
     setModalType('newPassword')

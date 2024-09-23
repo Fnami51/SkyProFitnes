@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MyCourseCard from "../../components/Cards/MyCourseCard";
 import { useAuth } from '../../hooks/useAuth';
@@ -13,7 +13,7 @@ function ProfilePage() {
   const { getUserCourses } = useCourses();
   const [userCourses, setUserCourses] = useState<Course[]>([]);
 
-  const fetchUserCourses = useCallback(async () => {
+  const fetchUserCourses = React.useCallback(async () => {
     if (user) {
       const courses = await getUserCourses(user.uid);
       setUserCourses(courses);
@@ -29,7 +29,7 @@ function ProfilePage() {
     }
   }, [user, fetchUserCourses, navigate, loading]);
 
-  const handleCourseRemoved = useCallback(() => {
+  const handleCourseRemoved = React.useCallback(() => {
     fetchUserCourses();
   }, [fetchUserCourses]);
 
