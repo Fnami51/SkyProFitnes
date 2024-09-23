@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useCourses } from '../../hooks/useCourses';
 import Level from "./Level";
-import Modal from '../Modal';
-import InfoModal from '../infoModal';
+import InfoModal from '../Modals/infoModal';
 import { Course } from '../../types/interfaces';
 import { database } from '../../config/firebase';
 import { ref, get } from "firebase/database";
+import Modal from '../Modals/Modal';
 
 interface CourseCardProps {
   course: Course;
@@ -59,24 +59,22 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
 
   return (
     <>
-      <div className="w-[360px] pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] overflow-hidden" onClick={handleCardClick}>
+      <div className="w-full pb-[15px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] overflow-hidden" onClick={handleCardClick}>
         <div className="relative">
           <img
             src={`/images/${course.nameEN}.png`}
             alt={course.nameRU}
-            className="w-full h-[325px] object-cover"
+            className="w-full h-[325px] object-cover rounded-[30px]"
             loading="lazy"
           />
           <button className="absolute top-5 right-5 w-[32px] h-[32px]" onClick={handleCourseAction}>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="16" cy="16" r="14" fill="white" />
-              <path d="M10 16h12" stroke="black" strokeWidth="2" />
-              <path d="M16 10v12" stroke="black" strokeWidth="2" />
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M16 29.3333C23.3638 29.3333 29.3333 23.3638 29.3333 16C29.3333 8.63616 23.3638 2.66663 16 2.66663C8.63619 2.66663 2.66666 8.63616 2.66666 16C2.66666 23.3638 8.63619 29.3333 16 29.3333ZM14.6667 14.6666V9.33329H17.3333V14.6666H22.6667V17.3333H17.3333V22.6666H14.6667V17.3333H9.33332V14.6666H14.6667Z" fill="white"/>
             </svg>
           </button>
         </div>
         <div className="mt-[24px] ml-[30px] mr-[30px]">
-          <h2 className="text-[32px] font-medium leading-[35.2px] text-left font-roboto h-[71px] flex items-center">{course.nameRU}</h2>
+          <h2 className="text-[32px] font-medium leading-[35.2px] text-left font-roboto flex items-center">{course.nameRU}</h2>
           <div className="flex flex-wrap gap-[6px] mt-[20px]">
             <div className="flex rounded-[30px] bg-gray-super-light items-center p-[10px] gap-[6px]">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">

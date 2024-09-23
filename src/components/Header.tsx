@@ -2,8 +2,8 @@ import { useState, useRef } from 'react';
 import Button from '../components/Button';
 import headerLogo from '/logo.png';
 import { useAuth } from '../hooks/useAuth';
-import UserModal from './UserModal';
 import { Link } from 'react-router-dom';
+import UserModal from './Modals/UserModal';
 interface HeaderProps {
   onLoginClick: () => void;
 }

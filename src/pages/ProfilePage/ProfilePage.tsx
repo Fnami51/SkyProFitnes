@@ -43,7 +43,7 @@ function ProfilePage() {
         <h1 className='text-[40px] font-medium leading-[44px] text-left font-roboto mobile:text-[24px] mobile:leading-[26.4px] mt-[60px]'>
           Мои курсы
         </h1>
-        <article className='flex flex-wrap gap-[40px] mt-[50px]'>
+        <article className='grid grid-cols-3 gap-[40px] mt-[50px] tablet:grid tablet:grid-cols-2 mobile:flex mobile:flex-wrap mobile:justify-center'>
           {userCourses
             .slice()
             .sort((a, b) => a.order - b.order)

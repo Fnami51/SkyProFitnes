@@ -3,8 +3,8 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import { useCourses } from '../../hooks/useCourses';
 import { useAuth } from '../../hooks/useAuth';
 import { Workout, Exercise } from '../../types/interfaces';
-import ProgressModal from '../../components/ProgressModal';
-import InfoModal from '../../components/infoModal';
+import ProgressModal from '../../components/Modals/ProgressModal';
+import InfoModal from '../../components/Modals/infoModal';
 import { database } from '../../config/firebase';
 import { ref, set, get } from "firebase/database";
 

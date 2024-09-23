@@ -22,7 +22,7 @@ function MainPage() {
         <>
             <main className="mt-[60px]">
                 <article className='flex gap-[25px]'>
-                    <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto">
+                    <h1 className="text-[60px] tablet:text-[50px] mobile:text-[32px] font-medium leading-[60px] tablet:leading-[50px] mobile:leading-[35.2px] text-left font-roboto">
                         Начните заниматься спортом и улучшите качество жизни
                     </h1>
                     <div className="h-[120px] mobile:hidden tablet:hidden">
@@ -31,7 +31,7 @@ function MainPage() {
                         </div>
                     </div>
                 </article>
-                <article className='flex flex-wrap gap-[40px] mt-[50px]'>
+                <article className='grid grid-cols-3 gap-[40px] mt-[50px] tablet:grid tablet:grid-cols-2 mobile:flex mobile:flex-wrap mobile:justify-center'>
                     {displayCourses
                         .slice()
                         .sort((a, b) => a.order - b.order)

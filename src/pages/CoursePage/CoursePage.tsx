@@ -4,8 +4,8 @@ import Button from '../../components/Button';
 import { useCoursesContext } from '../../context/CoursesContext';
 import { useAuth } from '../../hooks/useAuth';
 import { Course } from '../../types/interfaces';
-import InfoModal from '../../components/infoModal';
-import Modal from '../../components/Modal';
+import InfoModal from '../../components/Modals/infoModal';
+import Modal from '../../components/Modals/Modal';
 import Footer from '../../components/Footer';
 import { database } from '../../config/firebase';
 import { ref, get } from "firebase/database";
@@ -95,7 +95,7 @@ function CoursePage() {
 					srcSet={`/images/${course.nameEN}_small.png 300w, /images/${course.nameEN}_medium.png 600w, /images/${course.nameEN}.png 900w`}
 					sizes='(max-width: 600px) 300px, (max-width: 1200px) 600px, 900px'
 					alt={course.nameRU}
-					className='hidden mobile:block absolute z-20 w-full h-full object-cover'
+					className='hidden mobile:block absolute z-20 w-full h-full object-cover '
 					loading='lazy'
 				/>
 			</div>
@@ -127,7 +127,7 @@ function CoursePage() {
 				<h3 className='text-[40px] font-semibold leading-[44px] mb-[40px] mobile:text-[24px] mobile:mb-[24px]'>
 					Направления
 				</h3>
-				<ul className='bg-[#BCEC30] grid grid-cols-3 rounded-[28px] h-[146px] p-[30px] gap-x-[85px] gap-y-[30px] mobile:grid-cols-1 mobile:h-auto mobile:gap-y-[20px]'>
+				<ul className='bg-[#BCEC30] grid grid-cols-3 rounded-[28px] h-[146px] p-[30px] gap-x-[85px] gap-y-[30px] tablet:grid-cols-2 tablet:pr-[200px] mobile:grid-cols-1 mobile:h-auto mobile:gap-y-[20px]'>
 					{course.directions &&
 						course.directions.map((direction, index) => (
 							<li key={index} className='flex items-center gap-[8px]'>
@@ -146,30 +146,30 @@ function CoursePage() {
 			</section>
 
 			<section className='relative rounded-[30px] mb-[50px] overflow-hidden bg-white mobile:overflow-visible mobile:flex mobile:justify-center mobile:z-[5]'>
-				<div className='relative pl-[40px] pt-[40px] pb-[40px] flex flex-col gap-[28px] z-[2] w-[477px] mobile:w-[343px]'>
-					<h3 className='font-roboto text-[60px] font-medium leading-[60px] text-left mobile:text-[32px] mobile:leading-[35.2px]'>
+				<div className='relative pl-[40px] pt-[40px] pb-[40px] flex flex-col gap-[28px] z-[2] w-[477px] tablet:w-[477px] mobile:w-[343px]'>
+					<h3 className='font-roboto text-[60px] font-medium leading-[60px] text-left mobile:text-[32px] mobile:leading-[35.2px] tablet:text-[50px] tablet:leading-[50px]'>
 						Начните путь <br />к новому телу
 					</h3>
 					<ul className='list-disc flex flex-col gap-[10px] pl-[33px] marker:text-[16px]'>
-						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px]'>
+						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px] tablet:text-[24px]'>
 							проработка всех групп мышц
 						</li>
-						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px]'>
+						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px] tablet:text-[24px]'>
 							тренировка суставов
 						</li>
-						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px]'>
+						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px] tablet:text-[24px]'>
 							улучшение циркуляции крови
 						</li>
-						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px]'>
+						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px] tablet:text-[24px]'>
 							упражнения заряжают бодростью
 						</li>
-						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px]'>
+						<li className='font-roboto text-[24px] font-normal leading-[26.4px] text-left text-[#777777] mobile:text-[18px] tablet:text-[24px]'>
 							помогают противостоять стрессам
 						</li>
 					</ul>
 					<Button
 						variant='primary'
-						className='w-[437px] h-[52px] mobile:w-[283px] mobile:h-[50px]'
+						className='w-[437px] h-[52px] tablet:w-[437px] mobile:w-[283px] mobile:h-[50px]'
 						onClick={handleAddCourse}
 					>
 						{user ? 'Добавить курс' : 'Войти и добавить курс'}
