@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Workout, Exercise } from '../../types/interfaces';
 import { useCourses } from '../../hooks/useCourses';
 import Modal from './Modal';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { database } from '../../config/firebase';
 import { ref, get } from "firebase/database";
-import Button from '../Button';
+//import Button from '../Button';
 
 interface WorkoutListModalProps {
   isOpen: boolean;
@@ -33,7 +34,7 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const { user } = useAuth();
   const [workoutProgress, setWorkoutProgress] = useState<{ [key: string]: boolean }>({});
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const fetchWorkouts = useCallback(async () => {
     if (workoutIds && workoutIds.length > 0 && user) {
@@ -108,19 +109,19 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
 
   if (!isOpen) return null;
 
-  function startWorkout() {
-    let workoutNumber = 0;    
-    for (const key in workoutProgress) {
-      workoutNumber++;      
-      if (!workoutProgress[key]) {
-        navigate(`/training/${key}`, { 
-          state: { course, workoutNumber } 
-        });
-        return;
-      }
-    }
-    navigate('/user');
-  }
+  // function startWorkout() {
+  //   let workoutNumber = 0;    
+  //   for (const key in workoutProgress) {
+  //     workoutNumber++;      
+  //     if (!workoutProgress[key]) {
+  //       navigate(`/training/${key}`, { 
+  //         state: { course, workoutNumber } 
+  //       });
+  //       return;
+  //     }
+  //   }
+  //   navigate('/user');
+  // }
 
   return (
     <>
@@ -133,7 +134,7 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
                 {workouts.map((workout, index) => (
                   <div key={workout._id} className="flex flex-col">
                     <label className="flex items-center cursor-pointer group">
-                      <span className={`w-6 h-6 border-2 border-black rounded-full mr-2.5 flex items-center justify-center transition-colors ${workoutProgress[workout._id] ? 'bg-[#BCEC30] border-[#BCEC30]' : ''}`}>
+                      <span className={`w-6 h-6 border-2 rounded-full mr-2.5 flex items-center justify-center transition-colors ${workoutProgress[workout._id] ? 'bg-[#BCEC30] border-[#BCEC30]' : 'border-black'}`}>
                         <span className={`w-4 h-4 rounded-full ${workoutProgress[workout._id] ? 'bg-[#BCEC30]' : ''} transition-colors`}>
                           {workoutProgress[workout._id] && (
                             <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -155,13 +156,13 @@ const WorkoutListModal: React.FC<WorkoutListModalProps> = ({
               <p className="text-center">Нет доступных тренировок</p>
             )}
           </div>
-          <Button
+          {/*<Button
             variant="primary"
             className="mt-8 w-full py-4 px-6.5 bg-[#BCEC30] rounded-[46px] text-[18px] font-roboto leading-[110%] text-black"
             onClick={startWorkout}
           >
             Начать
-          </Button>
+          </Button>*/}
         </div>
       </div>
       <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} type="login" onSwitchType={() => {}} />
