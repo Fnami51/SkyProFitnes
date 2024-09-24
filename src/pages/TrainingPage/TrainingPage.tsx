@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { useCourses } from '../../hooks/useCourses';
 import { useAuth } from '../../hooks/useAuth';
@@ -157,51 +157,60 @@ function TrainingPage() {
   }
 
   return (
-    <main className="mt-[60px]">
-      <h1 className="text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto mb-[24px]">
-        {String(course)}
-      </h1>
-      <Link to='/user' className="font-roboto text-2xl font-normal leading-[35.2px] underline text-left">{workout.name}</Link>
-      <iframe
-        className='mt-[40px] rounded-[30px]'
-        ref={videoRef}
-        width="100%"
-        height={500}
-        src={`https://www.youtube.com/embed/${workout?.video}?enablejsapi=1`}
-        title={workout?.name}
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      ></iframe>
-      <section className="flex flex-col mobile:items-center w-[100%] p-[40px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
-        <h3 className="text-[24px] font-medium mb-4">
-          Упражнения тренировки {workoutNumber}
-        </h3>
-        <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(260px,3fr))] gap-y-[20px] gap-x-[60px]">
-          {renderExercises()}
-        </div>
-        <button
-          onClick={handleOpenProgressModal}
-          className="w-[320px] h-[52px] mobile:w-[283px] bg-[#BCEC30] text-black rounded-[46px] font-roboto text-[18px] font-normal leading-[19.8px] mt-8"
-        >
-          {isProgressZero() ? "Заполнить свой прогресс" : "Обновить свой прогресс"}
-        </button>
-      </section>
-      <ProgressModal
-        isOpen={isProgressModalOpen}
-        onClose={handleCloseProgressModal}
-        exercises={workout.exercises || []}
-        onSave={handleSaveProgress}
-        initialProgress={progress}
-      />
-      <InfoModal
-        isOpen={isInfoModalOpen}
-        onClose={() => setIsInfoModalOpen(false)}
-        message="Ваш прогресс засчитан!"
-        type="progress"
-      />
-    </main>
-  );
+		<React.Fragment>
+			<main className='mt-[60px]'>
+				<h1 className='text-[60px] mobile:text-[32px] font-medium leading-[60px] mobile:leading-[35.2px] text-left font-roboto mb-[24px]'>
+					{String(course)}
+				</h1>
+				<Link
+					to='/user'
+					className='font-roboto text-2xl font-normal leading-[35.2px] underline text-left'
+				>
+					{workout.name}
+				</Link>
+				<iframe
+					className='mt-[40px] rounded-[30px]'
+					ref={videoRef}
+					width='100%'
+					height={500}
+					src={`https://www.youtube.com/embed/${workout?.video}?enablejsapi=1`}
+					title={workout?.name}
+					frameBorder='0'
+					allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+					allowFullScreen
+				></iframe>
+				<section className='flex flex-col mobile:items-center w-[100%] p-[40px] mt-[40px] mb-[60px] rounded-[30px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]'>
+					<h3 className='text-[24px] font-medium mb-4'>
+						Упражнения тренировки {workoutNumber}
+					</h3>
+					<div className='w-full grid grid-cols-[repeat(auto-fill,minmax(260px,3fr))] gap-y-[20px] gap-x-[60px]'>
+						{renderExercises()}
+					</div>
+					<button
+						onClick={handleOpenProgressModal}
+						className='w-[320px] h-[52px] mobile:w-[283px] bg-[#BCEC30] text-black rounded-[46px] font-roboto text-[18px] font-normal leading-[19.8px] mt-8'
+					>
+						{isProgressZero()
+							? 'Заполнить свой прогресс'
+							: 'Обновить свой прогресс'}
+					</button>
+				</section>
+				<ProgressModal
+					isOpen={isProgressModalOpen}
+					onClose={handleCloseProgressModal}
+					exercises={workout.exercises || []}
+					onSave={handleSaveProgress}
+					initialProgress={progress}
+				/>
+				<InfoModal
+					isOpen={isInfoModalOpen}
+					onClose={() => setIsInfoModalOpen(false)}
+					message='Ваш прогресс засчитан!'
+					type='progress'
+				/>
+			</main>
+		</React.Fragment>
+	)
 }
 
 export default TrainingPage;
